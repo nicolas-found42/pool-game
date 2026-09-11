@@ -107,11 +107,12 @@ The numbers, their provenance labels (*measured* / *derived* / *still provisiona
 hardware they came from are in `docs/spec/ai-constants.md`.
 
 **Measurement conditions:** this worktree ran beside two other agent workloads on the same machine,
-so the 1-minute load average was 13–48 on 10 cores the whole time. Every published record is the
-fastest of 5–6 runs (`measure all` was run repeatedly; the serve latencies likewise), and the same
-cells varied by up to ~2.3× across runs. Every timing here is therefore an **upper bound** — which
-is why the SLO conclusion is worth anything: it survives that pessimism. `min` fields in the serve
-records are the least-contended samples.
+so the 1-minute load average moved between 13 and 48 on 10 cores. Every published record is the
+fastest of a repeated series (8 × `measure all`, 6 × each serve build); the tables in
+`docs/spec/ai-constants.md` use the quietest run and record the loaded-run band, which reaches
+~2.3× slower on the same cells. Treat every timing as an **upper bound** — the SLO conclusion holds
+with more margin on the slow runs, which is exactly why it is worth something. `min` fields in the
+serve records are the least-contended samples.
 
 Not committed: training checkpoints (`python/runs/**/*.zip`, ~15 MB) and the virtualenv — see
 `.gitignore` beside this file. The small ONNX artifacts that are committed (91,668 B each) carry

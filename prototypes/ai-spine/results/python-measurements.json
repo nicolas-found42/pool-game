@@ -16,14 +16,14 @@
   "obs_dim": 64,
   "cand_dim": 16,
   "k_max": 32,
-  "env_steps_per_sec": 215.69,
+  "env_steps_per_sec": 1369.98,
   "env_steps_per_sec_block_rates": [
-   111.72,
-   196.53,
-   215.69
+   1369.98,
+   1167.55,
+   872.04
   ],
   "n_envs": 1,
-  "episodes_per_sec": 27.418,
+  "episodes_per_sec": 172.687,
   "mean_episode_len": 7.909,
   "episodes_measured": 450,
   "steps_measured": 3559,
@@ -305,11 +305,11 @@
    "reached_at_timesteps": 9216,
    "wall_clock_to_gate_s": 6.402
   },
-  "ai_decisions_per_sec": 9928.2,
+  "ai_decisions_per_sec": 36038.5,
   "ai_decisions_per_sec_blocks": [
-   9928.2,
-   7452.7,
-   8546.7
+   35355.6,
+   35560.6,
+   36038.5
   ],
   "checkpoints": [
    {

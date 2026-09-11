@@ -1,21 +1,21 @@
 {
- "model": "trained-scorer-from:runs/ppo_smoke/final.zip",
+ "model": "trained-scorer-from:runs/ppo_smoke/ckpt_100.zip",
  "onnx_path": "/Users/Nicolas/.omp/wt/t31f39e546/m/prototypes/ai-spine/results/onnx/policy-smoke.onnx",
  "onnx_bytes": 91668,
- "sha256": "1553dac9b14e466d0ae1649a7bc928c79b4735da6e9ffde98deeec3ab60d250f",
+ "sha256": "8d93f5979acdb7cde0447d594cae0a32689aa72eb8878a9983aa1c2a8e2754ea",
  "opset": [
   17
  ],
  "scorer_params": 30210,
  "golden_path": "/Users/Nicolas/.omp/wt/t31f39e546/m/prototypes/ai-spine/results/onnx-golden.json",
  "golden_k": 5,
- "ort_golden_max_abs_err": 4.76837158203125e-07,
- "ort_dynamic_k9_max_abs_err": 1.9073486328125e-06,
+ "ort_golden_max_abs_err": 9.5367431640625e-07,
+ "ort_dynamic_k9_max_abs_err": 4.76837158203125e-07,
  "golden_dynamic_axis_ok": true,
  "versions": {
   "torch": "2.14.0",
   "onnx": "1.22.0",
   "onnxruntime": "1.30.0"
  },
- "export_seconds": 0.526
+ "export_seconds": 0.504
 }

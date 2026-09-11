@@ -22,54 +22,54 @@
   },
   "latency_ms": {
     "encode": {
-      "max": 3.7824579999999997,
-      "mean": 0.007914739999999997,
-      "min": 0.0006670000000000001,
+      "max": 0.0011250000000000001,
+      "mean": 0.0002811733333333317,
+      "min": 0.00020800000000000001,
       "n": 600,
       "note": "min is the least-contended sample: this box was shared with other agent workloads, so min/p50 are the useful figures and p99/max are upper bounds",
-      "p50": 0.0012920000000000002,
-      "p90": 0.0025830000000000002,
-      "p99": 0.005791999999999999
+      "p50": 0.00029099999999999997,
+      "p90": 0.00033299999999999996,
+      "p99": 0.000542
     },
     "generate": {
-      "max": 31.919084,
-      "mean": 0.8763281216666666,
-      "min": 0.235334,
+      "max": 0.140792,
+      "mean": 0.10009126666666664,
+      "min": 0.08495799999999999,
       "n": 600,
       "note": "min is the least-contended sample: this box was shared with other agent workloads, so min/p50 are the useful figures and p99/max are upper bounds",
-      "p50": 0.317375,
-      "p90": 0.8097500000000001,
-      "p99": 14.529
+      "p50": 0.099416,
+      "p90": 0.10645900000000001,
+      "p99": 0.116458
     },
     "inference": {
-      "max": 13.257583,
-      "mean": 0.20411338499999998,
-      "min": 0.035040999999999996,
+      "max": 0.033874999999999995,
+      "mean": 0.01601029833333337,
+      "min": 0.013666,
       "n": 600,
       "note": "min is the least-contended sample: this box was shared with other agent workloads, so min/p50 are the useful figures and p99/max are upper bounds",
-      "p50": 0.056125,
-      "p90": 0.189917,
-      "p99": 2.8817500000000003
+      "p50": 0.016167,
+      "p90": 0.016666,
+      "p99": 0.021500000000000002
     },
     "select": {
-      "max": 0.000375,
-      "mean": 7.359333333333347e-05,
-      "min": 4.1e-05,
+      "max": 0.000167,
+      "mean": 2.0745000000000104e-05,
+      "min": 0.0,
       "n": 600,
       "note": "min is the least-contended sample: this box was shared with other agent workloads, so min/p50 are the useful figures and p99/max are upper bounds",
-      "p50": 8.3e-05,
-      "p90": 0.000125,
-      "p99": 0.00020800000000000001
+      "p50": 0.0,
+      "p90": 4.2e-05,
+      "p99": 4.2e-05
     },
     "total": {
-      "max": 32.057167,
-      "mean": 1.0897662566666668,
-      "min": 0.27295899999999995,
+      "max": 0.17275,
+      "mean": 0.11662895666666673,
+      "min": 0.101458,
       "n": 600,
       "note": "min is the least-contended sample: this box was shared with other agent workloads, so min/p50 are the useful figures and p99/max are upper bounds",
-      "p50": 0.377958,
-      "p90": 1.281833,
-      "p99": 16.453374999999998
+      "p50": 0.115667,
+      "p90": 0.122875,
+      "p99": 0.13966599999999998
     }
   },
   "machine": {
@@ -80,8 +80,8 @@
     "os": "macOS 26.4.1"
   },
   "model": {
-    "load_ms": 40.1045,
-    "path": "results/onnx/policy-smoke.onnx",
+    "load_ms": 7.347125,
+    "path": "../results/onnx/policy-smoke.onnx",
     "sha256": "1553dac9b14e466d0ae1649a7bc928c79b4735da6e9ffde98deeec3ab60d250f",
     "size_bytes": 91668
   },

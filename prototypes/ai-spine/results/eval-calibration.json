@@ -59,191 +59,191 @@
   "clearance_drill": {
     "clearance_rate": 0.9666666666666667,
     "cleared": 29,
-    "decisions_per_s": 9415.280587915231,
+    "decisions_per_s": 8819.33022478541,
     "decisions_total": 105,
-    "max_wall_s_per_rack": 0.000559834,
-    "mean_wall_s_per_rack": 0.0003739528,
+    "max_wall_s_per_rack": 0.000595792,
+    "mean_wall_s_per_rack": 0.00039929586666666663,
     "positions": 30,
     "rows": [
       {
         "cleared": true,
         "seed": 31000,
         "shots": 3,
-        "wall_s": 0.000348334
+        "wall_s": 0.000370667
       },
       {
         "cleared": true,
         "seed": 31001,
         "shots": 3,
-        "wall_s": 0.0003375
+        "wall_s": 0.000358417
       },
       {
         "cleared": true,
         "seed": 31002,
         "shots": 3,
-        "wall_s": 0.000341083
+        "wall_s": 0.000388583
       },
       {
         "cleared": true,
         "seed": 31003,
         "shots": 3,
-        "wall_s": 0.000334708
+        "wall_s": 0.000362583
       },
       {
         "cleared": true,
         "seed": 31004,
         "shots": 6,
-        "wall_s": 0.000518709
+        "wall_s": 0.000561625
       },
       {
         "cleared": true,
         "seed": 31005,
         "shots": 3,
-        "wall_s": 0.000337625
+        "wall_s": 0.000362709
       },
       {
         "cleared": true,
         "seed": 31006,
         "shots": 5,
-        "wall_s": 0.000449917
+        "wall_s": 0.000480875
       },
       {
         "cleared": true,
         "seed": 31007,
         "shots": 3,
-        "wall_s": 0.000330167
+        "wall_s": 0.000352125
       },
       {
         "cleared": true,
         "seed": 31008,
         "shots": 3,
-        "wall_s": 0.000339125
+        "wall_s": 0.000352125
       },
       {
         "cleared": true,
         "seed": 31009,
         "shots": 3,
-        "wall_s": 0.000314667
+        "wall_s": 0.00034
       },
       {
         "cleared": false,
         "seed": 31010,
         "shots": 2,
-        "wall_s": 0.00026975
+        "wall_s": 0.000289375
       },
       {
         "cleared": true,
         "seed": 31011,
         "shots": 5,
-        "wall_s": 0.000559834
+        "wall_s": 0.000595792
       },
       {
         "cleared": true,
         "seed": 31012,
         "shots": 3,
-        "wall_s": 0.000341
+        "wall_s": 0.000352166
       },
       {
         "cleared": true,
         "seed": 31013,
         "shots": 3,
-        "wall_s": 0.000323917
+        "wall_s": 0.0003465
       },
       {
         "cleared": true,
         "seed": 31014,
         "shots": 6,
-        "wall_s": 0.000550083
+        "wall_s": 0.000587125
       },
       {
         "cleared": true,
         "seed": 31015,
         "shots": 3,
-        "wall_s": 0.00032825
+        "wall_s": 0.000350709
       },
       {
         "cleared": true,
         "seed": 31016,
         "shots": 3,
-        "wall_s": 0.0003315
+        "wall_s": 0.000352792
       },
       {
         "cleared": true,
         "seed": 31017,
         "shots": 5,
-        "wall_s": 0.000454917
+        "wall_s": 0.00048625
       },
       {
         "cleared": true,
         "seed": 31018,
         "shots": 3,
-        "wall_s": 0.000338208
+        "wall_s": 0.000365833
       },
       {
         "cleared": true,
         "seed": 31019,
         "shots": 3,
-        "wall_s": 0.000328166
+        "wall_s": 0.000346292
       },
       {
         "cleared": true,
         "seed": 31020,
         "shots": 3,
-        "wall_s": 0.000343166
+        "wall_s": 0.000360125
       },
       {
         "cleared": true,
         "seed": 31021,
         "shots": 3,
-        "wall_s": 0.000344875
+        "wall_s": 0.000369666
       },
       {
         "cleared": true,
         "seed": 31022,
         "shots": 3,
-        "wall_s": 0.000318375
+        "wall_s": 0.000339583
       },
       {
         "cleared": true,
         "seed": 31023,
         "shots": 4,
-        "wall_s": 0.000479375
+        "wall_s": 0.0005235
       },
       {
         "cleared": true,
         "seed": 31024,
         "shots": 3,
-        "wall_s": 0.000338041
+        "wall_s": 0.000358459
       },
       {
         "cleared": true,
         "seed": 31025,
         "shots": 3,
-        "wall_s": 0.000330334
+        "wall_s": 0.00034825
       },
       {
         "cleared": true,
         "seed": 31026,
         "shots": 3,
-        "wall_s": 0.000328167
+        "wall_s": 0.000349708
       },
       {
         "cleared": true,
         "seed": 31027,
         "shots": 4,
-        "wall_s": 0.000438375
+        "wall_s": 0.000461459
       },
       {
         "cleared": true,
         "seed": 31028,
         "shots": 5,
-        "wall_s": 0.000504958
+        "wall_s": 0.000523833
       },
       {
         "cleared": true,
         "seed": 31029,
         "shots": 3,
-        "wall_s": 0.000315458
+        "wall_s": 0.00034175
       }
     ]
   },
@@ -273,7 +273,7 @@
         "scratch": false,
         "seed": 9000,
         "sim_evals": 21,
-        "total_ms": 0.082458
+        "total_ms": 0.100667
       },
       {
         "candidates": 32,
@@ -283,7 +283,7 @@
         "scratch": false,
         "seed": 9001,
         "sim_evals": 21,
-        "total_ms": 0.07195800000000001
+        "total_ms": 0.072375
       },
       {
         "candidates": 32,
@@ -293,7 +293,7 @@
         "scratch": false,
         "seed": 9002,
         "sim_evals": 21,
-        "total_ms": 0.06787499999999999
+        "total_ms": 0.066834
       },
       {
         "candidates": 32,
@@ -303,7 +303,7 @@
         "scratch": false,
         "seed": 9003,
         "sim_evals": 21,
-        "total_ms": 0.062834
+        "total_ms": 0.063
       },
       {
         "candidates": 32,
@@ -313,7 +313,7 @@
         "scratch": false,
         "seed": 9004,
         "sim_evals": 21,
-        "total_ms": 0.066042
+        "total_ms": 0.064625
       },
       {
         "candidates": 32,
@@ -323,7 +323,7 @@
         "scratch": false,
         "seed": 9005,
         "sim_evals": 21,
-        "total_ms": 0.06787499999999999
+        "total_ms": 0.06575
       },
       {
         "candidates": 32,
@@ -333,7 +333,7 @@
         "scratch": false,
         "seed": 9006,
         "sim_evals": 21,
-        "total_ms": 0.066458
+        "total_ms": 0.064083
       },
       {
         "candidates": 32,
@@ -343,7 +343,7 @@
         "scratch": false,
         "seed": 9007,
         "sim_evals": 21,
-        "total_ms": 0.063333
+        "total_ms": 0.063208
       },
       {
         "candidates": 32,
@@ -353,7 +353,7 @@
         "scratch": false,
         "seed": 9008,
         "sim_evals": 21,
-        "total_ms": 0.06804199999999999
+        "total_ms": 0.0665
       },
       {
         "candidates": 32,
@@ -363,7 +363,7 @@
         "scratch": false,
         "seed": 9009,
         "sim_evals": 21,
-        "total_ms": 0.06325
+        "total_ms": 0.063083
       },
       {
         "candidates": 32,
@@ -373,7 +373,7 @@
         "scratch": false,
         "seed": 9010,
         "sim_evals": 21,
-        "total_ms": 0.064625
+        "total_ms": 0.064417
       },
       {
         "candidates": 32,
@@ -383,7 +383,7 @@
         "scratch": false,
         "seed": 9011,
         "sim_evals": 21,
-        "total_ms": 0.067333
+        "total_ms": 0.06724999999999999
       },
       {
         "candidates": 32,
@@ -393,7 +393,7 @@
         "scratch": false,
         "seed": 9012,
         "sim_evals": 21,
-        "total_ms": 0.0635
+        "total_ms": 0.063792
       },
       {
         "candidates": 32,
@@ -403,7 +403,7 @@
         "scratch": false,
         "seed": 9013,
         "sim_evals": 21,
-        "total_ms": 0.064167
+        "total_ms": 0.063791
       },
       {
         "candidates": 32,
@@ -413,7 +413,7 @@
         "scratch": false,
         "seed": 9014,
         "sim_evals": 21,
-        "total_ms": 0.059209000000000005
+        "total_ms": 0.05775
       },
       {
         "candidates": 32,
@@ -423,7 +423,7 @@
         "scratch": false,
         "seed": 9015,
         "sim_evals": 21,
-        "total_ms": 0.064709
+        "total_ms": 0.063333
       },
       {
         "candidates": 32,
@@ -433,7 +433,7 @@
         "scratch": false,
         "seed": 9016,
         "sim_evals": 21,
-        "total_ms": 0.063459
+        "total_ms": 0.06241699999999999
       },
       {
         "candidates": 32,
@@ -443,7 +443,7 @@
         "scratch": false,
         "seed": 9017,
         "sim_evals": 21,
-        "total_ms": 0.063917
+        "total_ms": 0.063334
       },
       {
         "candidates": 32,
@@ -453,7 +453,7 @@
         "scratch": false,
         "seed": 9018,
         "sim_evals": 21,
-        "total_ms": 0.063458
+        "total_ms": 0.061709
       },
       {
         "candidates": 32,
@@ -463,7 +463,7 @@
         "scratch": false,
         "seed": 9019,
         "sim_evals": 21,
-        "total_ms": 0.06904199999999999
+        "total_ms": 0.068
       },
       {
         "candidates": 32,
@@ -473,7 +473,7 @@
         "scratch": false,
         "seed": 9020,
         "sim_evals": 21,
-        "total_ms": 0.073
+        "total_ms": 0.066875
       },
       {
         "candidates": 32,
@@ -483,7 +483,7 @@
         "scratch": false,
         "seed": 9021,
         "sim_evals": 21,
-        "total_ms": 0.062958
+        "total_ms": 0.063125
       },
       {
         "candidates": 32,
@@ -493,7 +493,7 @@
         "scratch": false,
         "seed": 9022,
         "sim_evals": 21,
-        "total_ms": 0.06887499999999999
+        "total_ms": 0.066333
       },
       {
         "candidates": 32,
@@ -503,7 +503,7 @@
         "scratch": false,
         "seed": 9023,
         "sim_evals": 21,
-        "total_ms": 0.06387499999999999
+        "total_ms": 0.063292
       },
       {
         "candidates": 32,
@@ -513,7 +513,7 @@
         "scratch": false,
         "seed": 9024,
         "sim_evals": 21,
-        "total_ms": 0.06629199999999999
+        "total_ms": 0.065833
       },
       {
         "candidates": 32,
@@ -523,7 +523,7 @@
         "scratch": false,
         "seed": 9025,
         "sim_evals": 21,
-        "total_ms": 0.063459
+        "total_ms": 0.062666
       },
       {
         "candidates": 32,
@@ -533,7 +533,7 @@
         "scratch": false,
         "seed": 9026,
         "sim_evals": 21,
-        "total_ms": 0.063375
+        "total_ms": 0.062167
       },
       {
         "candidates": 32,
@@ -543,7 +543,7 @@
         "scratch": false,
         "seed": 9027,
         "sim_evals": 21,
-        "total_ms": 0.063833
+        "total_ms": 0.062209
       },
       {
         "candidates": 32,
@@ -553,7 +553,7 @@
         "scratch": false,
         "seed": 9028,
         "sim_evals": 21,
-        "total_ms": 0.06525
+        "total_ms": 0.064417
       },
       {
         "candidates": 32,
@@ -563,7 +563,7 @@
         "scratch": false,
         "seed": 9029,
         "sim_evals": 21,
-        "total_ms": 0.063625
+        "total_ms": 0.063083
       },
       {
         "candidates": 32,
@@ -573,7 +573,7 @@
         "scratch": false,
         "seed": 9030,
         "sim_evals": 21,
-        "total_ms": 0.065041
+        "total_ms": 0.063792
       },
       {
         "candidates": 32,
@@ -583,7 +583,7 @@
         "scratch": false,
         "seed": 9031,
         "sim_evals": 21,
-        "total_ms": 0.064542
+        "total_ms": 0.063292
       },
       {
         "candidates": 32,
@@ -593,7 +593,7 @@
         "scratch": false,
         "seed": 9032,
         "sim_evals": 21,
-        "total_ms": 0.066833
+        "total_ms": 0.065125
       },
       {
         "candidates": 32,
@@ -603,7 +603,7 @@
         "scratch": false,
         "seed": 9033,
         "sim_evals": 21,
-        "total_ms": 0.062875
+        "total_ms": 0.061958000000000006
       },
       {
         "candidates": 32,
@@ -613,7 +613,7 @@
         "scratch": false,
         "seed": 9034,
         "sim_evals": 21,
-        "total_ms": 0.061500000000000006
+        "total_ms": 0.059917000000000005
       },
       {
         "candidates": 32,
@@ -623,7 +623,7 @@
         "scratch": false,
         "seed": 9035,
         "sim_evals": 21,
-        "total_ms": 0.067625
+        "total_ms": 0.067333
       },
       {
         "candidates": 32,
@@ -633,7 +633,7 @@
         "scratch": false,
         "seed": 9036,
         "sim_evals": 21,
-        "total_ms": 0.064542
+        "total_ms": 0.06375
       },
       {
         "candidates": 32,
@@ -643,7 +643,7 @@
         "scratch": false,
         "seed": 9037,
         "sim_evals": 21,
-        "total_ms": 0.064084
+        "total_ms": 0.062792
       },
       {
         "candidates": 32,
@@ -653,7 +653,7 @@
         "scratch": false,
         "seed": 9038,
         "sim_evals": 21,
-        "total_ms": 0.06275
+        "total_ms": 0.06212500000000001
       },
       {
         "candidates": 32,
@@ -663,7 +663,7 @@
         "scratch": false,
         "seed": 9039,
         "sim_evals": 21,
-        "total_ms": 0.06625
+        "total_ms": 0.06525
       }
     ],
     "scratch_rate": 0.0

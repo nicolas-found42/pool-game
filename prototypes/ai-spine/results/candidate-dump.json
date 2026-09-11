@@ -120,7 +120,7 @@
     "os": "macOS 26.4.1",
     "profile": "release"
   },
-  "note": "Per-candidate scores for a handful of positions (#9 §8's debug view). 'score' is the planner's decision score after sim verification; 'seed_score'/'makeability' are the analytic pre-sim estimates. Rows are the verified shortlist in rank order; the full generated set is counted but not listed.",
+  "note": "Per-candidate scores for a handful of positions (#9 \u00a78's debug view). 'score' is the planner's decision score after sim verification; 'seed_score'/'makeability' are the analytic pre-sim estimates. Rows are the verified shortlist in rank order; the full generated set is counted but not listed.",
   "positions": [
     {
       "balls": [
@@ -179,14 +179,14 @@
       ],
       "decision": {
         "candidates": 32,
-        "gen_ms": 0.136083,
-        "micro_ms": 0.019,
+        "gen_ms": 0.137708,
+        "micro_ms": 0.020166999999999997,
         "score": 1.300906104992058,
         "scratch": false,
         "sim_evals": 23,
-        "total_ms": 0.1725,
+        "total_ms": 0.17945799999999998,
         "verified_pot": true,
-        "verify_ms": 0.016082999999999997
+        "verify_ms": 0.020292
       },
       "generated": 32,
       "generated_after_dedup": 164,
@@ -1114,14 +1114,14 @@
       ],
       "decision": {
         "candidates": 32,
-        "gen_ms": 0.271625,
-        "micro_ms": 0.030875,
+        "gen_ms": 0.268542,
+        "micro_ms": 0.033292,
         "score": 1.327506371071815,
         "scratch": false,
         "sim_evals": 23,
-        "total_ms": 0.32699999999999996,
+        "total_ms": 0.32691699999999996,
         "verified_pot": true,
-        "verify_ms": 0.023333
+        "verify_ms": 0.024
       },
       "generated": 32,
       "generated_after_dedup": 221,
@@ -2007,14 +2007,14 @@
       ],
       "decision": {
         "candidates": 32,
-        "gen_ms": 0.048209,
-        "micro_ms": 0.010417000000000001,
+        "gen_ms": 0.047167,
+        "micro_ms": 0.01025,
         "score": 1.5,
         "scratch": false,
         "sim_evals": 23,
-        "total_ms": 0.067791,
+        "total_ms": 0.06708299999999999,
         "verified_pot": true,
-        "verify_ms": 0.00825
+        "verify_ms": 0.008792
       },
       "generated": 32,
       "generated_after_dedup": 73,

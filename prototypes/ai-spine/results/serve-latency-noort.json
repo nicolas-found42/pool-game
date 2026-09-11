@@ -4,54 +4,54 @@
   "golden": null,
   "latency_ms": {
     "encode": {
-      "max": 0.035542,
-      "mean": 0.0015122233333333276,
-      "min": 0.0006670000000000001,
+      "max": 0.0012079999999999999,
+      "mean": 0.00027375499999999814,
+      "min": 0.00020800000000000001,
       "n": 600,
       "note": "min is the least-contended sample: this box was shared with other agent workloads, so min/p50 are the useful figures and p99/max are upper bounds",
-      "p50": 0.0011250000000000001,
-      "p90": 0.002125,
-      "p99": 0.007083
+      "p50": 0.00025,
+      "p90": 0.000292,
+      "p99": 0.000458
     },
     "generate": {
-      "max": 25.880625000000002,
-      "mean": 0.4986250133333332,
-      "min": 0.237542,
+      "max": 0.159,
+      "mean": 0.09891331999999986,
+      "min": 0.08524999999999999,
       "n": 600,
       "note": "min is the least-contended sample: this box was shared with other agent workloads, so min/p50 are the useful figures and p99/max are upper bounds",
-      "p50": 0.309666,
-      "p90": 0.46570900000000004,
-      "p99": 4.134583
+      "p50": 0.09737499999999999,
+      "p90": 0.106625,
+      "p99": 0.123333
     },
     "inference": {
-      "max": 0.024834,
-      "mean": 0.00013277500000000015,
+      "max": 0.000167,
+      "mean": 1.9095000000000094e-05,
       "min": 0.0,
       "n": 600,
       "note": "min is the least-contended sample: this box was shared with other agent workloads, so min/p50 are the useful figures and p99/max are upper bounds",
-      "p50": 8.3e-05,
-      "p90": 0.000125,
-      "p99": 0.000292
+      "p50": 0.0,
+      "p90": 4.2e-05,
+      "p99": 4.2e-05
     },
     "select": {
-      "max": 0.00025,
-      "mean": 5.752166666666688e-05,
-      "min": 4.1e-05,
+      "max": 8.3e-05,
+      "mean": 1.7088333333333415e-05,
+      "min": 0.0,
       "n": 600,
       "note": "min is the least-contended sample: this box was shared with other agent workloads, so min/p50 are the useful figures and p99/max are upper bounds",
-      "p50": 4.2e-05,
-      "p90": 8.4e-05,
-      "p99": 0.000166
+      "p50": 0.0,
+      "p90": 4.2e-05,
+      "p99": 4.2e-05
     },
     "total": {
-      "max": 25.885458,
-      "mean": 0.5010992266666668,
-      "min": 0.238875,
+      "max": 0.160667,
+      "mean": 0.09944722500000003,
+      "min": 0.08570900000000001,
       "n": 600,
       "note": "min is the least-contended sample: this box was shared with other agent workloads, so min/p50 are the useful figures and p99/max are upper bounds",
-      "p50": 0.311833,
-      "p90": 0.468125,
-      "p99": 4.139541
+      "p50": 0.097958,
+      "p90": 0.107125,
+      "p99": 0.12470800000000001
     }
   },
   "machine": {

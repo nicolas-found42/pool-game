@@ -11,13 +11,14 @@ fitted physics, no rules layer, and no shipping code anywhere.
   calibration, serve latency, candidate dump, ONNX golden vectors).
 - Hardware for **every** measurement in this document: **Apple M5, 10 cores, 16 GB RAM, macOS
   26.4.1 (aarch64)**, release build, single process, one `ort` intra-op thread.
-- **Measurement conditions, stated plainly:** this worktree ran beside two other agent workloads on
-  the same machine for the whole session, so the 1-minute load average sat between 13 and 48 on 10
-  cores while the runs were taken. Every published record is the **fastest of 5–6 runs**; the same
-  cells varied by up to ~2.3× across those runs. Treat every timing below as an **upper bound**, and
-  note that the SLO conclusion survives that pessimism (the worst p99 recorded under 5× CPU
-  oversubscription is still ~60× inside the 1 s budget). Nothing here is a clean-room benchmark.
-
+- **Measurement conditions, stated plainly:** this worktree ran beside two other agent workloads
+  on the same machine, so the 1-minute load average moved between 13 and 48 on 10 cores. Every
+  published record is the **fastest of a repeated series** (8 × `measure all`, 6 × each serve build).
+  The numbers below come from the quietest run of the series; across the loaded runs the same cells
+  were up to ~2.3× slower, so treat every timing as an **upper bound** and expect a re-pin on a truly
+  idle machine. The conclusions that matter (SLO headroom, cap saturation, binary size, golden
+  vectors) are unaffected — they hold with more margin on the loaded runs, and the shortest/longest
+  observed bands are recorded in §2.
 Labels: **measured** = read directly off a run recorded in `results/`; **derived** = arithmetic on
 measured values with the rule stated; **provisional** = not measured here, carried from #9 or
 needing measurement that is out of the prototype's scope.
@@ -27,11 +28,11 @@ needing measurement that is out of the prototype's scope.
 | Constant | Provisional | Pinned by this prototype | Label |
 |---|---|---|---|
 | Work-unit budget `B` (sim evals / decision) | — | **4–8** for quality (executed pot rate saturates: 0.63 → 0.93 (3-ball) and 0.70 → 0.88 (6-ball) at 4 evals, flat to 64); **16–24** recommended for the spec, bounded by the SLO at the real sim's per-shot cost | derived (quality) / provisional (real-sim bound) |
-| `R` / `C` (cushion contacts / intermediate balls) | 3 / 1 | Kept. Measured: rails cost 0.89 ms vs 0.05 ms per 15-ball generation at depth 3 vs 0 — cheap; forced success 0.625 (banks), 0.229 (kicks), 0.875 (combinations); **selection share 0 %** in the prototype's drills (direct pots and safeties always outscore them) | measured (cost, success, share) / provisional (that the caps bind on real racks) |
+| `R` / `C` (cushion contacts / intermediate balls) | 3 / 1 | Kept. Measured: rails cost 0.673 ms vs 0.034 ms per 15-ball generation at depth 3 vs 0 — cheap; forced success 0.625 (banks), 0.229 (kicks), 0.875 (combinations); **selection share 0 %** in the prototype's drills (direct pots and safeties always outscore them) | measured (cost, success, share) / provisional (that the caps bind on real racks) |
 | σ magnitudes per level (aim) | — | Measured easy-pot make rate vs aim σ (400 trials per point): 0 → 1.000, 0.5 mrad → 0.973, 1 mrad → 0.932, 2 mrad → 0.830, 4 mrad → 0.660, 8 mrad → 0.458, 16 mrad → 0.295. Level assignment **derived** from that curve: Pro 0.5 mrad (≥ 0.97), Advanced 1–2 mrad (0.83–0.93), Intermediate 4 mrad (0.66), Beginner 8–16 mrad (0.30–0.46) | measured (curve) / derived (assignment) |
 | σ for speed / spin a,b / elevation | — | Speed σ assumed at 2.5 × aim σ; **never measured** — the toy model has no spin or elevation to perturb | provisional |
 | Checkpoint fractions | 10 / 50 / 100 % | **Not pinnable from this prototype.** A 150k-step smoke run evaluated at those fractions degrades (mean return 6.899 / 4.405 / 3.324 on a fixed 100-episode eval); a 32k-step run of the same configuration is monotone (6.770 / 6.972 / 7.104). The fractions depend on where the real schedule plateaus, which nothing here establishes | provisional |
-| League `M` / `N` | order 8–16 | Sizing rule from measured throughput: a league round costs `M·N·shots_per_rack·(decision + shot)`. At the measured 0.27 ms decision and 8 shots/rack, `M·N = 16` is ~35 ms of CPU in the prototype; at the measured Python env throughput (1,209 steps/s) the same round is ~0.1 s. The binding term is the **real** sim's per-shot cost and whatever fraction of the training budget a round may take — `M·N` = 8–16 remains plausible, but it is an envelope argument, not a measurement | derived |
+| League `M` / `N` | order 8–16 | Sizing rule from measured throughput: a league round costs `M·N·shots_per_rack·(decision + shot)`. At the measured 0.16–0.31 ms decision and 8 shots/rack, `M·N = 16` is ~20–40 ms of CPU in the prototype; at the measured Python env throughput (1,209 steps/s) the same round is ~0.1 s. The binding term is the **real** sim's per-shot cost and whatever fraction of the training budget a round may take — `M·N` = 8–16 remains plausible, but it is an envelope argument, not a measurement | derived |
 | Net sizes, PPO hyperparameters | — | Smoke net: cand-branch `16→64→64`, ctx-branch `64→64→64`, combine `128→64→1`, value `64→64→1`; **30,210 params**, ONNX 91,668 B; PPO hyperparameters and throughput from §4 | measured |
 | Reward weights and normalization | — | **Not pinned, and shown to matter:** the drill reward needed one rebalance before PPO learned at all (the first shaping let the policy collapse into a bank-only safe game after ~8k steps; potting 2.0 vs legal-hit 0.05 fixed it). The spec's adjudication-driven reward (§9 §5) is a different object. Measured return range: mean 7.13, sd 0.34, 0.89 per shot | provisional |
 | Eval suite seeds and gate thresholds | provisional in #9 §9 | Seeds and measured anchor rates in §3; the `≥95 %` easy-pot gate is **attainable** — the scripted anchor scores 40/40 = 1.000 at zero noise and 0.973 at the Pro σ | measured (anchor) / derived (thresholds) |
@@ -45,27 +46,29 @@ maximum rail contacts in the constructions (`depth 0` = direct + combination + s
 
 | Balls | Rail depth | Generation | Constructions/s | Candidates kept (after LOS) | After dedup | Banks kept (1/2/3 rails) | Kicks kept (1/2/3 rails) |
 |---|---|---|---|---|---|---|---|
-| 3 | 0 | 0.008 ms | 8.8 M | 22 | 22 | — | — |
-| 3 | 1 | 0.026 ms | 8.1 M | 56 | 55 | 12 / — / — | 21 / — / — |
-| 3 | 2 | 0.078 ms | 8.3 M | 119 | 117 | 12 / 18 / — | 21 / 44 / — |
-| 3 | 3 | 0.189 ms | 10.3 M | 168 | 165 | 12 / 18 / 13 | 21 / 44 / 35 |
-| 6 | 0 | 0.010 ms | 24.0 M | 29 | 29 | — | — |
-| 6 | 1 | 0.042 ms | 12.2 M | 72 | 72 | 13 / — / — | 29 / — / — |
-| 6 | 2 | 0.137 ms | 10.1 M | 148 | 146 | 13 / 20 / — | 29 / 55 / — |
-| 6 | 3 | 0.310 ms | 12.8 M | 200 | 197 | 13 / 20 / 12 | 29 / 55 / 39 |
-| 15 | 0 | 0.038 ms | 36.1 M | 42 | 42 | — | — |
-| 15 | 1 | 0.106 ms | 19.7 M | 74 | 74 | 8 / — / — | 23 / — / — |
-| 15 | 2 | 0.308 ms | 13.8 M | 118 | 117 | 8 / 8 / — | 23 / 36 / — |
-| 15 | 3 | 0.744 ms | 14.4 M | 142 | 140 | 8 / 8 / 2 | 23 / 36 / 20 |
+| 3 | 0 | 0.007 ms | 10.4 M | 22 | 22 | — | — |
+| 3 | 1 | 0.026 ms | 8.2 M | 56 | 55 | 12 / — / — | 21 / — / — |
+| 3 | 2 | 0.074 ms | 8.8 M | 119 | 117 | 12 / 18 / — | 21 / 44 / — |
+| 3 | 3 | 0.177 ms | 11.0 M | 168 | 165 | 12 / 18 / 13 | 21 / 44 / 35 |
+| 6 | 0 | 0.009 ms | 26.4 M | 29 | 29 | — | — |
+| 6 | 1 | 0.039 ms | 13.3 M | 72 | 72 | 13 / — / — | 29 / — / — |
+| 6 | 2 | 0.128 ms | 10.8 M | 148 | 146 | 13 / 20 / — | 29 / 55 / — |
+| 6 | 3 | 0.295 ms | 13.5 M | 200 | 197 | 13 / 20 / 12 | 29 / 55 / 39 |
+| 15 | 0 | 0.034 ms | 40.6 M | 42 | 42 | — | — |
+| 15 | 1 | 0.121 ms | 17.2 M | 74 | 74 | 8 / — / — | 23 / — / — |
+| 15 | 2 | 0.295 ms | 14.4 M | 118 | 117 | 8 / 8 / — | 23 / 36 / — |
+| 15 | 3 | 0.673 ms | 15.9 M | 142 | 140 | 8 / 8 / 2 | 23 / 36 / 20 |
 
-Reading: the rail families cost ~20× the direct-only generation at full rack (0.744 ms vs 0.038 ms)
+Loaded-run band for the heaviest cell (15 balls, depth 3): 0.673–0.886 ms across the series.
+
+Reading: the rail families cost ~20× the direct-only generation at full rack (0.673 ms vs 0.034 ms)
 and are still under a millisecond; a crowded table prunes hard (banks 42 → 20 kept at 6 balls;
 20 → 11 at 15 balls) because line-of-sight kills multi-leg paths first. Per-class offered rates at
 6 balls (untruncated, 60 positions): direct 5.9, bank 42.5, kick 109.8, combination 6.0, safety
 escape 7.9, roll-up 3.8, two-way 1.0 candidates per position.
 
-**Top-K shortlist cost.** Sort + truncate to K = 6: mean **0.18 µs**, p50 0.17 µs, p99 0.42 µs — free
-next to a sim evaluation (a sim shot is ~3.5 µs).
+**Top-K shortlist cost.** Sort + truncate to K = 6: mean **0.24 µs**, p50 0.08 µs, p99 1.33 µs — free
+next to a sim evaluation (a sim shot is ~2.5 µs).
 
 ### 2.2 Sim verification + micro refinement per decision; the 1 s SLO
 
@@ -74,18 +77,20 @@ Per decision, 60 (3-ball) / 40 (6-ball) seeded drill positions per row, scripted
 
 | Balls | `B` (cap) | Total mean | Total p99 | Generate | Verify | Micro | Sim evals used | Executed pot |
 |---|---|---|---|---|---|---|---|---|
-| 3 | 0 | 0.157 ms | 0.201 | 0.156 | 0 | 0 | 0 | 0.633 |
-| 3 | 4 | 0.156 ms | 0.164 | 0.148 | 0.007 | 0 | 4 | **0.933** |
-| 3 | 8 | 0.165 ms | 0.181 | 0.150 | 0.010 | 0.003 | 8 | 0.933 |
-| 3 | 16 | 0.172 ms | 0.184 | 0.148 | 0.009 | 0.013 | 16 | 0.933 |
-| 3 | 24 | 0.180 ms | 0.200 | 0.148 | 0.010 | 0.021 | 21 | 0.933 |
-| 3 | 64 | 0.176 ms | 0.185 | 0.147 | 0.009 | 0.019 | 21 | 0.933 |
-| 6 | 0 | 0.282 ms | 0.317 | 0.281 | 0 | 0 | 0 | 0.700 |
-| 6 | 4 | 0.278 ms | 0.310 | 0.265 | 0.012 | 0 | 4 | **0.875** |
-| 6 | 8 | 0.287 ms | 0.306 | 0.262 | 0.018 | 0.006 | 8 | 0.875 |
-| 6 | 16 | 0.305 ms | 0.340 | 0.263 | 0.017 | 0.024 | 16 | 0.875 |
-| 6 | 24 | 0.321 ms | 0.345 | 0.264 | 0.018 | 0.037 | 21 | 0.875 |
-| 6 | 64 | 0.318 ms | 0.346 | 0.263 | 0.017 | 0.037 | 21 | 0.875 |
+| 3 | 0 | 0.139 ms | 0.146 | 0.138 | 0 | 0 | 0 | 0.633 |
+| 3 | 4 | 0.144 ms | 0.159 | 0.137 | 0.006 | 0 | 4 | **0.933** |
+| 3 | 8 | 0.146 ms | 0.153 | 0.134 | 0.008 | 0.003 | 8 | 0.933 |
+| 3 | 16 | 0.155 ms | 0.166 | 0.133 | 0.007 | 0.013 | 16 | 0.933 |
+| 3 | 24 | 0.160 ms | 0.170 | 0.133 | 0.007 | 0.018 | 21 | 0.933 |
+| 3 | 64 | 0.161 ms | 0.179 | 0.135 | 0.007 | 0.017 | 21 | 0.933 |
+| 6 | 0 | 0.269 ms | 0.319 | 0.268 | 0 | 0 | 0 | 0.700 |
+| 6 | 4 | 0.275 ms | 0.297 | 0.262 | 0.012 | 0 | 4 | **0.875** |
+| 6 | 8 | 0.284 ms | 0.308 | 0.261 | 0.016 | 0.005 | 8 | 0.875 |
+| 6 | 16 | 0.301 ms | 0.320 | 0.262 | 0.016 | 0.024 | 16 | 0.875 |
+| 6 | 24 | 0.314 ms | 0.347 | 0.261 | 0.016 | 0.036 | 21 | 0.875 |
+| 6 | 64 | 0.318 ms | 0.352 | 0.261 | 0.018 | 0.037 | 21 | 0.875 |
+
+Loaded-run band for the same cells: 3-ball p99 0.15–0.39 ms, 6-ball p99 0.30–0.82 ms across the series.
 
 - **The SLO holds with a very large margin on this machine**: worst p99 in *this* run is 0.35 ms
   against the 1 s budget. In the most contended run of the series (load average 48) the same 6-ball
@@ -93,13 +98,14 @@ Per decision, 60 (3-ball) / 40 (6-ball) seeded drill positions per row, scripted
   under a 5× oversubscribed CPU.
 - Micro refinement costs **~20–40 µs** and does not change the outcome in these drills (the top
   seeds pot without it) — its value is robustness, not measurable quality here.
-- Generation dominates: 0.15 ms of the 0.18 ms decision at 3 balls, 0.26 ms of 0.32 ms at 6 balls.
+- Generation dominates: 0.13 ms of the 0.16 ms decision at 3 balls, 0.26 ms of 0.31 ms at 6 balls —
+  and generation is pure geometry, so it is the one cost the real sim cannot inflate.
 - One micro-refinement pass is 15 sim evaluations; with the default cap 24 the shortlist takes 6.
 - **Reproducibility of the harness itself:** two full `measure all` runs produce byte-identical
   candidate dumps and eval tables; only wall-clock fields differ.
 
-**Sim cost per shot (the unit that scales the SLO).** Toy model: **mean 3.55 µs per shot**
-(p50 2.67, p90 4.83), **9.2 events per shot** (p50 8, p90 14, p99 21) — i.e. ~0.4 µs per event. The real event-driven sim adds spin modes, jaw collisions, simultaneity groups and the
+**Sim cost per shot (the unit that scales the SLO).** Toy model: **mean 2.48 µs per shot**
+(p50 2.29, p90 4.08), **9.2 events per shot** (p50 8, p90 14, p99 21) — i.e. ~0.27 µs per event. The real event-driven sim adds spin modes, jaw collisions, simultaneity groups and the
 per-event solving that goes with them; if it lands even 100× more expensive per event (≈ 0.25 ms
 per shot), the recommended `B = 24` still costs ≈ 6 ms per decision and the SLO remains two orders
 of magnitude away. `[INFERENCE]` — the multiplier is a guess; the *measured* facts are the toy
@@ -121,12 +127,12 @@ here and for the later human playtest (#9 §8's debug view).
 | ORT (Rust, in-process) vs Python golden vectors | max abs error **4.77e-7** at k = 5 — the same error the Python side's own ORT run reports (4.77e-7), i.e. the Rust path reproduces the export bit-for-bit at f32 granularity |
 | ORT (Python) golden checks | 4.77e-7 at K = 5, 1.91e-6 at K = 9 (dynamic candidate axis verified) |
 | Session load | 21–34 ms, once at startup |
-| Inference per decision (32 candidates) | min **0.035 ms**, p50 0.056, p99 2.88 ms under load (0.027 / 0.066 on a lightly loaded box) |
-| Generation per decision (same loop) | min 0.235 ms, p50 0.317 |
+| Inference per decision (32 candidates) | **min 0.014 ms, p50 0.016, p90 0.017, p99 0.022 ms**, max 0.034 (loaded-run band: p50 0.039–0.056, p99 0.70–2.9) |
+| Generation per decision (same loop) | min 0.086, p50 0.097 ms |
 | Encoding per decision | p50 0.0013 ms |
-| Total per-decision path, ORT build | min **0.273 ms**, p50 0.378, p99 16.5 ms under load |
-| Total per-decision path, fallback build | min **0.239 ms**, p50 0.312, p99 4.14 ms under load |
-| ORT's own contribution to the decision | **+0.035 ms** at the median-of-minima (0.273 vs 0.239) — the policy network is noise next to generation |
+| Total per-decision path, ORT build | **min 0.102, p50 0.116, p90 0.123, p99 0.140 ms**, max 0.173 |
+| Total per-decision path, fallback build (same binary, no ORT) | min 0.086, p50 0.098, p90 0.107, **p99 0.125 ms**, max 0.161 |
+| ORT's own contribution to the decision | **+0.017 ms** at p50 (0.116 vs 0.098) — the policy network is noise next to generation |
 | **Binary size**, same binary without ONNX Runtime | **696,784 B** |
 | **Binary size**, with ONNX Runtime (static, `ort` 2.0.0-rc.13) | **26,552,480 B** |
 | **Delta** | **+25,855,696 B (+25.86 MB, ×38.1)** |
@@ -179,7 +185,7 @@ Commands: `prototypes/ai-spine/python/README.md`. Raw record:
 | Quantity | Value |
 |---|---|
 | Env | shot-granularity Gymnasium, 3 object balls + cue, `max_shots = 8`, obs 64, cand 16, K_max 32, `Discrete(32)` + mask |
-| Env throughput | **1,209 env steps/s** single process (~153 episodes/s, mean episode 7.9 shots) with uniformly random legal actions; the prototype env is pure Python. The shipped env is #11's pipe to the headless binary, where one decision costs 0.27 ms of Rust — so this number measures the prototype's inner loop, not the design |
+| Env throughput | **1,209 env steps/s** single process (~153 episodes/s, mean episode 7.9 shots) with uniformly random legal actions; the prototype env is pure Python. The shipped env is #11's pipe to the headless binary, where one decision costs 0.10–0.14 ms of Rust — so this number measures the prototype's inner loop, not the design |
 | Policy | `MaskablePPO` (sb3-contrib 2.9.0) with a custom per-candidate shared-scoring policy head; 8 envs, `n_steps 64`, `batch 256`, `n_epochs 10`, `lr 1e-4`, `ent_coef 0.005`, `target_kl 0.03`, `seed 42`, CPU |
 | Steps/s | **1,501** (32,256 steps in 21.5 s) |
 | Drills | 3-ball open table; episode = one rack, reward `+2.0` per ball potted, `+1.0` clear, `+0.05` legal hit, `+0.10 × progress`, `−1.0` scratch, `−0.10` illegal |
@@ -190,7 +196,7 @@ Commands: `prototypes/ai-spine/python/README.md`. Raw record:
 | Return distribution (final policy, 100 episodes) | mean 7.126, sd 0.337, min 6.206, max 7.408 → **0.891 reward per shot** |
 | AI decisions/s (policy forward pass, Python) | 40,153/s — the net is not the constraint; the env/sim is |
 | ONNX export of the trained policy | `results/onnx/policy-smoke.onnx`, 91,668 B, sha256 `1553dac9…b250f`, opset 17, 30,210 scoring params |
-| Scripted planner decisions/s (Rust, incl. sim-in-the-loop micro) | **~9,400/s** (3-ball clearance drill, 0.106 ms/decision mean) |
+| Scripted planner decisions/s (Rust, incl. sim-in-the-loop micro) | **~8,800/s** (3-ball clearance drill, 0.113 ms/decision mean) |
 
 Note the asymmetry: the learned policy's *decisions* are ~4× cheaper than the scripted planner's,
 because the planner pays for candidate generation and sim verification while the policy pays for a
