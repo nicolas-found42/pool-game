@@ -1,0 +1,13 @@
+# Build outputs
+target/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+
+# Node
+node_modules/
+
+# macOS
+.DS_Store
