@@ -226,13 +226,15 @@
           "additionalProperties": false,
           "properties": {
             "a": {
-              "type": "number"
+              "type": "number",
+              "description": "Right/left tip offset as a fraction of the miscue envelope: a > 0 is the shooter's right, a < 0 the shooter's left."
             },
             "b": {
-              "type": "number"
+              "type": "number",
+              "description": "Above/below-centre tip offset as a fraction of the miscue envelope: b > 0 is above centre (the follow side at zero elevation), b < 0 below it (the draw side)."
             }
           },
-          "description": "Spin offsets in tip radii; the miscue envelope is enforced at the input boundary."
+          "description": "Cue-tip contact offset in the plane perpendicular to the cue axis, as a fraction of the miscue envelope: 1.0 is the limit, so |(a, b)| <= 1. The b axis is the world-up direction projected into that plane; a completes the frame. Enforced at the input boundary (offset_mm = rho_max * value, rho_max = R*mu/sqrt(1+mu^2)): the comparison carries a 1e-3 mm tolerance on the tip offset, so a value authored exactly at the limit commits; anything past it is an input error and is never simulated."
         },
         "elevation": {
           "type": "number",

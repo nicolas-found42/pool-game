@@ -80,7 +80,7 @@ The four conditions (WPA 4.8) under which the shooter loses the rack outright. T
 The incoming player's right to place the cue ball — anywhere on the playing surface after a standard foul, or above the head string after a break foul. The rules layer validates the placement.
 
 **Driven to a rail**:
-Per-ball predicate for a legal shot: the ball touched a cushion after contact. A ball frozen to a rail does not count unless it leaves and returns; a ball pocketed or driven off the table counts.
+Per-ball predicate for a legal shot: the ball touched a cushion after contact. A ball frozen to a rail does not count unless it leaves and returns, which the rail contact carries as first-class fields (see **Observation contract**); a ball pocketed or driven off the table counts.
 
 **Spotting**:
 Placing a ball on the foot spot. Only the 8 is ever spotted, and only from the break.
@@ -97,7 +97,7 @@ The headless, deterministic physics crate: ball motion and contacts only. It rep
 The verdict the rules layer emits for one shot: the foul reasons with the facts they were decided from, the balls pocketed, the state transition, and the terminal result when there is one.
 
 **Observation contract**:
-The set of facts the simulation must expose for adjudication to be possible at all: contacts in order, pocket and off-table events, the resting state, and the state at shot start.
+The set of facts the simulation must expose for adjudication to be possible at all: contacts in order — each rail contact carrying whether the ball was frozen to that rail at shot start and whether it has left it since — pocket and off-table events, the resting state (including any ball at rest over a pocket mouth on another ball's support), and the state at shot start.
 
 **Deviation**:
 A departure from the WPA text, listed with its rule number and reason. Deviations are never silent.
