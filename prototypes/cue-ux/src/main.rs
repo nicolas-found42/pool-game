@@ -233,6 +233,19 @@ fn main() {
 
     if scripted {
         let path = args.screenshot.clone().unwrap();
+        let dir_mode = args.state == "all";
+        // `save_to_disk` does not create directories: make the output directory first.
+        let out_dir = if dir_mode {
+            path.clone()
+        } else {
+            path.parent().map(|p| p.to_path_buf()).unwrap_or_default()
+        };
+        if !out_dir.as_os_str().is_empty() {
+            if let Err(e) = std::fs::create_dir_all(&out_dir) {
+                eprintln!("[cue-ux] cannot create {}: {e}", out_dir.display());
+                std::process::exit(2);
+            }
+        }
         let indices: Vec<usize> = if args.state == "all" {
             (0..presets.len()).collect()
         } else {
@@ -244,7 +257,7 @@ fn main() {
             frames: args.frames,
             settle: args.frames,
             out: path.clone(),
-            dir_mode: args.state == "all",
+            dir_mode,
         });
         app.insert_resource(ScriptPhase(Phase::Settle));
         println!(

@@ -72,6 +72,9 @@ cargo run -- --screenshot shots/07-spin-draw-max.png \
              --state 07-spin-draw-max --frames 30           # one state -> one named file
 ```
 
+The output directory (dir form) or the file's parent directory (file form) is created if it
+does not exist.
+
 State names (`--state <name>`, or `all`; an unknown name exits 2 and lists the valid ones):
 
 | file | what it is for |
