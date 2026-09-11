@@ -126,14 +126,14 @@ here and for the later human playtest (#9 §8's debug view).
 | Model | `policy-smoke.onnx` (the trained smoke policy, exported from the run's `final.zip`), 91,668 B, sha256 `1553dac9…b250f`, opset 17, 30,210 params; the untrained checkpoint `policy-scratch.onnx` (sha256 `5220b8f2…ebf2e5`, byte-identical architecture) is kept beside it |
 | ORT (Rust, in-process) vs Python golden vectors | max abs error **4.77e-7** at k = 5 — the same error the Python side's own ORT run reports (4.77e-7), i.e. the Rust path reproduces the export bit-for-bit at f32 granularity |
 | ORT (Python) golden checks | 4.77e-7 at K = 5, 1.91e-6 at K = 9 (dynamic candidate axis verified) |
-| Session load | 21–34 ms, once at startup |
+| Session load | 29.2 ms, once at startup |
 | Policy path, cross-implementation | driving the SB3 policy on 20 live episodes, the Rust ORT masked argmax agreed on **83/83 shots**, max logit abs error 2.4e-6 — the strongest end-to-end check of the export, on top of the golden vectors |
-| Inference per decision (32 candidates) | **min 0.014 ms, p50 0.016, p90 0.017, p99 0.022 ms**, max 0.034 (loaded-run band: p50 0.039–0.056, p99 0.70–2.9) |
+| Inference per decision (32 candidates) | **min 0.014 ms, p50 0.016, p90 0.017, p99 0.022 ms**, max 0.038 (loaded-run band: p50 0.039–0.056, p99 0.70–2.9) |
 | Generation per decision (same loop) | min 0.086, p50 0.097 ms |
-| Encoding per decision | p50 0.0013 ms |
-| Total per-decision path, ORT build | **min 0.102, p50 0.116, p90 0.123, p99 0.140 ms**, max 0.173 |
-| Total per-decision path, fallback build (same binary, no ORT) | min 0.086, p50 0.098, p90 0.107, **p99 0.125 ms**, max 0.161 |
-| ORT's own contribution to the decision | **+0.017 ms** at p50 (0.116 vs 0.098) — the policy network is noise next to generation |
+| Encoding per decision | p50 0.00025 ms |
+| Total per-decision path, ORT build | **min 0.102, p50 0.114, p90 0.120, p99 0.139 ms**, max 0.191 |
+| Total per-decision path, fallback build (same binary, no ORT) | min 0.087, p50 0.098, p90 0.109, **p99 0.127 ms**, max 0.163 |
+| ORT's own contribution to the decision | **+0.015 ms** at p50 (0.114 vs 0.098) — the policy network is noise next to generation |
 | **Binary size**, same binary without ONNX Runtime | **696,784 B** |
 | **Binary size**, with ONNX Runtime (static, `ort` 2.0.0-rc.13) | **26,552,480 B** |
 | **Delta** | **+25,855,696 B (+25.86 MB, ×38.1)** |
@@ -206,7 +206,7 @@ forward pass over candidates someone else generated. Both sit far under the SLO.
 ## 5. What could not be measured, and the sensitivity
 
 1. **Anything involving the real physics.** No spin, throw, squirt, sliding phase, jaw geometry or
-   simultaneity: the toy's per-shot cost (3.55 µs, 9.2 events) is a floor, and the SLO margin scales
+   simultaneity: the toy's per-shot cost (2.48 µs, 9.2 events) is a floor, and the SLO margin scales
    linearly with whatever the real sim costs per shot. The work-unit cap is the right budget unit
    precisely because of this.
 2. **Rack-level quality.** Rack win rate, groups, safeties-as-a-plan and the 8-ball endgame need the
