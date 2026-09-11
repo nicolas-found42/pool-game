@@ -1,0 +1,574 @@
+{
+  "machine": {
+    "arch": "aarch64",
+    "cpu": "Apple M5",
+    "mem_bytes": 17179869184,
+    "ncpu": 10,
+    "os": "macOS 26.4.1",
+    "profile": "release"
+  },
+  "note": "One generation = one full decision's candidate set for the position. 'rail_depth' 0 = direct+combo+safety only; the rail chains are enumerated for banks and kicks at depth >= 1. Counts are pre-dedup 'kept' (post line-of-sight) and 'after_dedup' (post contact-point dedup).",
+  "rows": [
+    {
+      "after_dedup_per_s": 3339281.162375733,
+      "after_dedup_total": 262,
+      "balls": 3,
+      "balls_label": "3-ball",
+      "constructed_per_s": 10400203.925567167,
+      "constructed_total": 816,
+      "counts_total": {
+        "bank": 0,
+        "combo": 38,
+        "direct": 60,
+        "kick": 0,
+        "safety_escape": 104,
+        "safety_rollup": 48,
+        "safety_twoway": 12
+      },
+      "kept_per_s": 3339281.162375733,
+      "kept_total": 262,
+      "ms": {
+        "max": 0.016125,
+        "mean": 0.0065383333333333335,
+        "n": 12,
+        "p50": 0.0052499999999999995,
+        "p90": 0.010541,
+        "p99": 0.016125
+      },
+      "per_class_per_s": {
+        "bank": 0.0,
+        "combo": 484323.22202396125,
+        "direct": 764720.8768799388,
+        "kick": 0.0,
+        "safety_escape": 1325516.186591894,
+        "safety_rollup": 611776.701503951,
+        "safety_twoway": 152944.17537598775
+      },
+      "rail_depth": 0,
+      "rail_depth_histogram": {
+        "bank_1": 0,
+        "bank_2": 0,
+        "bank_3": 0,
+        "kick_1": 0,
+        "kick_2": 0,
+        "kick_3": 0
+      },
+      "reps": 12
+    },
+    {
+      "after_dedup_per_s": 2156458.3495473065,
+      "after_dedup_total": 665,
+      "balls": 3,
+      "balls_label": "3-ball",
+      "constructed_per_s": 8249669.234959922,
+      "constructed_total": 2544,
+      "counts_total": {
+        "bank": 147,
+        "combo": 38,
+        "direct": 60,
+        "kick": 257,
+        "safety_escape": 104,
+        "safety_rollup": 48,
+        "safety_twoway": 12
+      },
+      "kept_per_s": 2159701.144057904,
+      "kept_total": 666,
+      "ms": {
+        "max": 0.03975,
+        "mean": 0.025698000000000002,
+        "n": 12,
+        "p50": 0.024166,
+        "p90": 0.030833000000000003,
+        "p99": 0.03975
+      },
+      "per_class_per_s": {
+        "bank": 476690.79305782565,
+        "combo": 123226.19140270323,
+        "direct": 194567.6706358472,
+        "kick": 833398.1892235455,
+        "safety_escape": 337250.62910213514,
+        "safety_rollup": 155654.13650867777,
+        "safety_twoway": 38913.53412716944
+      },
+      "rail_depth": 1,
+      "rail_depth_histogram": {
+        "bank_1": 147,
+        "bank_2": 0,
+        "bank_3": 0,
+        "kick_1": 257,
+        "kick_2": 0,
+        "kick_3": 0
+      },
+      "reps": 12
+    },
+    {
+      "after_dedup_per_s": 1595696.489241223,
+      "after_dedup_total": 1409,
+      "balls": 3,
+      "balls_label": "3-ball",
+      "constructed_per_s": 8751981.8799547,
+      "constructed_total": 7728,
+      "counts_total": {
+        "bank": 369,
+        "combo": 38,
+        "direct": 60,
+        "kick": 792,
+        "safety_escape": 104,
+        "safety_rollup": 48,
+        "safety_twoway": 12
+      },
+      "kept_per_s": 1611551.5288788222,
+      "kept_total": 1423,
+      "ms": {
+        "max": 0.08112499999999999,
+        "mean": 0.07358333333333332,
+        "n": 12,
+        "p50": 0.074458,
+        "p90": 0.079542,
+        "p99": 0.08112499999999999
+      },
+      "per_class_per_s": {
+        "bank": 417893.5447338618,
+        "combo": 43035.10758776897,
+        "direct": 67950.16987542469,
+        "kick": 896942.2423556059,
+        "safety_escape": 117780.29445073612,
+        "safety_rollup": 54360.13590033975,
+        "safety_twoway": 13590.033975084938
+      },
+      "rail_depth": 2,
+      "rail_depth_histogram": {
+        "bank_1": 147,
+        "bank_2": 222,
+        "bank_3": 0,
+        "kick_1": 257,
+        "kick_2": 535,
+        "kick_3": 0
+      },
+      "reps": 12
+    },
+    {
+      "after_dedup_per_s": 934466.3679198873,
+      "after_dedup_total": 1985,
+      "balls": 3,
+      "balls_label": "3-ball",
+      "constructed_per_s": 10959383.901851373,
+      "constructed_total": 23280,
+      "counts_total": {
+        "bank": 531,
+        "combo": 38,
+        "direct": 60,
+        "kick": 1218,
+        "safety_escape": 104,
+        "safety_rollup": 48,
+        "safety_twoway": 12
+      },
+      "kept_per_s": 946706.2296659412,
+      "kept_total": 2011,
+      "ms": {
+        "max": 0.191084,
+        "mean": 0.17701725000000001,
+        "n": 12,
+        "p50": 0.17512499999999998,
+        "p90": 0.18920800000000002,
+        "p99": 0.191084
+      },
+      "per_class_per_s": {
+        "bank": 249975.63796748623,
+        "combo": 17889.028705771143,
+        "direct": 28245.834798586016,
+        "kick": 573390.4464112961,
+        "safety_escape": 48959.446984215756,
+        "safety_rollup": 22596.667838868812,
+        "safety_twoway": 5649.166959717203
+      },
+      "rail_depth": 3,
+      "rail_depth_histogram": {
+        "bank_1": 147,
+        "bank_2": 222,
+        "bank_3": 162,
+        "kick_1": 257,
+        "kick_2": 535,
+        "kick_3": 426
+      },
+      "reps": 12
+    },
+    {
+      "after_dedup_per_s": 3332854.4749317626,
+      "after_dedup_total": 348,
+      "balls": 6,
+      "balls_label": "6-ball",
+      "constructed_per_s": 26432983.766700186,
+      "constructed_total": 2760,
+      "counts_total": {
+        "bank": 0,
+        "combo": 96,
+        "direct": 89,
+        "kick": 0,
+        "safety_escape": 104,
+        "safety_rollup": 47,
+        "safety_twoway": 12
+      },
+      "kept_per_s": 3332854.4749317626,
+      "kept_total": 348,
+      "ms": {
+        "max": 0.011333,
+        "mean": 0.008701249999999999,
+        "n": 12,
+        "p50": 0.008291999999999999,
+        "p90": 0.011083,
+        "p99": 0.011333
+      },
+      "per_class_per_s": {
+        "bank": 0.0,
+        "combo": 919408.1310156586,
+        "direct": 852367.9547957669,
+        "kick": 0.0,
+        "safety_escape": 996025.4752669635,
+        "safety_rollup": 450126.8974764162,
+        "safety_twoway": 114926.01637695733
+      },
+      "rail_depth": 0,
+      "rail_depth_histogram": {
+        "bank_1": 0,
+        "bank_2": 0,
+        "bank_3": 0,
+        "kick_1": 0,
+        "kick_2": 0,
+        "kick_3": 0
+      },
+      "reps": 12
+    },
+    {
+      "after_dedup_per_s": 1864296.367407814,
+      "after_dedup_total": 870,
+      "balls": 6,
+      "balls_label": "6-ball",
+      "constructed_per_s": 13320076.114720656,
+      "constructed_total": 6216,
+      "counts_total": {
+        "bank": 164,
+        "combo": 96,
+        "direct": 89,
+        "kick": 358,
+        "safety_escape": 104,
+        "safety_rollup": 47,
+        "safety_twoway": 12
+      },
+      "kept_per_s": 1864296.367407814,
+      "kept_total": 870,
+      "ms": {
+        "max": 0.044125000000000004,
+        "mean": 0.03888866666666666,
+        "n": 12,
+        "p50": 0.038416,
+        "p90": 0.040458,
+        "p99": 0.044125000000000004
+      },
+      "per_class_per_s": {
+        "bank": 351430.579603312,
+        "combo": 205715.46123120704,
+        "direct": 190715.37551643152,
+        "kick": 767147.2408413762,
+        "safety_escape": 222858.41633380763,
+        "safety_rollup": 100714.86122777844,
+        "safety_twoway": 25714.43265390088
+      },
+      "rail_depth": 1,
+      "rail_depth_histogram": {
+        "bank_1": 164,
+        "bank_2": 0,
+        "bank_3": 0,
+        "kick_1": 358,
+        "kick_2": 0,
+        "kick_3": 0
+      },
+      "reps": 12
+    },
+    {
+      "after_dedup_per_s": 1138624.813716439,
+      "after_dedup_total": 1755,
+      "balls": 6,
+      "balls_label": "6-ball",
+      "constructed_per_s": 10759517.897819614,
+      "constructed_total": 16584,
+      "counts_total": {
+        "bank": 405,
+        "combo": 96,
+        "direct": 89,
+        "kick": 1026,
+        "safety_escape": 104,
+        "safety_rollup": 47,
+        "safety_twoway": 12
+      },
+      "kept_per_s": 1154195.7513399117,
+      "kept_total": 1779,
+      "ms": {
+        "max": 0.137375,
+        "mean": 0.12844441666666667,
+        "n": 12,
+        "p50": 0.130458,
+        "p90": 0.135709,
+        "p99": 0.137375
+      },
+      "per_class_per_s": {
+        "bank": 262759.5723961013,
+        "combo": 62283.75049389068,
+        "direct": 57742.22702037782,
+        "kick": 665657.5834034566,
+        "safety_escape": 67474.06303504824,
+        "safety_rollup": 30493.086179300644,
+        "safety_twoway": 7785.468811736335
+      },
+      "rail_depth": 2,
+      "rail_depth_histogram": {
+        "bank_1": 164,
+        "bank_2": 241,
+        "bank_3": 0,
+        "kick_1": 358,
+        "kick_2": 668,
+        "kick_3": 0
+      },
+      "reps": 12
+    },
+    {
+      "after_dedup_per_s": 667388.0706358565,
+      "after_dedup_total": 2364,
+      "balls": 6,
+      "balls_label": "6-ball",
+      "constructed_per_s": 13462945.140644131,
+      "constructed_total": 47688,
+      "counts_total": {
+        "bank": 559,
+        "combo": 96,
+        "direct": 89,
+        "kick": 1496,
+        "safety_escape": 104,
+        "safety_rollup": 47,
+        "safety_twoway": 12
+      },
+      "kept_per_s": 678398.2799229963,
+      "kept_total": 2403,
+      "ms": {
+        "max": 0.317167,
+        "mean": 0.2951805833333333,
+        "n": 12,
+        "p50": 0.29291700000000004,
+        "p90": 0.301334,
+        "p99": 0.317167
+      },
+      "per_class_per_s": {
+        "bank": 157812.9997823366,
+        "combo": 27102.0536298825,
+        "direct": 25125.862219370232,
+        "kick": 422340.3357323356,
+        "safety_escape": 29360.558099039372,
+        "safety_rollup": 13268.71375629664,
+        "safety_twoway": 3387.7567037353124
+      },
+      "rail_depth": 3,
+      "rail_depth_histogram": {
+        "bank_1": 164,
+        "bank_2": 241,
+        "bank_3": 154,
+        "kick_1": 358,
+        "kick_2": 668,
+        "kick_3": 470
+      },
+      "reps": 12
+    },
+    {
+      "after_dedup_per_s": 1239928.6793023667,
+      "after_dedup_total": 500,
+      "balls": 15,
+      "balls_label": "full-rack",
+      "constructed_per_s": 40590305.245642275,
+      "constructed_total": 16368,
+      "counts_total": {
+        "bank": 0,
+        "combo": 272,
+        "direct": 82,
+        "kick": 0,
+        "safety_escape": 89,
+        "safety_rollup": 47,
+        "safety_twoway": 12
+      },
+      "kept_per_s": 1244888.3940195763,
+      "kept_total": 502,
+      "ms": {
+        "max": 0.039166,
+        "mean": 0.033604083333333326,
+        "n": 12,
+        "p50": 0.033207999999999994,
+        "p90": 0.0365,
+        "p99": 0.039166
+      },
+      "per_class_per_s": {
+        "bank": 0.0,
+        "combo": 674521.2015404875,
+        "direct": 203348.30340558814,
+        "kick": 0.0,
+        "safety_escape": 220707.30491582127,
+        "safety_rollup": 116553.29585442247,
+        "safety_twoway": 29758.2883032568
+      },
+      "rail_depth": 0,
+      "rail_depth_histogram": {
+        "bank_1": 0,
+        "bank_2": 0,
+        "bank_3": 0,
+        "kick_1": 0,
+        "kick_2": 0,
+        "kick_3": 0
+      },
+      "reps": 12
+    },
+    {
+      "after_dedup_per_s": 610683.6555275485,
+      "after_dedup_total": 886,
+      "balls": 15,
+      "balls_label": "full-rack",
+      "constructed_per_s": 17236994.195748232,
+      "constructed_total": 25008,
+      "counts_total": {
+        "bank": 104,
+        "combo": 272,
+        "direct": 82,
+        "kick": 282,
+        "safety_escape": 89,
+        "safety_rollup": 47,
+        "safety_twoway": 12
+      },
+      "kept_per_s": 612062.1739373172,
+      "kept_total": 888,
+      "ms": {
+        "max": 0.15395799999999998,
+        "mean": 0.12090275000000002,
+        "n": 12,
+        "p50": 0.11429099999999999,
+        "p90": 0.143667,
+        "p99": 0.15395799999999998
+      },
+      "per_class_per_s": {
+        "bank": 71682.9573079741,
+        "combo": 187478.50372854763,
+        "direct": 56519.254800518036,
+        "kick": 194371.09577739128,
+        "safety_escape": 61344.0692347086,
+        "safety_rollup": 32395.182629565214,
+        "safety_twoway": 8271.110458612395
+      },
+      "rail_depth": 1,
+      "rail_depth_histogram": {
+        "bank_1": 104,
+        "bank_2": 0,
+        "bank_3": 0,
+        "kick_1": 282,
+        "kick_2": 0,
+        "kick_3": 0
+      },
+      "reps": 12
+    },
+    {
+      "after_dedup_per_s": 398391.83251471544,
+      "after_dedup_total": 1408,
+      "balls": 15,
+      "balls_label": "full-rack",
+      "constructed_per_s": 14410013.669253854,
+      "constructed_total": 50928,
+      "counts_total": {
+        "bank": 201,
+        "combo": 272,
+        "direct": 82,
+        "kick": 719,
+        "safety_escape": 89,
+        "safety_rollup": 47,
+        "safety_twoway": 12
+      },
+      "kept_per_s": 402353.1149402879,
+      "kept_total": 1422,
+      "ms": {
+        "max": 0.32325000000000004,
+        "mean": 0.29451741666666664,
+        "n": 12,
+        "p50": 0.291083,
+        "p90": 0.314958,
+        "p99": 0.32325000000000004
+      },
+      "per_class_per_s": {
+        "bank": 56872.69768143309,
+        "combo": 76962.05855397912,
+        "direct": 23201.797064067232,
+        "kick": 203440.1474276139,
+        "safety_escape": 25182.43827685346,
+        "safety_rollup": 13298.591000136097,
+        "safety_twoway": 3395.384936204961
+      },
+      "rail_depth": 2,
+      "rail_depth_histogram": {
+        "bank_1": 104,
+        "bank_2": 97,
+        "bank_3": 0,
+        "kick_1": 282,
+        "kick_2": 437,
+        "kick_3": 0
+      },
+      "reps": 12
+    },
+    {
+      "after_dedup_per_s": 208372.66888493387,
+      "after_dedup_total": 1683,
+      "balls": 15,
+      "balls_label": "full-rack",
+      "constructed_per_s": 15932894.838659756,
+      "constructed_total": 128688,
+      "counts_total": {
+        "bank": 233,
+        "combo": 272,
+        "direct": 82,
+        "kick": 966,
+        "safety_escape": 89,
+        "safety_rollup": 47,
+        "safety_twoway": 12
+      },
+      "kept_per_s": 210601.25357889038,
+      "kept_total": 1701,
+      "ms": {
+        "max": 0.698041,
+        "mean": 0.6730729166666668,
+        "n": 12,
+        "p50": 0.67275,
+        "p90": 0.690125,
+        "p99": 0.698041
+      },
+      "per_class_per_s": {
+        "bank": 28847.790760659293,
+        "combo": 33676.3909308984,
+        "direct": 10152.441383579666,
+        "kick": 119600.71190899947,
+        "safety_escape": 11019.113209007199,
+        "safety_rollup": 5819.082256442003,
+        "safety_twoway": 1485.7231293043412
+      },
+      "rail_depth": 3,
+      "rail_depth_histogram": {
+        "bank_1": 104,
+        "bank_2": 97,
+        "bank_3": 32,
+        "kick_1": 282,
+        "kick_2": 437,
+        "kick_3": 247
+      },
+      "reps": 12
+    }
+  ],
+  "section": "candidate generation throughput",
+  "shortlist_sort6_us": {
+    "max": 1.333,
+    "mean": 0.2359166666666667,
+    "n": 12,
+    "p50": 0.083,
+    "p90": 0.541,
+    "p99": 1.333
+  }
+}
