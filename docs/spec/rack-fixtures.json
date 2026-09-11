@@ -1,0 +1,404 @@
+{
+  "corpus_version": 1,
+  "generator": "fixtures 0-15 are the frozen fixture seed list, produced by the rack spec function; the golden arrangement was hand-derived from that algorithm and cross-checked digit-for-digit against a second implementation; no auto-update tooling ships",
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15
+  ],
+  "property_sweep_range": {
+    "start": 0,
+    "end": 255
+  },
+  "prng": "SplitMix64 (state += 0x9E3779B97F4A7C15 mod 2^64; z = state; z = ((z ^ (z >> 30)) * 0xBF58476D1CE4E5B9) mod 2^64; z = ((z ^ (z >> 27)) * 0x94D049BB133111EB) mod 2^64; return z ^ (z >> 31)), state seeded with the u64 rack seed; bounded draw next_below(n) = Lemire multiply-shift with rejection (m = next() * n as an exact 128-bit product, low64 = m mod 2^64, return m >> 64 when low64 >= n, else retry); rack construction is two-phase from one stream: pinned slots first (3.1 = the 8-ball; then the two corner balls, drawn in slot order 5.0 then 5.4, one ball per group from that group's balls in ascending ball-number order), then Fisher-Yates descending over the 12-element sub-array of remaining balls and remaining slots (for i = 11 down to 1: j = next_below(i + 1), swap arr[i] and arr[j]).",
+  "invariants": [
+    {
+      "id": "eight_in_third_row_middle",
+      "statement": "the 8-ball occupies slot 3.1, the middle slot of the third row"
+    },
+    {
+      "id": "corners_one_ball_per_group",
+      "statement": "slots 5.0 and 5.4 hold exactly one ball from 1-7 and one ball from 9-15"
+    },
+    {
+      "id": "fifteen_distinct_balls",
+      "statement": "the arrangement names each ball number 1-15 exactly once, and no other number"
+    },
+    {
+      "id": "adjacent_slots_exactly_2r",
+      "statement": "with slot (r, k) at x = (r - 1) * sqrt(3) * R and y = (k - (r - 1) / 2) * 2R (rows 1-5 apex-first, k ascending from the y-negative end), every adjacent pair is exactly 2R apart; adjacent pairs are same-row neighbours (r, k)-(r, k + 1) and cross-row neighbours (r, k)-(r + 1, k) and (r, k)-(r + 1, k + 1)"
+    },
+    {
+      "id": "generate_twice_byte_equality",
+      "statement": "generating a rack twice from the same seed yields byte-identical arrangements"
+    },
+    {
+      "id": "every_arrangement_legal",
+      "statement": "every generated arrangement satisfies the four structural invariants above; the rack function has no failure path and never falls back to another arrangement"
+    }
+  ],
+  "fixtures": [
+    {
+      "seed": 0,
+      "arrangement": {
+        "1": "5.4",
+        "2": "1.0",
+        "3": "5.2",
+        "4": "2.0",
+        "5": "5.1",
+        "6": "2.1",
+        "7": "4.0",
+        "8": "3.1",
+        "9": "4.2",
+        "10": "3.2",
+        "11": "4.1",
+        "12": "5.0",
+        "13": "3.0",
+        "14": "4.3",
+        "15": "5.3"
+      }
+    },
+    {
+      "seed": 1,
+      "arrangement": {
+        "1": "1.0",
+        "2": "4.1",
+        "3": "3.2",
+        "4": "2.0",
+        "5": "5.2",
+        "6": "5.3",
+        "7": "5.4",
+        "8": "3.1",
+        "9": "2.1",
+        "10": "5.1",
+        "11": "4.0",
+        "12": "4.3",
+        "13": "4.2",
+        "14": "5.0",
+        "15": "3.0"
+      }
+    },
+    {
+      "seed": 2,
+      "arrangement": {
+        "1": "2.0",
+        "2": "4.1",
+        "3": "1.0",
+        "4": "5.2",
+        "5": "5.4",
+        "6": "4.0",
+        "7": "4.2",
+        "8": "3.1",
+        "9": "4.3",
+        "10": "3.0",
+        "11": "3.2",
+        "12": "5.3",
+        "13": "5.1",
+        "14": "5.0",
+        "15": "2.1"
+      }
+    },
+    {
+      "seed": 3,
+      "arrangement": {
+        "1": "5.3",
+        "2": "4.3",
+        "3": "5.2",
+        "4": "4.1",
+        "5": "5.0",
+        "6": "1.0",
+        "7": "4.0",
+        "8": "3.1",
+        "9": "5.1",
+        "10": "4.2",
+        "11": "2.1",
+        "12": "3.2",
+        "13": "5.4",
+        "14": "3.0",
+        "15": "2.0"
+      }
+    },
+    {
+      "seed": 4,
+      "arrangement": {
+        "1": "1.0",
+        "2": "4.1",
+        "3": "3.0",
+        "4": "4.2",
+        "5": "5.2",
+        "6": "5.3",
+        "7": "5.0",
+        "8": "3.1",
+        "9": "2.1",
+        "10": "4.0",
+        "11": "4.3",
+        "12": "3.2",
+        "13": "2.0",
+        "14": "5.1",
+        "15": "5.4"
+      }
+    },
+    {
+      "seed": 5,
+      "arrangement": {
+        "1": "3.0",
+        "2": "5.3",
+        "3": "5.2",
+        "4": "5.1",
+        "5": "4.2",
+        "6": "5.0",
+        "7": "2.0",
+        "8": "3.1",
+        "9": "3.2",
+        "10": "5.4",
+        "11": "2.1",
+        "12": "4.3",
+        "13": "4.0",
+        "14": "4.1",
+        "15": "1.0"
+      }
+    },
+    {
+      "seed": 6,
+      "arrangement": {
+        "1": "5.4",
+        "2": "4.1",
+        "3": "5.3",
+        "4": "1.0",
+        "5": "2.0",
+        "6": "2.1",
+        "7": "4.0",
+        "8": "3.1",
+        "9": "5.2",
+        "10": "3.0",
+        "11": "5.1",
+        "12": "5.0",
+        "13": "4.2",
+        "14": "3.2",
+        "15": "4.3"
+      }
+    },
+    {
+      "seed": 7,
+      "arrangement": {
+        "1": "5.0",
+        "2": "4.1",
+        "3": "2.0",
+        "4": "5.1",
+        "5": "3.0",
+        "6": "5.2",
+        "7": "2.1",
+        "8": "3.1",
+        "9": "5.3",
+        "10": "4.0",
+        "11": "1.0",
+        "12": "4.2",
+        "13": "4.3",
+        "14": "3.2",
+        "15": "5.4"
+      }
+    },
+    {
+      "seed": 8,
+      "arrangement": {
+        "1": "5.2",
+        "2": "2.1",
+        "3": "4.2",
+        "4": "5.1",
+        "5": "5.4",
+        "6": "1.0",
+        "7": "3.0",
+        "8": "3.1",
+        "9": "5.3",
+        "10": "4.0",
+        "11": "4.3",
+        "12": "3.2",
+        "13": "5.0",
+        "14": "4.1",
+        "15": "2.0"
+      }
+    },
+    {
+      "seed": 9,
+      "arrangement": {
+        "1": "3.0",
+        "2": "5.4",
+        "3": "5.1",
+        "4": "5.2",
+        "5": "2.0",
+        "6": "4.0",
+        "7": "4.3",
+        "8": "3.1",
+        "9": "1.0",
+        "10": "4.2",
+        "11": "2.1",
+        "12": "5.3",
+        "13": "3.2",
+        "14": "5.0",
+        "15": "4.1"
+      }
+    },
+    {
+      "seed": 10,
+      "arrangement": {
+        "1": "2.1",
+        "2": "4.0",
+        "3": "1.0",
+        "4": "2.0",
+        "5": "3.0",
+        "6": "5.0",
+        "7": "3.2",
+        "8": "3.1",
+        "9": "5.4",
+        "10": "4.2",
+        "11": "4.3",
+        "12": "4.1",
+        "13": "5.2",
+        "14": "5.3",
+        "15": "5.1"
+      }
+    },
+    {
+      "seed": 11,
+      "arrangement": {
+        "1": "4.3",
+        "2": "5.0",
+        "3": "5.2",
+        "4": "4.1",
+        "5": "2.0",
+        "6": "1.0",
+        "7": "5.1",
+        "8": "3.1",
+        "9": "5.3",
+        "10": "2.1",
+        "11": "3.2",
+        "12": "4.0",
+        "13": "5.4",
+        "14": "3.0",
+        "15": "4.2"
+      }
+    },
+    {
+      "seed": 12,
+      "arrangement": {
+        "1": "4.0",
+        "2": "5.4",
+        "3": "4.3",
+        "4": "5.1",
+        "5": "1.0",
+        "6": "3.2",
+        "7": "2.0",
+        "8": "3.1",
+        "9": "4.2",
+        "10": "3.0",
+        "11": "2.1",
+        "12": "5.2",
+        "13": "5.3",
+        "14": "4.1",
+        "15": "5.0"
+      }
+    },
+    {
+      "seed": 13,
+      "arrangement": {
+        "1": "1.0",
+        "2": "4.1",
+        "3": "3.2",
+        "4": "5.3",
+        "5": "5.4",
+        "6": "4.0",
+        "7": "3.0",
+        "8": "3.1",
+        "9": "4.3",
+        "10": "2.0",
+        "11": "5.0",
+        "12": "5.2",
+        "13": "4.2",
+        "14": "2.1",
+        "15": "5.1"
+      }
+    },
+    {
+      "seed": 14,
+      "arrangement": {
+        "1": "5.0",
+        "2": "4.3",
+        "3": "3.2",
+        "4": "2.0",
+        "5": "5.1",
+        "6": "1.0",
+        "7": "3.0",
+        "8": "3.1",
+        "9": "5.4",
+        "10": "4.2",
+        "11": "5.3",
+        "12": "2.1",
+        "13": "5.2",
+        "14": "4.0",
+        "15": "4.1"
+      }
+    },
+    {
+      "seed": 15,
+      "arrangement": {
+        "1": "3.2",
+        "2": "5.2",
+        "3": "5.3",
+        "4": "5.4",
+        "5": "4.0",
+        "6": "2.1",
+        "7": "2.0",
+        "8": "3.1",
+        "9": "4.2",
+        "10": "4.3",
+        "11": "3.0",
+        "12": "5.1",
+        "13": "1.0",
+        "14": "5.0",
+        "15": "4.1"
+      }
+    }
+  ],
+  "golden": {
+    "seed": 0,
+    "arrangement": {
+      "1": "5.4",
+      "2": "1.0",
+      "3": "5.2",
+      "4": "2.0",
+      "5": "5.1",
+      "6": "2.1",
+      "7": "4.0",
+      "8": "3.1",
+      "9": "4.2",
+      "10": "3.2",
+      "11": "4.1",
+      "12": "5.0",
+      "13": "3.0",
+      "14": "4.3",
+      "15": "5.3"
+    },
+    "derivation_note": "Hand-derived from the spec algorithm; not copied from an implementation. Slot vocabulary: rows r = 1..5 apex-first, in-row index k = 0..r-1 counted from the y-negative end, slot key \"r.k\", canonical index r(r-1)/2 + k; the 15 canonical slots are 1.0, 2.0, 2.1, 3.0, 3.1, 3.2, 4.0, 4.1, 4.2, 4.3, 5.0, 5.1, 5.2, 5.3, 5.4. One SplitMix64 stream is seeded with the u64 rack seed and its draws are consumed in exactly this order: (A1) slot 3.1 is set to the 8-ball, no draw; (A2) draw 1: side = next_below(2) - side 0 puts group A (1-7) on 5.0 and group B (9-15) on 5.4, side 1 the reverse; (A3) draw 2: next_below(7) indexes the 5.0 corner's group listed in ascending ball-number order, and the indexed ball goes to 5.0; (A4) draw 3: next_below(7) indexes the 5.4 corner's group, again in ascending ball-number order, and the indexed ball goes to 5.4. The two corner draws use per-group pools: each draw indexes its own group's pool of 7 balls (7 then 7), the pools are disjoint and no pool shrinks between the two corner draws, so both draws come from the same stream, in slot order 5.0 then 5.4, before any shuffle draw, and no ball can be drawn twice. What shrinks is only the free pool: 12 balls once the 8 and the two corner balls are removed. (B1) the 12 unassigned balls in ascending ball-number order form a 12-element array; (B2) Fisher-Yates descending: for i = 11 down to 1, j = next_below(i+1), swap arr[i] and arr[j] (draws 4-14); the shuffled array is then dealt in order into the 12 remaining slots in canonical slot order (skipping 3.1, 5.0, 5.4). A rack consumes 14 draws. next_below(n): m = next() * n as an exact 128-bit product, low64 = m mod 2^64, accept m >> 64 when low64 >= n, else retry. Seed 0 trace: draws 1-3 are 0xe220a8397b1dcdaf (16294208416658607535) -> side = 1, 0x6e789e6aa1b965f4 (7960286522194355700) -> index 3 of the 9-15 group, so ball 12 on 5.0, and 0x06c45d188009454f (487617019471545679) -> index 0 of the 1-7 group, so ball 1 on 5.4; the 12-element array starts [2, 3, 4, 5, 6, 7, 9, 10, 11, 13, 14, 15] and the twelve swaps have j = 11, 1, 3, 1, 6, 1, 5, 1, 3, 1, 1 for i = 11..1 (j = i means a no-op), leaving the arrangement recorded here."
+  },
+  "stalemate_rerack_contract": {
+    "trigger": "mutual agreement (1.13 by-agreement path) + 4.11 remedy",
+    "restores": "arrangement snapshot from the same seed",
+    "breaker": "original breaker",
+    "shot_count_reset": true,
+    "resulting_state": "awaiting_placement/above_head_string",
+    "all_balls_back_on_table": true
+  }
+}

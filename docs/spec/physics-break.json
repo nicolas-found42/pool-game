@@ -1,0 +1,696 @@
+{
+  "schema_version": 1,
+  "corpus_version": 2,
+  "generator": {
+    "prng": "none - this tier generates no parameters and no arrangements",
+    "shuffle": "none - arrangements are inline literals; the seeded rack generator and its fixture list belong to the rack layer and are pinned by rack-fixtures.json",
+    "derivation": "source of parameters: pinned by #8 (physics prototype); null parameters are requirements, not gaps"
+  },
+  "rack_fixture_list": "rack-fixtures.json",
+  "entries": [
+    {
+      "id": "pb-01",
+      "name": "Legal break: four distinct object balls driven to rails",
+      "spec_ref": "rules-break.md#break-legality",
+      "scenario": "legal_break_four_to_rails",
+      "rules_entry": "rb-01",
+      "arrangement": {
+        "1": "1.0",
+        "2": "5.0",
+        "3": "2.1",
+        "4": "3.2",
+        "5": "4.1",
+        "6": "4.3",
+        "7": "5.2",
+        "8": "3.1",
+        "9": "2.0",
+        "10": "5.4",
+        "11": "4.0",
+        "12": "4.2",
+        "13": "5.1",
+        "14": "3.0",
+        "15": "5.3"
+      },
+      "shot": {
+        "cue_ball": {
+          "x_mm": -800,
+          "y_mm": 0
+        },
+        "aim_deg": null,
+        "cue_speed_mm_s": null,
+        "spin": null,
+        "elevation_deg": null
+      },
+      "target_facts": {
+        "summary": "Break on arrangement A: nothing is pocketed and exactly four distinct object balls are driven to a rail, one rail contact each. The break is legal under 4.3(d), the table stays open, and the turn passes because no ball was pocketed.",
+        "expected": {
+          "distinct_object_balls_to_rails": 4,
+          "rail_contacts_total": 4,
+          "pocketed": [],
+          "off_table": [],
+          "legal": true,
+          "cue_ball_pocketed": false,
+          "rule": "4.3(d)"
+        }
+      },
+      "acceptance": "A recorded run producing this fact pattern, or the row is re-aimed; the pattern is the requirement, the parameters are the pin."
+    },
+    {
+      "id": "pb-02",
+      "name": "Legal-break boundary: four distinct object balls, five rail contacts",
+      "spec_ref": "rules-break.md#break-legality",
+      "scenario": "legal_break_exactly_four_distinct",
+      "rules_entry": "rb-03",
+      "arrangement": {
+        "1": "1.0",
+        "2": "5.0",
+        "3": "2.1",
+        "4": "3.2",
+        "5": "4.1",
+        "6": "4.3",
+        "7": "5.2",
+        "8": "3.1",
+        "9": "2.0",
+        "10": "5.4",
+        "11": "4.0",
+        "12": "4.2",
+        "13": "5.1",
+        "14": "3.0",
+        "15": "5.3"
+      },
+      "shot": {
+        "cue_ball": {
+          "x_mm": -800,
+          "y_mm": 0
+        },
+        "aim_deg": null,
+        "cue_speed_mm_s": null,
+        "spin": null,
+        "elevation_deg": null
+      },
+      "target_facts": {
+        "summary": "Break on arrangement A: nothing is pocketed; four distinct object balls reach rails, one of them touching two rails, giving five rail contacts in total. The quantity 4.3(d) counts is the number of distinct object balls driven to a rail (four), not the number of rail contacts (five), so the break is legal.",
+        "expected": {
+          "distinct_object_balls_to_rails": 4,
+          "rail_contacts_total": 5,
+          "pocketed": [],
+          "off_table": [],
+          "legal": true,
+          "cue_ball_pocketed": false,
+          "rule": "4.3(d)"
+        }
+      },
+      "acceptance": "A recorded run producing this fact pattern, or the row is re-aimed; the pattern is the requirement, the parameters are the pin."
+    },
+    {
+      "id": "pb-03",
+      "name": "Legal break by the pocketed-ball clause with only three balls to rails",
+      "spec_ref": "rules-break.md#break-legality",
+      "scenario": "legal_break_ball_pocketed_three_to_rails",
+      "rules_entry": "rb-01",
+      "arrangement": {
+        "1": "2.1",
+        "2": "3.2",
+        "3": "5.4",
+        "4": "4.1",
+        "5": "1.0",
+        "6": "4.3",
+        "7": "5.2",
+        "8": "3.1",
+        "9": "3.0",
+        "10": "4.2",
+        "11": "5.3",
+        "12": "2.0",
+        "13": "4.0",
+        "14": "5.1",
+        "15": "5.0"
+      },
+      "shot": {
+        "cue_ball": {
+          "x_mm": -780,
+          "y_mm": 15
+        },
+        "aim_deg": null,
+        "cue_speed_mm_s": null,
+        "spin": null,
+        "elevation_deg": null
+      },
+      "target_facts": {
+        "summary": "Break on arrangement B: object ball 12 is pocketed and only three further distinct object balls are driven to a rail, three rail contacts, nothing else pocketed. The pocketed-ball clause of 4.3(c) decides the break before 4.3(d)'s four-ball requirement is reached (the pinned precedence tests pocket > rail count), so the break is legal; the breaker continues and the table stays open. Object ball 12 also satisfies 2.7's driven-to-a-rail predicate for the shot-rail bookkeeping, but the rail count is not what decides this row.",
+        "expected": {
+          "distinct_object_balls_to_rails": 3,
+          "rail_contacts_total": 3,
+          "pocketed": [
+            12
+          ],
+          "off_table": [],
+          "legal": true,
+          "cue_ball_pocketed": false,
+          "rule": "4.3(c)"
+        }
+      },
+      "acceptance": "A recorded run producing this fact pattern, or the row is re-aimed; the pattern is the requirement, the parameters are the pin."
+    },
+    {
+      "id": "pb-04",
+      "name": "Total miss of the rack: the cue ball contacts nothing",
+      "spec_ref": "rules-break.md#illegal-break",
+      "scenario": "total_miss_of_the_rack",
+      "rules_entry": "rb-04",
+      "arrangement": {
+        "1": "1.0",
+        "2": "5.0",
+        "3": "2.1",
+        "4": "3.2",
+        "5": "4.1",
+        "6": "4.3",
+        "7": "5.2",
+        "8": "3.1",
+        "9": "2.0",
+        "10": "5.4",
+        "11": "4.0",
+        "12": "4.2",
+        "13": "5.1",
+        "14": "3.0",
+        "15": "5.3"
+      },
+      "shot": {
+        "cue_ball": {
+          "x_mm": -1100,
+          "y_mm": 40
+        },
+        "aim_deg": null,
+        "cue_speed_mm_s": null,
+        "spin": null,
+        "elevation_deg": null
+      },
+      "target_facts": {
+        "summary": "Break on arrangement A: the cue ball crosses the table without contacting any ball and comes to rest before the foot cushion. No object ball is driven to a rail and nothing is pocketed, so the break is illegal under 4.3(d) and the illegal-break tree governs. This row asserts no foul reason; where a total miss is also read as a 3.3 foul, the pinned precedence (4.3(d) with the CSI 2-3-3 deviation) still routes it to the illegal-break tree, whose three options never include ball-in-hand.",
+        "expected": {
+          "distinct_object_balls_to_rails": 0,
+          "rail_contacts_total": 0,
+          "pocketed": [],
+          "off_table": [],
+          "legal": false,
+          "cue_ball_pocketed": false,
+          "tree": "illegal_break",
+          "rule": "4.3(d)",
+          "object_ball_contacts": 0
+        }
+      },
+      "acceptance": "A recorded run producing this fact pattern, or the row is re-aimed; the pattern is the requirement, the parameters are the pin."
+    },
+    {
+      "id": "pb-05",
+      "name": "Illegal break: rack touched, three balls to rails, nothing pocketed",
+      "spec_ref": "rules-break.md#break-legality",
+      "scenario": "soft_break_three_to_rails_no_pocket",
+      "rules_entry": "rb-05",
+      "arrangement": {
+        "1": "5.2",
+        "2": "2.1",
+        "3": "3.2",
+        "4": "5.3",
+        "5": "4.1",
+        "6": "5.0",
+        "7": "4.3",
+        "8": "3.1",
+        "9": "1.0",
+        "10": "3.0",
+        "11": "4.0",
+        "12": "5.1",
+        "13": "5.4",
+        "14": "2.0",
+        "15": "4.2"
+      },
+      "shot": {
+        "cue_ball": {
+          "x_mm": -760,
+          "y_mm": -20
+        },
+        "aim_deg": null,
+        "cue_speed_mm_s": null,
+        "spin": null,
+        "elevation_deg": null
+      },
+      "target_facts": {
+        "summary": "Break on arrangement C: the rack is touched, exactly three distinct object balls are driven to rails, and nothing is pocketed. Fewer than four object balls reach rails with no ball pocketed, so the break is illegal under 4.3(d) and the full three-option illegal-break tree applies to the incoming player.",
+        "expected": {
+          "distinct_object_balls_to_rails": 3,
+          "rail_contacts_total": 3,
+          "pocketed": [],
+          "off_table": [],
+          "legal": false,
+          "cue_ball_pocketed": false,
+          "tree": "illegal_break",
+          "rule": "4.3(d)"
+        }
+      },
+      "acceptance": "A recorded run producing this fact pattern, or the row is re-aimed; the pattern is the requirement, the parameters are the pin."
+    },
+    {
+      "id": "pb-06",
+      "name": "Illegal break with a scratch: the illegal-break tree governs",
+      "spec_ref": "rules-break.md#illegal-break",
+      "scenario": "illegal_break_with_foul_scratch",
+      "rules_entry": "rb-06",
+      "arrangement": {
+        "1": "5.2",
+        "2": "2.1",
+        "3": "3.2",
+        "4": "5.3",
+        "5": "4.1",
+        "6": "5.0",
+        "7": "4.3",
+        "8": "3.1",
+        "9": "1.0",
+        "10": "3.0",
+        "11": "4.0",
+        "12": "5.1",
+        "13": "5.4",
+        "14": "2.0",
+        "15": "4.2"
+      },
+      "shot": {
+        "cue_ball": {
+          "x_mm": -760,
+          "y_mm": -20
+        },
+        "aim_deg": null,
+        "cue_speed_mm_s": null,
+        "spin": null,
+        "elevation_deg": null
+      },
+      "target_facts": {
+        "summary": "As the three-to-rails soft break on arrangement C, plus the cue ball is pocketed. The break is both illegal under 4.3(d) and a foul under 3.1; under the pinned precedence the illegal-break tree governs (CSI 2-3-3 supplies the precedence, WPA is silent). The three options are cue-ball-aware because the cue ball is off the table: accept in position and shoot with the cue ball placed above the head string, re-rack and break, or re-rack and the offending player breaks again. No option grants ball-in-hand anywhere.",
+        "expected": {
+          "distinct_object_balls_to_rails": 3,
+          "rail_contacts_total": 3,
+          "pocketed": [],
+          "off_table": [],
+          "legal": false,
+          "cue_ball_pocketed": true,
+          "tree": "illegal_break",
+          "rule": "4.3(d)"
+        }
+      },
+      "acceptance": "A recorded run producing this fact pattern, or the row is re-aimed; the pattern is the requirement, the parameters are the pin."
+    },
+    {
+      "id": "pb-07",
+      "name": "Illegal break with an object ball off the table: the illegal-break tree governs",
+      "spec_ref": "rules-break.md#illegal-break",
+      "scenario": "illegal_break_with_foul_object_ball_off_table",
+      "rules_entry": "rb-07",
+      "arrangement": {
+        "1": "2.1",
+        "2": "3.2",
+        "3": "5.4",
+        "4": "4.1",
+        "5": "1.0",
+        "6": "4.3",
+        "7": "5.2",
+        "8": "3.1",
+        "9": "3.0",
+        "10": "4.2",
+        "11": "5.3",
+        "12": "2.0",
+        "13": "4.0",
+        "14": "5.1",
+        "15": "5.0"
+      },
+      "shot": {
+        "cue_ball": {
+          "x_mm": -820,
+          "y_mm": 35
+        },
+        "aim_deg": null,
+        "cue_speed_mm_s": null,
+        "spin": null,
+        "elevation_deg": null
+      },
+      "target_facts": {
+        "summary": "As the three-to-rails soft break on arrangement B, plus object ball 4 is driven off the table (3.5). The illegal-break tree governs again because there is no 8 event and no ball was pocketed; the three cue-ball-aware options apply, and the off-table ball stays off, since only the 8 is ever spotted (4.7) and it is not the 8.",
+        "expected": {
+          "distinct_object_balls_to_rails": 3,
+          "rail_contacts_total": 3,
+          "pocketed": [],
+          "off_table": [
+            4
+          ],
+          "legal": false,
+          "cue_ball_pocketed": false,
+          "tree": "illegal_break",
+          "rule": "4.3(d)"
+        }
+      },
+      "acceptance": "A recorded run producing this fact pattern, or the row is re-aimed; the pattern is the requirement, the parameters are the pin."
+    },
+    {
+      "id": "pb-08",
+      "name": "Break foul on a legal break: scratch",
+      "spec_ref": "rules-break.md#break-legality",
+      "scenario": "foul_on_legal_break_scratch",
+      "rules_entry": "rb-14",
+      "arrangement": {
+        "1": "1.0",
+        "2": "5.0",
+        "3": "2.1",
+        "4": "3.2",
+        "5": "4.1",
+        "6": "4.3",
+        "7": "5.2",
+        "8": "3.1",
+        "9": "2.0",
+        "10": "5.4",
+        "11": "4.0",
+        "12": "4.2",
+        "13": "5.1",
+        "14": "3.0",
+        "15": "5.3"
+      },
+      "shot": {
+        "cue_ball": {
+          "x_mm": -800,
+          "y_mm": 0
+        },
+        "aim_deg": null,
+        "cue_speed_mm_s": null,
+        "spin": null,
+        "elevation_deg": null
+      },
+      "target_facts": {
+        "summary": "Break on arrangement A: four distinct object balls are driven to rails, four rail contacts, and the cue ball is pocketed. The break is legal under 4.3(d) but the scratch is a foul, so the break-foul tree of 4.3(h) applies: the incoming player may accept the table in position or take cue-ball in hand above the head string, never anywhere, and the object balls stay where they rest.",
+        "expected": {
+          "distinct_object_balls_to_rails": 4,
+          "rail_contacts_total": 4,
+          "pocketed": [],
+          "off_table": [],
+          "legal": false,
+          "cue_ball_pocketed": true,
+          "tree": "break_foul",
+          "rule": "4.3(h)"
+        }
+      },
+      "acceptance": "A recorded run producing this fact pattern, or the row is re-aimed; the pattern is the requirement, the parameters are the pin."
+    },
+    {
+      "id": "pb-09",
+      "name": "Break foul on a legal break: an object ball driven off the table",
+      "spec_ref": "rules-break.md#break-legality",
+      "scenario": "legal_break_object_ball_off_table",
+      "rules_entry": "rb-15",
+      "arrangement": {
+        "1": "3.2",
+        "2": "5.1",
+        "3": "2.1",
+        "4": "5.0",
+        "5": "5.3",
+        "6": "4.2",
+        "7": "3.0",
+        "8": "3.1",
+        "9": "5.2",
+        "10": "4.1",
+        "11": "5.4",
+        "12": "4.3",
+        "13": "1.0",
+        "14": "4.0",
+        "15": "2.0"
+      },
+      "shot": {
+        "cue_ball": {
+          "x_mm": -740,
+          "y_mm": 10
+        },
+        "aim_deg": null,
+        "cue_speed_mm_s": null,
+        "spin": null,
+        "elevation_deg": null
+      },
+      "target_facts": {
+        "summary": "Break on arrangement D: four distinct object balls reach rails, four rail contacts, the cue ball stays on the table, and object ball 14 leaves the table (3.5). The break is legal under 4.3(d) but the off-table ball is a foul, so the break-foul tree of 4.3(g) applies; the off-table ball stays off because only the 8 is ever spotted (4.7), and the incoming player may accept the table in position or take cue-ball in hand above the head string.",
+        "expected": {
+          "distinct_object_balls_to_rails": 4,
+          "rail_contacts_total": 4,
+          "pocketed": [],
+          "off_table": [
+            14
+          ],
+          "legal": false,
+          "cue_ball_pocketed": false,
+          "tree": "break_foul",
+          "rule": "4.3(g)"
+        }
+      },
+      "acceptance": "A recorded run producing this fact pattern, or the row is re-aimed; the pattern is the requirement, the parameters are the pin."
+    },
+    {
+      "id": "pb-10",
+      "name": "8 pocketed on a legal break: the 8-on-break tree, not a win",
+      "spec_ref": "rules-break.md#eight-on-the-break",
+      "scenario": "eight_pocketed_legal_break",
+      "rules_entry": "rb-11",
+      "arrangement": {
+        "1": "2.1",
+        "2": "3.2",
+        "3": "5.4",
+        "4": "4.1",
+        "5": "1.0",
+        "6": "4.3",
+        "7": "5.2",
+        "8": "3.1",
+        "9": "3.0",
+        "10": "4.2",
+        "11": "5.3",
+        "12": "2.0",
+        "13": "4.0",
+        "14": "5.1",
+        "15": "5.0"
+      },
+      "shot": {
+        "cue_ball": {
+          "x_mm": -790,
+          "y_mm": -10
+        },
+        "aim_deg": null,
+        "cue_speed_mm_s": null,
+        "spin": null,
+        "elevation_deg": null
+      },
+      "target_facts": {
+        "summary": "Break on arrangement B with no foul: the 8 is pocketed and no object ball is driven to a rail. Pocketing a ball makes the break legal under 4.3(c), and because that ball is the 8 the classification precedence routes the row to the 8-on-break tree (4.3(e)) regardless of the rail count: the 8 on the break is neither a win nor a foul, and the breaker chooses between spotting the 8 and accepting the balls in position and re-breaking.",
+        "expected": {
+          "distinct_object_balls_to_rails": 0,
+          "rail_contacts_total": 0,
+          "pocketed": [
+            8
+          ],
+          "off_table": [],
+          "legal": true,
+          "cue_ball_pocketed": false,
+          "tree": "eight_on_break",
+          "rule": "4.3(e)"
+        }
+      },
+      "acceptance": "A recorded run producing this fact pattern, or the row is re-aimed; the pattern is the requirement, the parameters are the pin."
+    },
+    {
+      "id": "pb-11",
+      "name": "8 pocketed on a foul break: the 8-on-break tree, opponent chooses",
+      "spec_ref": "rules-break.md#eight-on-the-break",
+      "scenario": "eight_pocketed_on_a_foul_break",
+      "rules_entry": "rb-12",
+      "arrangement": {
+        "1": "2.1",
+        "2": "3.2",
+        "3": "5.4",
+        "4": "4.1",
+        "5": "1.0",
+        "6": "4.3",
+        "7": "5.2",
+        "8": "3.1",
+        "9": "3.0",
+        "10": "4.2",
+        "11": "5.3",
+        "12": "2.0",
+        "13": "4.0",
+        "14": "5.1",
+        "15": "5.0"
+      },
+      "shot": {
+        "cue_ball": {
+          "x_mm": -790,
+          "y_mm": -10
+        },
+        "aim_deg": null,
+        "cue_speed_mm_s": null,
+        "spin": null,
+        "elevation_deg": null
+      },
+      "target_facts": {
+        "summary": "Break on arrangement B: the 8 is pocketed and the cue ball is pocketed as well, with no object ball driven to a rail. The 8-on-break handling governs over the rail count (precedence 1), and because the break carried a foul the 4.3(f) branch applies: the opponent may re-spot the 8 and shoot with cue-ball in hand above the head string, or require a re-break. It is never a loss of rack, because 4.8 does not apply to the break.",
+        "expected": {
+          "distinct_object_balls_to_rails": 0,
+          "rail_contacts_total": 0,
+          "pocketed": [
+            8
+          ],
+          "off_table": [],
+          "legal": false,
+          "cue_ball_pocketed": true,
+          "tree": "eight_on_break",
+          "rule": "4.3(f)"
+        }
+      },
+      "acceptance": "A recorded run producing this fact pattern, or the row is re-aimed; the pattern is the requirement, the parameters are the pin."
+    },
+    {
+      "id": "pb-12",
+      "name": "8 driven off the table on the break: 8 spotted, break-foul remedy",
+      "spec_ref": "rules-break.md#eight-on-the-break",
+      "scenario": "eight_driven_off_table_on_break",
+      "rules_entry": "rb-13",
+      "arrangement": {
+        "1": "5.2",
+        "2": "2.1",
+        "3": "3.2",
+        "4": "5.3",
+        "5": "4.1",
+        "6": "5.0",
+        "7": "4.3",
+        "8": "3.1",
+        "9": "1.0",
+        "10": "3.0",
+        "11": "4.0",
+        "12": "5.1",
+        "13": "5.4",
+        "14": "2.0",
+        "15": "4.2"
+      },
+      "shot": {
+        "cue_ball": {
+          "x_mm": -870,
+          "y_mm": 25
+        },
+        "aim_deg": null,
+        "cue_speed_mm_s": null,
+        "spin": null,
+        "elevation_deg": null
+      },
+      "target_facts": {
+        "summary": "Break on arrangement C: the 8 leaves the table and no object ball is driven to a rail. Driving the 8 off the table on the break is a foul (3.5) and, under the pinned precedence, the 8-on-break handling governs regardless of the rail count: the 8 is spotted (the one spotting exception of 4.7) and the 4.3(g) break-foul remedy applies, so the incoming player may accept the table in position or take cue-ball in hand above the head string. The 4.8(d) loss-of-rack condition for driving the 8 off the table does not apply to the break.",
+        "expected": {
+          "distinct_object_balls_to_rails": 0,
+          "rail_contacts_total": 0,
+          "pocketed": [],
+          "off_table": [
+            8
+          ],
+          "legal": false,
+          "cue_ball_pocketed": false,
+          "tree": "eight_on_break",
+          "rule": "4.3(g)"
+        }
+      },
+      "acceptance": "A recorded run producing this fact pattern, or the row is re-aimed; the pattern is the requirement, the parameters are the pin."
+    },
+    {
+      "id": "pb-13",
+      "name": "Frozen ball at a shot start must leave and return to count",
+      "spec_ref": "rules-break.md#driven-to-a-rail",
+      "scenario": "frozen_ball_to_rail_needs_leave_and_return",
+      "rules_entry": "rb-08",
+      "arrangement": {
+        "1": "3.2",
+        "2": "5.1",
+        "3": "2.1",
+        "4": "5.0",
+        "5": "5.3",
+        "6": "4.2",
+        "7": "3.0",
+        "8": "3.1",
+        "9": "5.2",
+        "10": "4.1",
+        "11": "5.4",
+        "12": "4.3",
+        "13": "1.0",
+        "14": "4.0",
+        "15": "2.0"
+      },
+      "shot": {
+        "cue_ball": {
+          "x_mm": -900,
+          "y_mm": -40
+        },
+        "aim_deg": null,
+        "cue_speed_mm_s": null,
+        "spin": null,
+        "elevation_deg": null
+      },
+      "target_facts": {
+        "summary": "Pre-state: the rack of arrangement D, plus one object ball frozen to a rail when the shot starts, carried as the shot-start frozen annotation the simulation must report. During the break that ball is nudged but never leaves the rail, so under 2.7 it is not driven to a rail and counts zero; the other three distinct object balls that reach rails give three, and with nothing pocketed the break is illegal under 4.3(d). This row is the physics acceptance hook for frozen-rail detection.",
+        "expected": {
+          "distinct_object_balls_to_rails": 3,
+          "rail_contacts_total": 3,
+          "pocketed": [],
+          "off_table": [],
+          "legal": false,
+          "cue_ball_pocketed": false,
+          "tree": "illegal_break",
+          "rule": "4.3(d)",
+          "frozen_to_rail_at_shot_start": true,
+          "frozen_ball_left_and_returned": false
+        }
+      },
+      "acceptance": "A recorded run producing this fact pattern, or the row is re-aimed; the pattern is the requirement, the parameters are the pin."
+    },
+    {
+      "id": "pb-14",
+      "name": "One ball touching two rails counts once",
+      "spec_ref": "rules-break.md#driven-to-a-rail",
+      "scenario": "same_ball_two_rails_counts_once",
+      "rules_entry": "rb-09",
+      "arrangement": {
+        "1": "1.0",
+        "2": "5.0",
+        "3": "2.1",
+        "4": "3.2",
+        "5": "4.1",
+        "6": "4.3",
+        "7": "5.2",
+        "8": "3.1",
+        "9": "2.0",
+        "10": "5.4",
+        "11": "4.0",
+        "12": "4.2",
+        "13": "5.1",
+        "14": "3.0",
+        "15": "5.3"
+      },
+      "shot": {
+        "cue_ball": {
+          "x_mm": -830,
+          "y_mm": 20
+        },
+        "aim_deg": null,
+        "cue_speed_mm_s": null,
+        "spin": null,
+        "elevation_deg": null
+      },
+      "target_facts": {
+        "summary": "Break on arrangement A: one object ball touches two rails and two further object balls reach rails, giving four rail contacts across three distinct object balls; nothing is pocketed. Distinctness, not contact count, decides 4.3(d): three distinct object balls is fewer than four, so the break is illegal and the illegal-break tree governs.",
+        "expected": {
+          "distinct_object_balls_to_rails": 3,
+          "rail_contacts_total": 4,
+          "pocketed": [],
+          "off_table": [],
+          "legal": false,
+          "cue_ball_pocketed": false,
+          "tree": "illegal_break",
+          "rule": "4.3(d)"
+        }
+      },
+      "acceptance": "A recorded run producing this fact pattern, or the row is re-aimed; the pattern is the requirement, the parameters are the pin."
+    }
+  ]
+}

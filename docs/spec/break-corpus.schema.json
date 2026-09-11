@@ -1,0 +1,1127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Break-scenario corpora",
+  "description": "Validates docs/spec/rules-break.json and docs/spec/physics-break.json; structure and routing only, no rules semantics or coverage.",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/rulesCorpus"
+    },
+    {
+      "$ref": "#/$defs/physicsCorpus"
+    }
+  ],
+  "$defs": {
+    "schemaVersion": {
+      "const": 1,
+      "description": "Revision of this schema that the corpus conforms to."
+    },
+    "corpusVersion": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Monotone corpus revision; bump only when an existing entry's meaning changes."
+    },
+    "generator": {
+      "type": "object",
+      "description": "How the corpus was produced.",
+      "additionalProperties": false,
+      "required": [
+        "prng",
+        "shuffle",
+        "derivation"
+      ],
+      "properties": {
+        "prng": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Pseudorandom generator used for seeded rack arrangements."
+        },
+        "shuffle": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Shuffle algorithm used to fill the rack's open slots."
+        },
+        "derivation": {
+          "type": "string",
+          "minLength": 1,
+          "description": "How per-entry inputs were derived."
+        }
+      }
+    },
+    "rackFixtureList": {
+      "const": "rack-fixtures.json",
+      "description": "The seed fixture list this corpus assumes."
+    },
+    "entryId": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Stable entry identifier, unique within the file and referenced by follow_up."
+    },
+    "playerRef": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Player identifier as used within the entry, e.g. the breaker or the incoming player."
+    },
+    "roleChooser": {
+      "enum": [
+        "incoming",
+        "breaker",
+        "other"
+      ],
+      "description": "Who chooses among a tree's options."
+    },
+    "ballId": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 15,
+      "description": "Ball id: 0 is the cue ball, 1-15 are the object balls."
+    },
+    "slotRef": {
+      "type": "string",
+      "pattern": "^[1-5]\\.[0-4]$",
+      "description": "Rack slot as row.index, rows 1-5 apex-first and in-row index 0-4 from the y-negative end."
+    },
+    "point2": {
+      "type": "object",
+      "description": "Table position in millimetres in the pinned frame.",
+      "additionalProperties": false,
+      "required": [
+        "x_mm",
+        "y_mm"
+      ],
+      "properties": {
+        "x_mm": {
+          "type": "number",
+          "description": "Long-axis coordinate in millimetres."
+        },
+        "y_mm": {
+          "type": "number",
+          "description": "Cross-axis coordinate in millimetres."
+        }
+      }
+    },
+    "rackFixtureRef": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Name of an entry in rack-fixtures.json."
+    },
+    "arrangement": {
+      "type": "object",
+      "description": "Ball number to slot map for the 15 racked object balls.",
+      "additionalProperties": false,
+      "required": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "properties": {
+        "1": {
+          "$ref": "#/$defs/slotRef"
+        },
+        "2": {
+          "$ref": "#/$defs/slotRef"
+        },
+        "3": {
+          "$ref": "#/$defs/slotRef"
+        },
+        "4": {
+          "$ref": "#/$defs/slotRef"
+        },
+        "5": {
+          "$ref": "#/$defs/slotRef"
+        },
+        "6": {
+          "$ref": "#/$defs/slotRef"
+        },
+        "7": {
+          "$ref": "#/$defs/slotRef"
+        },
+        "8": {
+          "$ref": "#/$defs/slotRef"
+        },
+        "9": {
+          "$ref": "#/$defs/slotRef"
+        },
+        "10": {
+          "$ref": "#/$defs/slotRef"
+        },
+        "11": {
+          "$ref": "#/$defs/slotRef"
+        },
+        "12": {
+          "$ref": "#/$defs/slotRef"
+        },
+        "13": {
+          "$ref": "#/$defs/slotRef"
+        },
+        "14": {
+          "$ref": "#/$defs/slotRef"
+        },
+        "15": {
+          "$ref": "#/$defs/slotRef"
+        }
+      }
+    },
+    "inlineOrRef": {
+      "description": "Rack arrangement given inline or by fixture reference, exactly one of the two.",
+      "oneOf": [
+        {
+          "$ref": "#/$defs/arrangement"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "ref"
+          ],
+          "properties": {
+            "ref": {
+              "$ref": "#/$defs/rackFixtureRef"
+            }
+          }
+        }
+      ]
+    },
+    "pocketId": {
+      "enum": [
+        "foot_left",
+        "foot_right",
+        "side_left",
+        "side_right",
+        "head_left",
+        "head_right"
+      ],
+      "description": "Pocket identity."
+    },
+    "factBallBall": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "t_s",
+        "a",
+        "b"
+      ],
+      "properties": {
+        "kind": {
+          "const": "ball_ball",
+          "description": "Ball-to-ball contact."
+        },
+        "t_s": {
+          "type": "number",
+          "description": "Event time in seconds from the break declaration."
+        },
+        "a": {
+          "$ref": "#/$defs/ballId"
+        },
+        "b": {
+          "$ref": "#/$defs/ballId"
+        }
+      }
+    },
+    "factRail": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "t_s",
+        "ball"
+      ],
+      "properties": {
+        "kind": {
+          "const": "rail",
+          "description": "Ball-to-cushion contact."
+        },
+        "t_s": {
+          "type": "number",
+          "description": "Event time in seconds from the break declaration."
+        },
+        "ball": {
+          "$ref": "#/$defs/ballId"
+        }
+      }
+    },
+    "factPocket": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "t_s",
+        "ball",
+        "pocket"
+      ],
+      "properties": {
+        "kind": {
+          "const": "pocket",
+          "description": "Ball pocketed."
+        },
+        "t_s": {
+          "type": "number",
+          "description": "Event time in seconds from the break declaration."
+        },
+        "ball": {
+          "$ref": "#/$defs/ballId"
+        },
+        "pocket": {
+          "$ref": "#/$defs/pocketId"
+        }
+      }
+    },
+    "factOffTable": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "t_s",
+        "ball"
+      ],
+      "properties": {
+        "kind": {
+          "const": "off_table",
+          "description": "Ball left the playing surface."
+        },
+        "t_s": {
+          "type": "number",
+          "description": "Event time in seconds from the break declaration."
+        },
+        "ball": {
+          "$ref": "#/$defs/ballId"
+        }
+      }
+    },
+    "facts": {
+      "type": "array",
+      "description": "Ordered observation-contract facts for one shot.",
+      "items": {
+        "oneOf": [
+          {
+            "$ref": "#/$defs/factBallBall"
+          },
+          {
+            "$ref": "#/$defs/factRail"
+          },
+          {
+            "$ref": "#/$defs/factPocket"
+          },
+          {
+            "$ref": "#/$defs/factOffTable"
+          }
+        ]
+      }
+    },
+    "simultaneityGroups": {
+      "type": "array",
+      "description": "Groups of facts indices the simulation cannot order; each index appears in at most one group.",
+      "items": {
+        "type": "array",
+        "minItems": 1,
+        "items": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "restBall": {
+      "type": "object",
+      "description": "Rest state of one ball after the shot.",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "x_mm",
+        "y_mm",
+        "z_mm",
+        "vx_mm_s",
+        "vy_mm_s",
+        "vz_mm_s",
+        "wx",
+        "wy",
+        "wz"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/ballId"
+        },
+        "x_mm": {
+          "type": "number",
+          "description": "Long-axis position in millimetres."
+        },
+        "y_mm": {
+          "type": "number",
+          "description": "Cross-axis position in millimetres."
+        },
+        "z_mm": {
+          "type": "number",
+          "description": "Height above the playing surface in millimetres."
+        },
+        "vx_mm_s": {
+          "type": "number",
+          "description": "Long-axis velocity in mm/s."
+        },
+        "vy_mm_s": {
+          "type": "number",
+          "description": "Cross-axis velocity in mm/s."
+        },
+        "vz_mm_s": {
+          "type": "number",
+          "description": "Vertical velocity in mm/s."
+        },
+        "wx": {
+          "type": "number",
+          "description": "Angular velocity about x in rad/s."
+        },
+        "wy": {
+          "type": "number",
+          "description": "Angular velocity about y in rad/s."
+        },
+        "wz": {
+          "type": "number",
+          "description": "Angular velocity about z in rad/s."
+        }
+      }
+    },
+    "rest": {
+      "type": "object",
+      "description": "Rest-state block; ball ids are unique within the array.",
+      "additionalProperties": false,
+      "required": [
+        "balls"
+      ],
+      "properties": {
+        "balls": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/restBall"
+          }
+        }
+      }
+    },
+    "foulReason": {
+      "type": "object",
+      "description": "One foul with the WPA rule it comes from.",
+      "additionalProperties": false,
+      "required": [
+        "rule",
+        "reason"
+      ],
+      "properties": {
+        "rule": {
+          "type": "string",
+          "minLength": 1,
+          "description": "WPA rule id, e.g. \"3.1\"."
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Short machine token, e.g. cue_ball_pocketed."
+        }
+      }
+    },
+    "foulReasons": {
+      "type": "array",
+      "description": "Foul reasons in evaluation order.",
+      "items": {
+        "$ref": "#/$defs/foulReason"
+      }
+    },
+    "offerOption": {
+      "type": "object",
+      "description": "One option in a presented offer; indices start at 1 and increase.",
+      "additionalProperties": false,
+      "required": [
+        "index",
+        "option",
+        "description"
+      ],
+      "properties": {
+        "index": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Option index, from 1."
+        },
+        "option": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Machine token for the option."
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Human-readable option text."
+        }
+      }
+    },
+    "offer": {
+      "type": "object",
+      "description": "Option set presented by one tree.",
+      "additionalProperties": false,
+      "required": [
+        "tree",
+        "chooser",
+        "options"
+      ],
+      "properties": {
+        "tree": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Tree name."
+        },
+        "chooser": {
+          "$ref": "#/$defs/roleChooser"
+        },
+        "options": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/offerOption"
+          }
+        }
+      }
+    },
+    "chosenOption": {
+      "type": "object",
+      "description": "The option taken from a tree.",
+      "additionalProperties": false,
+      "required": [
+        "tree",
+        "index",
+        "option"
+      ],
+      "properties": {
+        "tree": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Tree name."
+        },
+        "index": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Chosen option index."
+        },
+        "option": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Machine token for the chosen option."
+        }
+      }
+    },
+    "state": {
+      "description": "Rules-layer state after the shot's actions are applied.",
+      "oneOf": [
+        {
+          "$ref": "#/$defs/stateAwaitingPlacement"
+        },
+        {
+          "$ref": "#/$defs/stateAwaitingShot"
+        },
+        {
+          "$ref": "#/$defs/stateAwaitingChoice"
+        },
+        {
+          "$ref": "#/$defs/stateRackOver"
+        }
+      ]
+    },
+    "stateAwaitingPlacement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "shooter",
+        "domain"
+      ],
+      "properties": {
+        "kind": {
+          "const": "awaiting_placement",
+          "description": "A player must place the cue ball."
+        },
+        "shooter": {
+          "$ref": "#/$defs/playerRef"
+        },
+        "domain": {
+          "enum": [
+            "above_head_string",
+            "anywhere"
+          ],
+          "description": "Placement domain."
+        }
+      }
+    },
+    "stateAwaitingShot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "shooter",
+        "target"
+      ],
+      "properties": {
+        "kind": {
+          "const": "awaiting_shot",
+          "description": "A player is at the table and must shoot."
+        },
+        "shooter": {
+          "$ref": "#/$defs/playerRef"
+        },
+        "target": {
+          "enum": [
+            "open",
+            "group",
+            "on_the_eight"
+          ],
+          "description": "Target class for the next shot."
+        }
+      }
+    },
+    "stateAwaitingChoice": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "chooser",
+        "offers"
+      ],
+      "properties": {
+        "kind": {
+          "const": "awaiting_choice",
+          "description": "A player must choose among offers."
+        },
+        "chooser": {
+          "$ref": "#/$defs/roleChooser"
+        },
+        "offers": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/offer"
+          }
+        }
+      }
+    },
+    "stateRackOver": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "winner"
+      ],
+      "properties": {
+        "kind": {
+          "const": "rack_over",
+          "description": "The rack has ended."
+        },
+        "winner": {
+          "$ref": "#/$defs/playerRef"
+        }
+      }
+    },
+    "targetFacts": {
+      "type": "object",
+      "description": "Required outcome of the entry, free-form beyond summary and expected.",
+      "required": [
+        "summary",
+        "expected"
+      ],
+      "properties": {
+        "summary": {
+          "type": "string",
+          "minLength": 1,
+          "description": "One-line description of the required outcome."
+        },
+        "expected": {
+          "type": "object",
+          "description": "Free-form expected-outcome detail."
+        }
+      }
+    },
+    "declaration": {
+      "type": "object",
+      "description": "The shot declaration's kind.",
+      "additionalProperties": false,
+      "required": [
+        "kind"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "break",
+            "none"
+          ],
+          "description": "break when the shot is the rack's break; none otherwise."
+        }
+      }
+    },
+    "followUp": {
+      "type": "object",
+      "description": "A branch continuation reached by choosing one option.",
+      "additionalProperties": false,
+      "required": [
+        "entry",
+        "chosen_option"
+      ],
+      "properties": {
+        "entry": {
+          "$ref": "#/$defs/entryId"
+        },
+        "chosen_option": {
+          "$ref": "#/$defs/chosenOption"
+        }
+      }
+    },
+    "apply": {
+      "type": "object",
+      "description": "Actions applied after adjudication.",
+      "additionalProperties": false,
+      "required": [
+        "action",
+        "breaker",
+        "rack_seed_unchanged",
+        "shot_count_reset",
+        "spotted",
+        "state"
+      ],
+      "properties": {
+        "action": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Action token applied to the table or rack."
+        },
+        "breaker": {
+          "$ref": "#/$defs/playerRef"
+        },
+        "rack_seed_unchanged": {
+          "type": "boolean",
+          "description": "Whether the rack seed is unchanged by the action."
+        },
+        "shot_count_reset": {
+          "type": "boolean",
+          "description": "Whether the shot counter reset to zero."
+        },
+        "spotted": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ballId"
+          },
+          "description": "Ball ids spotted by the action."
+        },
+        "state": {
+          "$ref": "#/$defs/state"
+        }
+      }
+    },
+    "adjudication": {
+      "type": "object",
+      "description": "Full adjudication record for the entry's shot.",
+      "additionalProperties": false,
+      "required": [
+        "verdict",
+        "legality",
+        "fouls",
+        "offers",
+        "apply"
+      ],
+      "properties": {
+        "verdict": {
+          "enum": [
+            "legal",
+            "foul",
+            "illegal_break",
+            "eight_on_break",
+            "no_shot"
+          ],
+          "description": "Overall verdict; no_shot for a declaration event that adjudicates no shot."
+        },
+        "legality": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Break-legality classification text."
+        },
+        "fouls": {
+          "$ref": "#/$defs/foulReasons"
+        },
+        "offers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/offer"
+          },
+          "description": "Option sets presented by this shot; empty when no tree applies."
+        },
+        "chosen_option": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/chosenOption"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Option chosen from the tree, or null when no tree applies."
+        },
+        "apply": {
+          "$ref": "#/$defs/apply"
+        }
+      }
+    },
+    "rulesEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "spec_ref",
+        "scenario",
+        "arrangement",
+        "cue_ball",
+        "break_kind",
+        "declaration",
+        "target_facts",
+        "adjudication"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/entryId"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Human-readable entry name."
+        },
+        "spec_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Rule references, e.g. \"4.3(d)\"."
+        },
+        "scenario": {
+          "enum": [
+            "clean_legal_break",
+            "legal_break_by_pocket",
+            "legal_break_exactly_four_distinct",
+            "legal_break_total_miss",
+            "illegal_break_clean",
+            "illegal_break_with_foul",
+            "illegal_break_frozen_rail",
+            "illegal_break_same_ball_two_rails",
+            "eight_on_break_legal",
+            "eight_on_break_foul",
+            "eight_off_table_on_break",
+            "foul_on_legal_break",
+            "object_ball_off_table_on_break",
+            "option_tree_branch",
+            "stalemate_rerack",
+            "classification_tie"
+          ],
+          "description": "Named scenario list (rules tier); see rules-break.md named scenario list."
+        },
+        "arrangement": {
+          "$ref": "#/$defs/inlineOrRef"
+        },
+        "cue_ball": {
+          "$ref": "#/$defs/point2"
+        },
+        "break_kind": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Kind of break shot the entry exercises."
+        },
+        "declaration": {
+          "$ref": "#/$defs/declaration"
+        },
+        "facts": {
+          "$ref": "#/$defs/facts"
+        },
+        "simultaneity_groups": {
+          "$ref": "#/$defs/simultaneityGroups"
+        },
+        "rest": {
+          "$ref": "#/$defs/rest"
+        },
+        "target_facts": {
+          "$ref": "#/$defs/targetFacts"
+        },
+        "adjudication": {
+          "$ref": "#/$defs/adjudication"
+        },
+        "follow_up": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/followUp"
+          }
+        },
+        "note": {
+          "type": "string",
+          "description": "Free-text authoring note."
+        }
+      }
+    },
+    "treeOption": {
+      "type": "object",
+      "description": "One declared option of a tree; indices start at 1 and increase.",
+      "additionalProperties": false,
+      "required": [
+        "index",
+        "option"
+      ],
+      "properties": {
+        "index": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Option index, from 1."
+        },
+        "option": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Machine token for the option."
+        }
+      }
+    },
+    "treeSpec": {
+      "type": "object",
+      "description": "Declaration of one break option tree.",
+      "additionalProperties": false,
+      "required": [
+        "trigger",
+        "chooser",
+        "options"
+      ],
+      "properties": {
+        "trigger": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Condition that raises the tree."
+        },
+        "chooser": {
+          "$ref": "#/$defs/roleChooser"
+        },
+        "options": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/treeOption"
+          }
+        }
+      }
+    },
+    "rulesCorpus": {
+      "type": "object",
+      "description": "docs/spec/rules-break.json.",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "corpus_version",
+        "generator",
+        "rack_fixture_list",
+        "trees",
+        "entries"
+      ],
+      "properties": {
+        "schema_version": {
+          "$ref": "#/$defs/schemaVersion"
+        },
+        "corpus_version": {
+          "$ref": "#/$defs/corpusVersion"
+        },
+        "generator": {
+          "$ref": "#/$defs/generator"
+        },
+        "rack_fixture_list": {
+          "$ref": "#/$defs/rackFixtureList"
+        },
+        "trees": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "$ref": "#/$defs/treeSpec"
+          },
+          "description": "Break option trees keyed by tree name."
+        },
+        "entries": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/rulesEntry"
+          }
+        }
+      }
+    },
+    "spin": {
+      "type": "object",
+      "description": "Cue-tip spin offsets in tip radii.",
+      "additionalProperties": false,
+      "required": [
+        "a_tip_radii",
+        "b_tip_radii"
+      ],
+      "properties": {
+        "a_tip_radii": {
+          "type": "number",
+          "description": "Horizontal spin offset in tip radii."
+        },
+        "b_tip_radii": {
+          "type": "number",
+          "description": "Vertical spin offset in tip radii."
+        }
+      }
+    },
+    "shot": {
+      "type": "object",
+      "description": "Shot parameters; values are null until pinned by #8.",
+      "additionalProperties": false,
+      "required": [
+        "cue_ball",
+        "aim_deg",
+        "cue_speed_mm_s",
+        "spin",
+        "elevation_deg"
+      ],
+      "properties": {
+        "cue_ball": {
+          "$ref": "#/$defs/point2"
+        },
+        "aim_deg": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "Aim direction in degrees; null until pinned by #8."
+        },
+        "cue_speed_mm_s": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "Cue-ball launch speed in mm/s; null until pinned by #8."
+        },
+        "spin": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/spin"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Spin offsets; null until pinned by #8."
+        },
+        "elevation_deg": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "Cue elevation in degrees; null until pinned by #8."
+        }
+      }
+    },
+    "physicsEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "spec_ref",
+        "scenario",
+        "rules_entry",
+        "arrangement",
+        "shot",
+        "target_facts",
+        "acceptance"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/entryId"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Human-readable entry name."
+        },
+        "spec_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Rule or spec references, e.g. \"4.3(d)\"."
+        },
+        "scenario": {
+          "enum": [
+            "legal_break_four_to_rails",
+            "legal_break_exactly_four_distinct",
+            "legal_break_ball_pocketed_three_to_rails",
+            "total_miss_of_the_rack",
+            "soft_break_three_to_rails_no_pocket",
+            "illegal_break_with_foul_scratch",
+            "illegal_break_with_foul_object_ball_off_table",
+            "foul_on_legal_break_scratch",
+            "legal_break_object_ball_off_table",
+            "eight_pocketed_legal_break",
+            "eight_pocketed_on_a_foul_break",
+            "eight_driven_off_table_on_break",
+            "frozen_ball_to_rail_needs_leave_and_return",
+            "same_ball_two_rails_counts_once"
+          ],
+          "description": "Named physics-tier scenario."
+        },
+        "arrangement": {
+          "$ref": "#/$defs/arrangement"
+        },
+        "shot": {
+          "$ref": "#/$defs/shot"
+        },
+        "target_facts": {
+          "$ref": "#/$defs/targetFacts"
+        },
+        "acceptance": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Acceptance criterion for the recorded run."
+        },
+        "rules_entry": {
+          "type": "string",
+          "pattern": "^rb-[0-9]{2}$",
+          "description": "Rules-tier entry id pinning the same scenario (rules-break.json)."
+        }
+      }
+    },
+    "physicsCorpus": {
+      "type": "object",
+      "description": "docs/spec/physics-break.json.",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "corpus_version",
+        "generator",
+        "rack_fixture_list",
+        "entries"
+      ],
+      "properties": {
+        "schema_version": {
+          "$ref": "#/$defs/schemaVersion"
+        },
+        "corpus_version": {
+          "$ref": "#/$defs/corpusVersion"
+        },
+        "generator": {
+          "$ref": "#/$defs/generator"
+        },
+        "rack_fixture_list": {
+          "$ref": "#/$defs/rackFixtureList"
+        },
+        "entries": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/physicsEntry"
+          }
+        }
+      }
+    }
+  }
+}
