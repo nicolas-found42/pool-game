@@ -1,0 +1,627 @@
+{
+ "curve_set": "cushion_bank",
+ "units": {
+  "travel": "m (and ft, and 9 ft table lengths of 2.54 m)",
+  "speed": "mph and m/s",
+  "diamond": "one diamond = 1/8 of the playing length"
+ },
+ "sources": [
+  {
+   "document": "TP B.6 CB table lengths of travel for different speeds",
+   "url": "https://drdavepoolinfo.com/technical_proofs/new/TP_B-6.pdf",
+   "revision": "posted 2009-01-30, revised 2023-12-03",
+   "note": "rail COR, the travel algorithm, and the printed table lengths"
+  },
+  {
+   "document": "TP B.28 Sliding-Bank-Shot Table Comparisons From Careful Measurements",
+   "url": "https://drdavepoolinfo.com/technical_proofs/new/TP_B-28.pdf",
+   "revision": "posted 2023-08-24, revised 2023-08-26",
+   "note": "hand-measured through-diamond bank data on five tables"
+  },
+  {
+   "document": "TP B.27 Sliding Bank System Comparisons",
+   "url": "https://drdavepoolinfo.com/technical_proofs/new/TP_B-27.pdf",
+   "revision": "posted 2023-08-09",
+   "note": "the twice-plus-a-tenth reference system the measurements are compared against"
+  },
+  {
+   "document": "WPA Recommended Equipment Specifications \u00a78",
+   "url": "https://wpapool.com/wp-content/uploads/2024/01/RECOMMENDED-EQUIPMENT-SPECIFICATIONS.pdf",
+   "revision": "2024-01",
+   "note": "cushion acceptance test, cited in the physics survey on #3"
+  },
+  {
+   "document": "Mathavan, Jackson & Parkin, IMechE 2010 (via dr-dave)",
+   "url": "https://drdavepoolinfo.com/physics_articles/Mathavan_IMechE_2010.pdf",
+   "revision": "2010",
+   "note": "the source of the e_n=0.98 / mu=0.14 pair that the physics resolution on #7 explicitly forbids copying as an effective rail COR; its rebound results are plots, not a table, and were not digitized"
+  }
+ ],
+ "method": "TP B-6's published algorithm transcribed and re-run (rolling to the rail, e_c speed loss, skid back to roll, repeat); TP B-28's measured tables transcribed cell by cell",
+ "parameters": {
+  "mu_s": 0.2,
+  "mu_r": 0.01,
+  "e_c": 0.7,
+  "table_length_in": 100.0
+ },
+ "error_estimate": {
+  "travel_curve": "exact evaluation of the published algorithm. Checking it against the source's own printed table lengths gives an exact match at 1.5 and 3 mph (0.903 and 1.684 table lengths) and a 1.5-2.4% shortfall at 7, 12 and 20 mph, so the source's printed numbers are internally inconsistent at speed; treat them as +/-2% anchors",
+  "measured_banks": "TP B-28 publishes no uncertainty. It labels the data 'carefully measured' and gives no repeatability. The spread across the five tables (up to ~1 diamond at aim 3.0) shows the conditions dominate any reading error",
+  "anchor_check": [
+   {
+    "speed_mph": 1.5,
+    "printed_table_lengths": 0.903,
+    "computed_table_lengths": 0.9026,
+    "delta": -0.0004
+   },
+   {
+    "speed_mph": 3.0,
+    "printed_table_lengths": 1.684,
+    "computed_table_lengths": 1.6839,
+    "delta": -0.0001
+   },
+   {
+    "speed_mph": 7.0,
+    "printed_table_lengths": 3.005,
+    "computed_table_lengths": 2.96,
+    "delta": -0.045
+   },
+   {
+    "speed_mph": 12.0,
+    "printed_table_lengths": 3.69,
+    "computed_table_lengths": 3.602,
+    "delta": -0.088
+   },
+   {
+    "speed_mph": 20.0,
+    "printed_table_lengths": 4.715,
+    "computed_table_lengths": 4.6245,
+    "delta": -0.0905
+   }
+  ]
+ },
+ "travel_points": [
+  {
+   "speed_mph": 0.5,
+   "speed_m_s": 0.2235,
+   "travel_m": 0.2547,
+   "travel_ft": 0.8357,
+   "table_lengths": 0.1003
+  },
+  {
+   "speed_mph": 1.0,
+   "speed_m_s": 0.447,
+   "travel_m": 1.0189,
+   "travel_ft": 3.3429,
+   "table_lengths": 0.4012
+  },
+  {
+   "speed_mph": 1.5,
+   "speed_m_s": 0.6706,
+   "travel_m": 2.2926,
+   "travel_ft": 7.5216,
+   "table_lengths": 0.9026
+  },
+  {
+   "speed_mph": 2.0,
+   "speed_m_s": 0.8941,
+   "travel_m": 2.9424,
+   "travel_ft": 9.6534,
+   "table_lengths": 1.1584
+  },
+  {
+   "speed_mph": 2.5,
+   "speed_m_s": 1.1176,
+   "travel_m": 3.543,
+   "travel_ft": 11.624,
+   "table_lengths": 1.3949
+  },
+  {
+   "speed_mph": 3.0,
+   "speed_m_s": 1.3411,
+   "travel_m": 4.2771,
+   "travel_ft": 14.0326,
+   "table_lengths": 1.6839
+  },
+  {
+   "speed_mph": 3.5,
+   "speed_m_s": 1.5646,
+   "travel_m": 5.08,
+   "travel_ft": 16.6667,
+   "table_lengths": 2.0
+  },
+  {
+   "speed_mph": 4.0,
+   "speed_m_s": 1.7882,
+   "travel_m": 5.316,
+   "travel_ft": 17.4409,
+   "table_lengths": 2.0929
+  },
+  {
+   "speed_mph": 4.5,
+   "speed_m_s": 2.0117,
+   "travel_m": 5.5996,
+   "travel_ft": 18.3715,
+   "table_lengths": 2.2046
+  },
+  {
+   "speed_mph": 5.0,
+   "speed_m_s": 2.2352,
+   "travel_m": 5.9166,
+   "travel_ft": 19.4115,
+   "table_lengths": 2.3294
+  },
+  {
+   "speed_mph": 5.5,
+   "speed_m_s": 2.4587,
+   "travel_m": 6.267,
+   "travel_ft": 20.5611,
+   "table_lengths": 2.4673
+  },
+  {
+   "speed_mph": 6.0,
+   "speed_m_s": 2.6822,
+   "travel_m": 6.6508,
+   "travel_ft": 21.8201,
+   "table_lengths": 2.6184
+  },
+  {
+   "speed_mph": 6.5,
+   "speed_m_s": 2.9058,
+   "travel_m": 7.0679,
+   "travel_ft": 23.1886,
+   "table_lengths": 2.7826
+  },
+  {
+   "speed_mph": 7.0,
+   "speed_m_s": 3.1293,
+   "travel_m": 7.5184,
+   "travel_ft": 24.6666,
+   "table_lengths": 2.96
+  },
+  {
+   "speed_mph": 7.5,
+   "speed_m_s": 3.3528,
+   "travel_m": 7.6851,
+   "travel_ft": 25.2135,
+   "table_lengths": 3.0256
+  },
+  {
+   "speed_mph": 8.0,
+   "speed_m_s": 3.5763,
+   "travel_m": 7.8144,
+   "travel_ft": 25.6378,
+   "table_lengths": 3.0765
+  },
+  {
+   "speed_mph": 8.5,
+   "speed_m_s": 3.7998,
+   "travel_m": 7.952,
+   "travel_ft": 26.0894,
+   "table_lengths": 3.1307
+  },
+  {
+   "speed_mph": 9.0,
+   "speed_m_s": 4.0234,
+   "travel_m": 8.098,
+   "travel_ft": 26.5684,
+   "table_lengths": 3.1882
+  },
+  {
+   "speed_mph": 9.5,
+   "speed_m_s": 4.2469,
+   "travel_m": 8.2524,
+   "travel_ft": 27.0747,
+   "table_lengths": 3.249
+  },
+  {
+   "speed_mph": 10.0,
+   "speed_m_s": 4.4704,
+   "travel_m": 8.415,
+   "travel_ft": 27.6084,
+   "table_lengths": 3.313
+  },
+  {
+   "speed_mph": 10.5,
+   "speed_m_s": 4.6939,
+   "travel_m": 8.5861,
+   "travel_ft": 28.1695,
+   "table_lengths": 3.3803
+  },
+  {
+   "speed_mph": 11.0,
+   "speed_m_s": 4.9174,
+   "travel_m": 8.7654,
+   "travel_ft": 28.758,
+   "table_lengths": 3.451
+  },
+  {
+   "speed_mph": 11.5,
+   "speed_m_s": 5.141,
+   "travel_m": 8.9531,
+   "travel_ft": 29.3738,
+   "table_lengths": 3.5249
+  },
+  {
+   "speed_mph": 12.0,
+   "speed_m_s": 5.3645,
+   "travel_m": 9.1492,
+   "travel_ft": 30.017,
+   "table_lengths": 3.602
+  },
+  {
+   "speed_mph": 12.5,
+   "speed_m_s": 5.588,
+   "travel_m": 9.3536,
+   "travel_ft": 30.6876,
+   "table_lengths": 3.6825
+  },
+  {
+   "speed_mph": 13.0,
+   "speed_m_s": 5.8115,
+   "travel_m": 9.5663,
+   "travel_ft": 31.3855,
+   "table_lengths": 3.7663
+  },
+  {
+   "speed_mph": 13.5,
+   "speed_m_s": 6.035,
+   "travel_m": 9.7874,
+   "travel_ft": 32.1108,
+   "table_lengths": 3.8533
+  },
+  {
+   "speed_mph": 14.0,
+   "speed_m_s": 6.2586,
+   "travel_m": 10.0168,
+   "travel_ft": 32.8635,
+   "table_lengths": 3.9436
+  },
+  {
+   "speed_mph": 14.5,
+   "speed_m_s": 6.4821,
+   "travel_m": 10.1948,
+   "travel_ft": 33.4476,
+   "table_lengths": 4.0137
+  },
+  {
+   "speed_mph": 15.0,
+   "speed_m_s": 6.7056,
+   "travel_m": 10.3154,
+   "travel_ft": 33.8433,
+   "table_lengths": 4.0612
+  },
+  {
+   "speed_mph": 15.5,
+   "speed_m_s": 6.9291,
+   "travel_m": 10.4401,
+   "travel_ft": 34.2523,
+   "table_lengths": 4.1103
+  },
+  {
+   "speed_mph": 16.0,
+   "speed_m_s": 7.1526,
+   "travel_m": 10.5689,
+   "travel_ft": 34.6748,
+   "table_lengths": 4.161
+  },
+  {
+   "speed_mph": 16.5,
+   "speed_m_s": 7.3762,
+   "travel_m": 10.7017,
+   "travel_ft": 35.1106,
+   "table_lengths": 4.2133
+  },
+  {
+   "speed_mph": 17.0,
+   "speed_m_s": 7.5997,
+   "travel_m": 10.8387,
+   "travel_ft": 35.5599,
+   "table_lengths": 4.2672
+  },
+  {
+   "speed_mph": 17.5,
+   "speed_m_s": 7.8232,
+   "travel_m": 10.9797,
+   "travel_ft": 36.0226,
+   "table_lengths": 4.3227
+  },
+  {
+   "speed_mph": 18.0,
+   "speed_m_s": 8.0467,
+   "travel_m": 11.1248,
+   "travel_ft": 36.4987,
+   "table_lengths": 4.3798
+  },
+  {
+   "speed_mph": 18.5,
+   "speed_m_s": 8.2702,
+   "travel_m": 11.274,
+   "travel_ft": 36.9882,
+   "table_lengths": 4.4386
+  },
+  {
+   "speed_mph": 19.0,
+   "speed_m_s": 8.4938,
+   "travel_m": 11.4273,
+   "travel_ft": 37.4912,
+   "table_lengths": 4.4989
+  },
+  {
+   "speed_mph": 19.5,
+   "speed_m_s": 8.7173,
+   "travel_m": 11.5847,
+   "travel_ft": 38.0075,
+   "table_lengths": 4.5609
+  },
+  {
+   "speed_mph": 20.0,
+   "speed_m_s": 8.9408,
+   "travel_m": 11.7462,
+   "travel_ft": 38.5373,
+   "table_lengths": 4.6245
+  }
+ ],
+ "printed_anchors_TP_B6": [
+  {
+   "speed_mph": 1.5,
+   "printed_table_lengths": 0.903,
+   "computed_table_lengths": 0.9026,
+   "delta": -0.0004
+  },
+  {
+   "speed_mph": 3.0,
+   "printed_table_lengths": 1.684,
+   "computed_table_lengths": 1.6839,
+   "delta": -0.0001
+  },
+  {
+   "speed_mph": 7.0,
+   "printed_table_lengths": 3.005,
+   "computed_table_lengths": 2.96,
+   "delta": -0.045
+  },
+  {
+   "speed_mph": 12.0,
+   "printed_table_lengths": 3.69,
+   "computed_table_lengths": 3.602,
+   "delta": -0.088
+  },
+  {
+   "speed_mph": 20.0,
+   "printed_table_lengths": 4.715,
+   "computed_table_lengths": 4.6245,
+   "delta": -0.0905
+  }
+ ],
+ "lag_speed_mph_for_two_table_lengths": 3.465,
+ "wpa_cushion_acceptance_test": {
+  "description": "firm centre-ball stroke from the head spot must travel the length of the table 4 to 4.5 times without the ball jumping",
+  "table_lengths": [
+   4.0,
+   4.5
+  ]
+ },
+ "measured_banks_TP_B28": [
+  {
+   "table": "9ft Olhausen (Dr. Dave's video table)",
+   "aim_diamond": 0.5,
+   "through_diamond_measured": 1.38,
+   "twice_plus_tenth_system": 1.1,
+   "delta_vs_system": 0.28
+  },
+  {
+   "table": "9ft Olhausen (Dr. Dave's video table)",
+   "aim_diamond": 1.0,
+   "through_diamond_measured": 2.72,
+   "twice_plus_tenth_system": 2.2,
+   "delta_vs_system": 0.52
+  },
+  {
+   "table": "9ft Olhausen (Dr. Dave's video table)",
+   "aim_diamond": 1.5,
+   "through_diamond_measured": 3.89,
+   "twice_plus_tenth_system": 3.3,
+   "delta_vs_system": 0.59
+  },
+  {
+   "table": "9ft Olhausen (Dr. Dave's video table)",
+   "aim_diamond": 2.0,
+   "through_diamond_measured": 5.07,
+   "twice_plus_tenth_system": 4.4,
+   "delta_vs_system": 0.67
+  },
+  {
+   "table": "9ft Olhausen (Dr. Dave's video table)",
+   "aim_diamond": 2.5,
+   "through_diamond_measured": 6.38,
+   "twice_plus_tenth_system": 5.5,
+   "delta_vs_system": 0.88
+  },
+  {
+   "table": "9ft Olhausen (Dr. Dave's video table)",
+   "aim_diamond": 3.0,
+   "through_diamond_measured": 7.74,
+   "twice_plus_tenth_system": 6.6,
+   "delta_vs_system": 1.14
+  },
+  {
+   "table": "9ft Red Label Diamond",
+   "aim_diamond": 0.5,
+   "through_diamond_measured": 1.4,
+   "twice_plus_tenth_system": 1.1,
+   "delta_vs_system": 0.3
+  },
+  {
+   "table": "9ft Red Label Diamond",
+   "aim_diamond": 1.0,
+   "through_diamond_measured": 2.93,
+   "twice_plus_tenth_system": 2.2,
+   "delta_vs_system": 0.73
+  },
+  {
+   "table": "9ft Red Label Diamond",
+   "aim_diamond": 1.5,
+   "through_diamond_measured": 4.52,
+   "twice_plus_tenth_system": 3.3,
+   "delta_vs_system": 1.22
+  },
+  {
+   "table": "9ft Red Label Diamond",
+   "aim_diamond": 2.0,
+   "through_diamond_measured": 5.6,
+   "twice_plus_tenth_system": 4.4,
+   "delta_vs_system": 1.2
+  },
+  {
+   "table": "9ft Red Label Diamond",
+   "aim_diamond": 2.5,
+   "through_diamond_measured": 6.92,
+   "twice_plus_tenth_system": 5.5,
+   "delta_vs_system": 1.42
+  },
+  {
+   "table": "9ft Red Label Diamond",
+   "aim_diamond": 3.0,
+   "through_diamond_measured": 8.3,
+   "twice_plus_tenth_system": 6.6,
+   "delta_vs_system": 1.7
+  },
+  {
+   "table": "7ft Valley bar box",
+   "aim_diamond": 0.5,
+   "through_diamond_measured": 1.51,
+   "twice_plus_tenth_system": 1.1,
+   "delta_vs_system": 0.41
+  },
+  {
+   "table": "7ft Valley bar box",
+   "aim_diamond": 1.0,
+   "through_diamond_measured": 2.74,
+   "twice_plus_tenth_system": 2.2,
+   "delta_vs_system": 0.54
+  },
+  {
+   "table": "7ft Valley bar box",
+   "aim_diamond": 1.5,
+   "through_diamond_measured": 4.12,
+   "twice_plus_tenth_system": 3.3,
+   "delta_vs_system": 0.82
+  },
+  {
+   "table": "7ft Valley bar box",
+   "aim_diamond": 2.0,
+   "through_diamond_measured": 5.19,
+   "twice_plus_tenth_system": 4.4,
+   "delta_vs_system": 0.79
+  },
+  {
+   "table": "7ft Valley bar box",
+   "aim_diamond": 2.5,
+   "through_diamond_measured": 6.52,
+   "twice_plus_tenth_system": 5.5,
+   "delta_vs_system": 1.02
+  },
+  {
+   "table": "7ft Valley bar box",
+   "aim_diamond": 3.0,
+   "through_diamond_measured": 7.54,
+   "twice_plus_tenth_system": 6.6,
+   "delta_vs_system": 0.94
+  },
+  {
+   "table": "9ft Brunswick Gold Crown",
+   "aim_diamond": 0.5,
+   "through_diamond_measured": 1.27,
+   "twice_plus_tenth_system": 1.1,
+   "delta_vs_system": 0.17
+  },
+  {
+   "table": "9ft Brunswick Gold Crown",
+   "aim_diamond": 1.0,
+   "through_diamond_measured": 2.88,
+   "twice_plus_tenth_system": 2.2,
+   "delta_vs_system": 0.68
+  },
+  {
+   "table": "9ft Brunswick Gold Crown",
+   "aim_diamond": 1.5,
+   "through_diamond_measured": 4.38,
+   "twice_plus_tenth_system": 3.3,
+   "delta_vs_system": 1.08
+  },
+  {
+   "table": "9ft Brunswick Gold Crown",
+   "aim_diamond": 2.0,
+   "through_diamond_measured": 5.38,
+   "twice_plus_tenth_system": 4.4,
+   "delta_vs_system": 0.98
+  },
+  {
+   "table": "9ft Brunswick Gold Crown",
+   "aim_diamond": 2.5,
+   "through_diamond_measured": 6.56,
+   "twice_plus_tenth_system": 5.5,
+   "delta_vs_system": 1.06
+  },
+  {
+   "table": "9ft Brunswick Gold Crown",
+   "aim_diamond": 3.0,
+   "through_diamond_measured": 7.96,
+   "twice_plus_tenth_system": 6.6,
+   "delta_vs_system": 1.36
+  },
+  {
+   "table": "7ft Diamond bar box",
+   "aim_diamond": 0.5,
+   "through_diamond_measured": 1.6,
+   "twice_plus_tenth_system": 1.1,
+   "delta_vs_system": 0.5
+  },
+  {
+   "table": "7ft Diamond bar box",
+   "aim_diamond": 1.0,
+   "through_diamond_measured": 3.31,
+   "twice_plus_tenth_system": 2.2,
+   "delta_vs_system": 1.11
+  },
+  {
+   "table": "7ft Diamond bar box",
+   "aim_diamond": 1.5,
+   "through_diamond_measured": 4.94,
+   "twice_plus_tenth_system": 3.3,
+   "delta_vs_system": 1.64
+  },
+  {
+   "table": "7ft Diamond bar box",
+   "aim_diamond": 2.0,
+   "through_diamond_measured": 6.22,
+   "twice_plus_tenth_system": 4.4,
+   "delta_vs_system": 1.82
+  },
+  {
+   "table": "7ft Diamond bar box",
+   "aim_diamond": 2.5,
+   "through_diamond_measured": 7.55,
+   "twice_plus_tenth_system": 5.5,
+   "delta_vs_system": 2.05
+  },
+  {
+   "table": "7ft Diamond bar box",
+   "aim_diamond": 3.0,
+   "through_diamond_measured": 8.59,
+   "twice_plus_tenth_system": 6.6,
+   "delta_vs_system": 1.99
+  }
+ ],
+ "measured_bank_table": {
+  "columns": [
+   "table",
+   "aim_diamond",
+   "through_diamond_measured",
+   "twice_plus_tenth_system",
+   "delta_vs_system"
+  ],
+  "note": "aim = diamond on the banking rail; measured = diamond crossing on the opposite rail"
+ }
+}

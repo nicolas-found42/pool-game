@@ -1,0 +1,548 @@
+{
+ "curve_set": "squirt",
+ "units": {
+  "deflection": "mm and inches over a 50 in cue-ball travel",
+  "squirt_angle": "degrees, atan(deflection / 50 in)",
+  "pivot_point": "inches from the tip"
+ },
+ "sources": [
+  {
+   "document": "Dr. Dave - Published Data for Shaft CB Deflections (Platinum Billiards)",
+   "url": "https://drdavepoolinfo.com/faq/squirt/published-data/",
+   "revision": "retrieved 2026-09-11",
+   "note": "the 46-shaft table; the page also quotes the Shepard and Platinum ranges"
+  },
+  {
+   "document": "R. Shepard, 'Everything you always wanted to know about cue ball squirt, but were afraid to ask'",
+   "url": "https://drdavepoolinfo.com/physics_articles/Shepard_squirt.pdf",
+   "revision": "2001",
+   "note": "aim-and-pivot method, pivot point <-> endmass mapping, and the 0.5-2.3 degree squirt range"
+  },
+  {
+   "document": "TP B.1 Squirt angle, pivot length, and tip shape",
+   "url": "https://drdavepoolinfo.com/technical_proofs/new/TP_B-1.pdf",
+   "revision": "posted 2008",
+   "note": "secondary source; not transcribed here"
+  }
+ ],
+ "method": "transcribed the Platinum table verbatim (it is a table, not a plot); derived the squirt angle with the page's own 50 in travel distance; transcribed Shepard's pivot-point/endmass statements",
+ "error_estimate": {
+  "table": "the source publishes no uncertainty for the Platinum measurements. It states tests were done on a jig; Shepard's paper notes the practical difficulties (tip offset visibility, swerve contamination, stroke error) that motivate the aim-and-pivot method instead",
+  "cross_source_range": "the two published sources do not agree: Shepard quotes 0.5-2.3 deg of squirt and ~10-50 in of pivot, Platinum measures 1.3-2.3 deg and 7.6-14.1 in. Treat the union as the gate band and record the cue when narrowing it"
+ },
+ "shaft_table": [
+  {
+   "shaft": "Predator Z-2",
+   "tip_curvature": "dime",
+   "deflection_mm_over_50in": 29.6,
+   "deflection_in_over_50in": 1.17,
+   "vs_average_pct": -28.6,
+   "pivot_point_in": 14.1,
+   "rating": "low",
+   "squirt_angle_deg": 1.3352
+  },
+  {
+   "shaft": "Predator Z",
+   "tip_curvature": "dime",
+   "deflection_mm_over_50in": 32.3,
+   "deflection_in_over_50in": 1.27,
+   "vs_average_pct": -22.2,
+   "pivot_point_in": 12.8,
+   "rating": "low",
+   "squirt_angle_deg": 1.4569
+  },
+  {
+   "shaft": "Predator 314-2",
+   "tip_curvature": "dime",
+   "deflection_mm_over_50in": 33.0,
+   "deflection_in_over_50in": 1.3,
+   "vs_average_pct": -20.4,
+   "pivot_point_in": 12.5,
+   "rating": "low",
+   "squirt_angle_deg": 1.4885
+  },
+  {
+   "shaft": "OB-1 Shaft",
+   "tip_curvature": "dime",
+   "deflection_mm_over_50in": 33.4,
+   "deflection_in_over_50in": 1.32,
+   "vs_average_pct": -19.3,
+   "pivot_point_in": 12.3,
+   "rating": "low",
+   "squirt_angle_deg": 1.5065
+  },
+  {
+   "shaft": "Predator BK2",
+   "tip_curvature": "dime",
+   "deflection_mm_over_50in": 34.6,
+   "deflection_in_over_50in": 1.36,
+   "vs_average_pct": -16.5,
+   "pivot_point_in": 11.9,
+   "rating": "low",
+   "squirt_angle_deg": 1.5606
+  },
+  {
+   "shaft": "Predator 314",
+   "tip_curvature": "dime",
+   "deflection_mm_over_50in": 34.8,
+   "deflection_in_over_50in": 1.37,
+   "vs_average_pct": -16.1,
+   "pivot_point_in": 11.8,
+   "rating": "low",
+   "squirt_angle_deg": 1.5696
+  },
+  {
+   "shaft": "McDermott i-3",
+   "tip_curvature": "dime",
+   "deflection_mm_over_50in": 36.8,
+   "deflection_in_over_50in": 1.45,
+   "vs_average_pct": -11.2,
+   "pivot_point_in": 11.1,
+   "rating": "low",
+   "squirt_angle_deg": 1.6598
+  },
+  {
+   "shaft": "Predator BK",
+   "tip_curvature": "dime",
+   "deflection_mm_over_50in": 37.1,
+   "deflection_in_over_50in": 1.46,
+   "vs_average_pct": -10.6,
+   "pivot_point_in": 11.0,
+   "rating": "low",
+   "squirt_angle_deg": 1.6733
+  },
+  {
+   "shaft": "Universal SmartShaft (Low Squirt)",
+   "tip_curvature": "dime",
+   "deflection_mm_over_50in": 37.9,
+   "deflection_in_over_50in": 1.49,
+   "vs_average_pct": -8.6,
+   "pivot_point_in": 10.7,
+   "rating": "low",
+   "squirt_angle_deg": 1.7093
+  },
+  {
+   "shaft": "McDermott i-2",
+   "tip_curvature": "dime",
+   "deflection_mm_over_50in": 38.6,
+   "deflection_in_over_50in": 1.52,
+   "vs_average_pct": -6.9,
+   "pivot_point_in": 10.5,
+   "rating": "med low",
+   "squirt_angle_deg": 1.7409
+  },
+  {
+   "shaft": "Universal SmartShaft (Regular Squirt)",
+   "tip_curvature": "dime",
+   "deflection_mm_over_50in": 39.4,
+   "deflection_in_over_50in": 1.55,
+   "vs_average_pct": -5.0,
+   "pivot_point_in": 10.3,
+   "rating": "med low",
+   "squirt_angle_deg": 1.777
+  },
+  {
+   "shaft": "Axiom",
+   "tip_curvature": "dime",
+   "deflection_mm_over_50in": 39.6,
+   "deflection_in_over_50in": 1.56,
+   "vs_average_pct": -4.4,
+   "pivot_point_in": 10.3,
+   "rating": "med low",
+   "squirt_angle_deg": 1.786
+  },
+  {
+   "shaft": "McDermott i-1",
+   "tip_curvature": "dime",
+   "deflection_mm_over_50in": 39.6,
+   "deflection_in_over_50in": 1.56,
+   "vs_average_pct": -4.4,
+   "pivot_point_in": 10.3,
+   "rating": "med low",
+   "squirt_angle_deg": 1.786
+  },
+  {
+   "shaft": "Action",
+   "tip_curvature": "dime",
+   "deflection_mm_over_50in": 40.1,
+   "deflection_in_over_50in": 1.58,
+   "vs_average_pct": -3.2,
+   "pivot_point_in": 10.1,
+   "rating": "med low",
+   "squirt_angle_deg": 1.8085
+  },
+  {
+   "shaft": "Meucci Red Dot",
+   "tip_curvature": "dime",
+   "deflection_mm_over_50in": 40.1,
+   "deflection_in_over_50in": 1.58,
+   "vs_average_pct": -3.2,
+   "pivot_point_in": 10.1,
+   "rating": "med low",
+   "squirt_angle_deg": 1.8085
+  },
+  {
+   "shaft": "5280",
+   "tip_curvature": "dime",
+   "deflection_mm_over_50in": 40.6,
+   "deflection_in_over_50in": 1.6,
+   "vs_average_pct": -2.0,
+   "pivot_point_in": 9.9,
+   "rating": "med low",
+   "squirt_angle_deg": 1.831
+  },
+  {
+   "shaft": "Sierra",
+   "tip_curvature": "dime",
+   "deflection_mm_over_50in": 40.9,
+   "deflection_in_over_50in": 1.61,
+   "vs_average_pct": -1.4,
+   "pivot_point_in": 9.9,
+   "rating": "med low",
+   "squirt_angle_deg": 1.8446
+  },
+  {
+   "shaft": "Cuetec Thunderbolt",
+   "tip_curvature": "dime",
+   "deflection_mm_over_50in": 41.7,
+   "deflection_in_over_50in": 1.64,
+   "vs_average_pct": 0.5,
+   "pivot_point_in": 9.7,
+   "rating": "medium",
+   "squirt_angle_deg": 1.8806
+  },
+  {
+   "shaft": "Viking",
+   "tip_curvature": "nickel",
+   "deflection_mm_over_50in": 41.7,
+   "deflection_in_over_50in": 1.64,
+   "vs_average_pct": 0.5,
+   "pivot_point_in": 9.7,
+   "rating": "medium",
+   "squirt_angle_deg": 1.8806
+  },
+  {
+   "shaft": "Mezz Power Break 2",
+   "tip_curvature": "quarter",
+   "deflection_mm_over_50in": 41.7,
+   "deflection_in_over_50in": 1.64,
+   "vs_average_pct": 0.5,
+   "pivot_point_in": 9.7,
+   "rating": "medium",
+   "squirt_angle_deg": 1.8806
+  },
+  {
+   "shaft": "Sterling",
+   "tip_curvature": "nickel",
+   "deflection_mm_over_50in": 41.9,
+   "deflection_in_over_50in": 1.65,
+   "vs_average_pct": 1.1,
+   "pivot_point_in": 9.6,
+   "rating": "medium",
+   "squirt_angle_deg": 1.8896
+  },
+  {
+   "shaft": "Bunjee J/B",
+   "tip_curvature": "quarter",
+   "deflection_mm_over_50in": 42.3,
+   "deflection_in_over_50in": 1.67,
+   "vs_average_pct": 2.0,
+   "pivot_point_in": 9.5,
+   "rating": "medium",
+   "squirt_angle_deg": 1.9077
+  },
+  {
+   "shaft": "Fury JB",
+   "tip_curvature": "dime",
+   "deflection_mm_over_50in": 42.7,
+   "deflection_in_over_50in": 1.68,
+   "vs_average_pct": 2.9,
+   "pivot_point_in": 9.4,
+   "rating": "medium",
+   "squirt_angle_deg": 1.9257
+  },
+  {
+   "shaft": "Falcon",
+   "tip_curvature": "dime",
+   "deflection_mm_over_50in": 42.9,
+   "deflection_in_over_50in": 1.69,
+   "vs_average_pct": 3.5,
+   "pivot_point_in": 9.4,
+   "rating": "medium",
+   "squirt_angle_deg": 1.9347
+  },
+  {
+   "shaft": "McDermott",
+   "tip_curvature": "dime",
+   "deflection_mm_over_50in": 42.9,
+   "deflection_in_over_50in": 1.69,
+   "vs_average_pct": 3.5,
+   "pivot_point_in": 9.4,
+   "rating": "medium",
+   "squirt_angle_deg": 1.9347
+  },
+  {
+   "shaft": "Mezz",
+   "tip_curvature": "dime",
+   "deflection_mm_over_50in": 42.9,
+   "deflection_in_over_50in": 1.69,
+   "vs_average_pct": 3.5,
+   "pivot_point_in": 9.4,
+   "rating": "medium",
+   "squirt_angle_deg": 1.9347
+  },
+  {
+   "shaft": "Tiger X-shaft",
+   "tip_curvature": "nickel",
+   "deflection_mm_over_50in": 42.9,
+   "deflection_in_over_50in": 1.69,
+   "vs_average_pct": 3.5,
+   "pivot_point_in": 9.4,
+   "rating": "medium",
+   "squirt_angle_deg": 1.9347
+  },
+  {
+   "shaft": "Players",
+   "tip_curvature": "dime",
+   "deflection_mm_over_50in": 43.4,
+   "deflection_in_over_50in": 1.71,
+   "vs_average_pct": 4.8,
+   "pivot_point_in": 9.2,
+   "rating": "medium",
+   "squirt_angle_deg": 1.9572
+  },
+  {
+   "shaft": "Sledgehammer J/B",
+   "tip_curvature": "dime",
+   "deflection_mm_over_50in": 43.4,
+   "deflection_in_over_50in": 1.71,
+   "vs_average_pct": 4.8,
+   "pivot_point_in": 9.2,
+   "rating": "medium",
+   "squirt_angle_deg": 1.9572
+  },
+  {
+   "shaft": "Cuetec Vortex",
+   "tip_curvature": "dime",
+   "deflection_mm_over_50in": 43.9,
+   "deflection_in_over_50in": 1.73,
+   "vs_average_pct": 6.0,
+   "pivot_point_in": 9.1,
+   "rating": "medium",
+   "squirt_angle_deg": 1.9798
+  },
+  {
+   "shaft": "Mali",
+   "tip_curvature": "dime",
+   "deflection_mm_over_50in": 43.9,
+   "deflection_in_over_50in": 1.73,
+   "vs_average_pct": 6.0,
+   "pivot_point_in": 9.1,
+   "rating": "medium",
+   "squirt_angle_deg": 1.9798
+  },
+  {
+   "shaft": "Pechauer",
+   "tip_curvature": "nickel",
+   "deflection_mm_over_50in": 43.9,
+   "deflection_in_over_50in": 1.73,
+   "vs_average_pct": 6.0,
+   "pivot_point_in": 9.1,
+   "rating": "medium",
+   "squirt_angle_deg": 1.9798
+  },
+  {
+   "shaft": "Scorpion J/B",
+   "tip_curvature": "quarter",
+   "deflection_mm_over_50in": 43.9,
+   "deflection_in_over_50in": 1.73,
+   "vs_average_pct": 6.0,
+   "pivot_point_in": 9.1,
+   "rating": "medium",
+   "squirt_angle_deg": 1.9798
+  },
+  {
+   "shaft": "Blaze",
+   "tip_curvature": "dime",
+   "deflection_mm_over_50in": 43.9,
+   "deflection_in_over_50in": 1.73,
+   "vs_average_pct": 6.0,
+   "pivot_point_in": 9.1,
+   "rating": "medium",
+   "squirt_angle_deg": 1.9798
+  },
+  {
+   "shaft": "Joss",
+   "tip_curvature": "nickel",
+   "deflection_mm_over_50in": 44.2,
+   "deflection_in_over_50in": 1.74,
+   "vs_average_pct": 6.6,
+   "pivot_point_in": 9.1,
+   "rating": "med high",
+   "squirt_angle_deg": 1.9933
+  },
+  {
+   "shaft": "Cuetec SST",
+   "tip_curvature": "nickel",
+   "deflection_mm_over_50in": 44.2,
+   "deflection_in_over_50in": 1.74,
+   "vs_average_pct": 6.6,
+   "pivot_point_in": 9.0,
+   "rating": "med high",
+   "squirt_angle_deg": 1.9933
+  },
+  {
+   "shaft": "X Breaker",
+   "tip_curvature": "",
+   "deflection_mm_over_50in": 44.3,
+   "deflection_in_over_50in": 1.74,
+   "vs_average_pct": 6.8,
+   "pivot_point_in": 9.0,
+   "rating": "med high",
+   "squirt_angle_deg": 1.9978
+  },
+  {
+   "shaft": "Meucci Black Dot",
+   "tip_curvature": "dime",
+   "deflection_mm_over_50in": 44.4,
+   "deflection_in_over_50in": 1.75,
+   "vs_average_pct": 7.2,
+   "pivot_point_in": 9.0,
+   "rating": "med high",
+   "squirt_angle_deg": 2.0023
+  },
+  {
+   "shaft": "Fury",
+   "tip_curvature": "nickel",
+   "deflection_mm_over_50in": 44.7,
+   "deflection_in_over_50in": 1.76,
+   "vs_average_pct": 7.8,
+   "pivot_point_in": 9.0,
+   "rating": "med high",
+   "squirt_angle_deg": 2.0158
+  },
+  {
+   "shaft": "Lucasi",
+   "tip_curvature": "dime",
+   "deflection_mm_over_50in": 44.7,
+   "deflection_in_over_50in": 1.76,
+   "vs_average_pct": 7.8,
+   "pivot_point_in": 8.9,
+   "rating": "med high",
+   "squirt_angle_deg": 2.0158
+  },
+  {
+   "shaft": "Schon",
+   "tip_curvature": "nickel",
+   "deflection_mm_over_50in": 44.7,
+   "deflection_in_over_50in": 1.76,
+   "vs_average_pct": 7.8,
+   "pivot_point_in": 8.9,
+   "rating": "med high",
+   "squirt_angle_deg": 2.0158
+  },
+  {
+   "shaft": "Axiom J/B",
+   "tip_curvature": "dime",
+   "deflection_mm_over_50in": 46.0,
+   "deflection_in_over_50in": 1.81,
+   "vs_average_pct": 10.9,
+   "pivot_point_in": 8.7,
+   "rating": "med high",
+   "squirt_angle_deg": 2.0744
+  },
+  {
+   "shaft": "Bunjee Blaster",
+   "tip_curvature": "nickel",
+   "deflection_mm_over_50in": 46.0,
+   "deflection_in_over_50in": 1.81,
+   "vs_average_pct": 10.9,
+   "pivot_point_in": 8.7,
+   "rating": "med high",
+   "squirt_angle_deg": 2.0744
+  },
+  {
+   "shaft": "Lightning Bolt",
+   "tip_curvature": "",
+   "deflection_mm_over_50in": 46.2,
+   "deflection_in_over_50in": 1.82,
+   "vs_average_pct": 11.4,
+   "pivot_point_in": 8.6,
+   "rating": "med high",
+   "squirt_angle_deg": 2.0834
+  },
+  {
+   "shaft": "Mezz Break",
+   "tip_curvature": "quarter",
+   "deflection_mm_over_50in": 47.8,
+   "deflection_in_over_50in": 1.88,
+   "vs_average_pct": 15.2,
+   "pivot_point_in": 8.3,
+   "rating": "high",
+   "squirt_angle_deg": 2.1555
+  },
+  {
+   "shaft": "Scorpion Break",
+   "tip_curvature": "dime",
+   "deflection_mm_over_50in": 51.3,
+   "deflection_in_over_50in": 2.02,
+   "vs_average_pct": 23.7,
+   "pivot_point_in": 7.6,
+   "rating": "high",
+   "squirt_angle_deg": 2.3131
+  }
+ ],
+ "shaft_table_summary": {
+  "n": 46,
+  "squirt_angle_deg_min": 1.3352,
+  "squirt_angle_deg_max": 2.3131,
+  "pivot_point_in_min": 7.6,
+  "pivot_point_in_max": 14.1
+ },
+ "shepard_pivot_endmass_map": [
+  {
+   "pivot_point_in": 10.0,
+   "mass_ratio_Mb_over_Mtip": 20,
+   "class": "high squirt"
+  },
+  {
+   "pivot_point_in": [
+    16.0,
+    18.0
+   ],
+   "mass_ratio_Mb_over_Mtip": 30,
+   "class": "average"
+  },
+  {
+   "pivot_point_in": 30.0,
+   "mass_ratio_Mb_over_Mtip": 50,
+   "class": "good (low squirt)"
+  },
+  {
+   "pivot_point_in": [
+    40.0,
+    50.0
+   ],
+   "mass_ratio_Mb_over_Mtip": 100,
+   "class": "low squirt"
+  }
+ ],
+ "published_ranges": {
+  "shepard_squirt_deg": [
+   0.5,
+   2.3
+  ],
+  "shepard_pivot_in": [
+   10.0,
+   50.0
+  ],
+  "platinum_squirt_deg": [
+   1.3,
+   2.3
+  ],
+  "platinum_pivot_in": [
+   7.6,
+   14.1
+  ]
+ }
+}
