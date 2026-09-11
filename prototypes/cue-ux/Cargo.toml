@@ -1,0 +1,15 @@
+[package]
+name = "cue-ux-prototype"
+version = "0.0.1"
+edition = "2021"
+publish = false
+description = "Throwaway prototype for wayfinder ticket #10: shot-authoring UX (cue drag-back, spin marker, masse elevation). Not part of the game workspace."
+
+[dependencies]
+bevy = "=0.19.1"
+
+[profile.dev]
+opt-level = 1
+
+[profile.dev.package."*"]
+opt-level = 2
