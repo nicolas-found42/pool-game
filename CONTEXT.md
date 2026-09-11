@@ -101,3 +101,18 @@ The set of facts the simulation must expose for adjudication to be possible at a
 
 **Deviation**:
 A departure from the WPA text, listed with its rule number and reason. Deviations are never silent.
+
+### Architecture
+
+**Session**:
+The drive loop that owns the rules machine, the simulation, the seeded streams, and the input log. Both the app and the headless harness drive it, so a match runs identically wherever it executes.
+
+**Match layer**:
+The thin layer above the rack-scoped rules machine that sequences racks and owns match bookkeeping: the race target, the breaker, and per-rack seed derivation.
+_Avoid_: game layer, match state machine
+
+**Input log**:
+The recorded free-choice sequence of a match — placements, declarations, spot requests, and option picks — from which the match replays exactly. Everything else (racks, adjudications, event logs, scores) is derived; no wall-clock value appears in it.
+
+**Execution noise**:
+The seeded per-parameter perturbation applied to a policy's committed declaration for a difficulty level. Human declarations carry none.

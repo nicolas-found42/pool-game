@@ -1,0 +1,279 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/nicolas-found42/pool-game/docs/spec/input-log.schema.json",
+  "title": "Input log",
+  "description": "The free-choice sequence of one match (or a stand-alone rack): placements, declarations, spot requests, and option picks, in order. Everything else — racks, event logs, adjudications, race scores, re-rack snapshots — is derived on replay. No wall-clock value appears anywhere in the log; array order is the sequence. Entry fields mirror the rules machine's input vocabulary (#6); frame, units, and the strike declaration follow #7 §2 and §4.",
+  "type": "object",
+  "required": [
+    "format_version",
+    "profile",
+    "match_seed",
+    "noise_seed",
+    "difficulty",
+    "race_target",
+    "entries"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "format_version": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Bumped only when an entry's meaning changes; never for additions or key reordering."
+    },
+    "profile": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Profile id; the record lives at config/profiles/<id>.json."
+    },
+    "match_seed": {
+      "$ref": "#/$defs/u64",
+      "description": "Rack-construction seed. Per-rack seeds derive from it: rack i gets the SplitMix64 stream seeded with match_seed after i+1 steps (#14)."
+    },
+    "noise_seed": {
+      "$ref": "#/$defs/u64",
+      "description": "Execution-noise stream seed. One draw is consumed for every declaration carrying from_policy, in log order."
+    },
+    "difficulty": {
+      "$ref": "#/$defs/difficulty",
+      "description": "The match's policy difficulty and checkpoint; inert when both seats are human."
+    },
+    "race_target": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Racks needed to win the match."
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/entry"
+      }
+    }
+  },
+  "$defs": {
+    "u64": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 18446744073709551615
+    },
+    "difficulty": {
+      "type": "object",
+      "required": [
+        "level",
+        "checkpoint"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "level": {
+          "enum": [
+            "beginner",
+            "intermediate",
+            "advanced",
+            "pro"
+          ]
+        },
+        "checkpoint": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Policy artifact identity used by any policy seat (e.g. the sha256 of the served .onnx)."
+        }
+      }
+    },
+    "vec2": {
+      "type": "object",
+      "required": [
+        "x",
+        "y"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        }
+      }
+    },
+    "call": {
+      "description": "The declaration's call: a ball plus pocket, a safety, or — on the break only — nothing.",
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "ball",
+            "pocket"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "const": "ball"
+            },
+            "ball": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 15
+            },
+            "pocket": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Pocket id per the rules section's vocabulary."
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "type"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "const": "safety"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": [
+            "type"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "const": "break"
+            }
+          }
+        }
+      ]
+    },
+    "placement": {
+      "type": "object",
+      "required": [
+        "kind",
+        "domain",
+        "pos"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "placement"
+        },
+        "domain": {
+          "enum": [
+            "above_head_string",
+            "anywhere"
+          ],
+          "description": "The ball-in-hand domain the incoming player is placing within, as adjudicated by the rules layer."
+        },
+        "pos": {
+          "$ref": "#/$defs/vec2",
+          "description": "Cue-ball centre, table frame, millimetres."
+        }
+      }
+    },
+    "spot_request": {
+      "type": "object",
+      "description": "The WPA 1.6 second-paragraph request to spot the legal object ball nearest the head string; legal only when every legal object ball is above the head string.",
+      "required": [
+        "kind"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "spot_request"
+        }
+      }
+    },
+    "declaration": {
+      "type": "object",
+      "required": [
+        "kind",
+        "from_policy",
+        "call",
+        "aim",
+        "speed",
+        "spin",
+        "elevation"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "declaration"
+        },
+        "from_policy": {
+          "type": "boolean",
+          "description": "True when a policy seat committed this declaration; the only declarations execution noise applies to, and only on replay's derivation from noise_seed."
+        },
+        "call": {
+          "$ref": "#/$defs/call"
+        },
+        "aim": {
+          "$ref": "#/$defs/vec2",
+          "description": "Unit horizontal aim direction in the table frame."
+        },
+        "speed": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Cue-ball launch speed, millimetres per second."
+        },
+        "spin": {
+          "type": "object",
+          "required": [
+            "a",
+            "b"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "a": {
+              "type": "number"
+            },
+            "b": {
+              "type": "number"
+            }
+          },
+          "description": "Spin offsets in tip radii; the miscue envelope is enforced at the input boundary."
+        },
+        "elevation": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Cue elevation, radians."
+        }
+      }
+    },
+    "option": {
+      "type": "object",
+      "description": "One option of the current AwaitingChoice tree: break-foul, illegal-break, 8-on-break, or the stalemate offer/accept; ids are defined by the rules corpus.",
+      "required": [
+        "kind",
+        "option_id"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "option"
+        },
+        "option_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "entry": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/placement"
+        },
+        {
+          "$ref": "#/$defs/spot_request"
+        },
+        {
+          "$ref": "#/$defs/declaration"
+        },
+        {
+          "$ref": "#/$defs/option"
+        }
+      ]
+    }
+  }
+}
