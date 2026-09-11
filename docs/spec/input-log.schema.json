@@ -234,7 +234,7 @@
               "description": "Above/below-centre tip offset as a fraction of the miscue envelope: b > 0 is above centre (the follow side at zero elevation), b < 0 below it (the draw side)."
             }
           },
-          "description": "Cue-tip contact offset in the plane perpendicular to the cue axis, as a fraction of the miscue envelope (1.0 = the limit; the b axis is the world-up direction projected into that plane and a completes the frame). Dimensionless and scale-free: the sim converts at the input boundary, offset_mm = rho_max * value with rho_max = R*mu/sqrt(1+mu^2) = 14.70 mm at mu = 0.6. The envelope is enforced at the input boundary: |(a, b)| <= 1 is legal (the boundary comparison carries a 1e-3 mm tolerance on the tip offset, about 7e-5 in this unit, so a value authored exactly at the limit commits); anything past it is an input error and is never simulated."
+          "description": "Cue-tip contact offset in the plane perpendicular to the cue axis, as a fraction of the miscue envelope: 1.0 is the limit, so |(a, b)| <= 1. The b axis is the world-up direction projected into that plane; a completes the frame. Enforced at the input boundary (offset_mm = rho_max * value, rho_max = R*mu/sqrt(1+mu^2)): the comparison carries a 1e-3 mm tolerance on the tip offset, so a value authored exactly at the limit commits; anything past it is an input error and is never simulated."
         },
         "elevation": {
           "type": "number",
