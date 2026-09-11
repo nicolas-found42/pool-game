@@ -1,9 +1,12 @@
 # AI pipeline: measured constants and calibration
 
-Status: **prototype measurements for wayfinder #16**, feeding the AI section of the spec (the
-resolution on #9). Every number here is indicative and gets re-pinned against the real simulation
-(#8) at implementation: the prototype's table model is spec frame/geometry constants only, with no
-fitted physics, no rules layer, and no shipping code anywhere.
+Status: **accepted as the AI section's constants appendix at #16** (2026-09-11), feeding the AI
+section of the spec (the resolution on #9). The gate accepted the measured cost envelope and pinned
+`B` = 16–24 work units; the rows marked *provisional* below stayed provisional, each with its
+disposition and the measurement that settles it recorded in the resolution on #16. Every number here
+is indicative and gets re-pinned against the real simulation (#8) at implementation: the prototype's
+table model is spec frame/geometry constants only, with no fitted physics, no rules layer, and no
+shipping code anywhere.
 
 - Prototype: `prototypes/ai-spine/` (Rust generator/planner/toy sim/`ort` serve path; Python env and
   PPO smoke run). Commands and toolchain: `prototypes/ai-spine/README.md`.
