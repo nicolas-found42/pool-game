@@ -1,0 +1,208 @@
+{
+ "engine": "pooltool",
+ "version": "0.6.0",
+ "table_mm": [
+  1270.0,
+  2540.0
+ ],
+ "params": {
+  "R": 0.028575,
+  "e_b": 0.95,
+  "e_c": 0.75,
+  "f_c": 0.2,
+  "g": 9.80665,
+  "m": 0.17,
+  "u_b": 0.06,
+  "u_r": 0.01,
+  "u_s": 0.2
+ },
+ "shots": [
+  {
+   "name": "straight_stun_1p4",
+   "note": "cue -> object head-on, 1.4 m/s, stun",
+   "t_rest": 5.6552471065021575,
+   "events": 14,
+   "ball_ball": 2,
+   "cushion": 1,
+   "pocketed": [],
+   "rest": {
+    "cue": {
+     "x_mm": -295.0778720102606,
+     "y_mm": -6.661338147750939e-13,
+     "speed": 0.0
+    },
+    "1": {
+     "x_mm": 176.68134522728772,
+     "y_mm": 5.551115123125783e-13,
+     "speed": 0.0
+    }
+   },
+   "event_types": {
+    "ball_ball": 2,
+    "ball_linear_cushion": 1,
+    "none": 2,
+    "rolling_stationary": 3,
+    "sliding_rolling": 5,
+    "stick_ball": 1
+   }
+  },
+  {
+   "name": "cut30_follow_1p4",
+   "note": "30 deg cut, follow 0.5R",
+   "t_rest": 4.6774991723007835,
+   "events": 13,
+   "ball_ball": 1,
+   "cushion": 2,
+   "pocketed": [
+    "1"
+   ],
+   "rest": {
+    "cue": {
+     "x_mm": 880.8324555233304,
+     "y_mm": -396.58078959343203,
+     "speed": 0.0
+    },
+    "1": {
+     "x_mm": 1299.486352775479,
+     "y_mm": 664.486352775479,
+     "speed": 0.0
+    }
+   },
+   "event_types": {
+    "ball_ball": 1,
+    "ball_circular_cushion": 1,
+    "ball_linear_cushion": 1,
+    "ball_pocket": 1,
+    "none": 2,
+    "rolling_stationary": 1,
+    "sliding_rolling": 5,
+    "stick_ball": 1
+   }
+  },
+  {
+   "name": "cushion_roll_1p5",
+   "note": "rolling ball square into the far cushion",
+   "t_rest": 6.731094996785652,
+   "events": 9,
+   "ball_ball": 0,
+   "cushion": 2,
+   "pocketed": [],
+   "rest": {
+    "cue": {
+     "x_mm": -1035.111645233028,
+     "y_mm": 400.0000000000008,
+     "speed": 0.0
+    }
+   },
+   "event_types": {
+    "ball_linear_cushion": 2,
+    "none": 2,
+    "rolling_stationary": 1,
+    "sliding_rolling": 3,
+    "stick_ball": 1
+   }
+  },
+  {
+   "name": "break_rack",
+   "note": "full rack break at 6.2 m/s, level, centre",
+   "t_rest": 7.014486057202266,
+   "events": 222,
+   "ball_ball": 118,
+   "cushion": 26,
+   "pocketed": [
+    "7"
+   ],
+   "rest": {
+    "cue": {
+     "x_mm": 211.67143015038948,
+     "y_mm": -114.28973827138789,
+     "speed": 0.0
+    },
+    "1": {
+     "x_mm": -953.5255543395529,
+     "y_mm": 323.65092539441855,
+     "speed": 0.0
+    },
+    "2": {
+     "x_mm": 105.97444814486146,
+     "y_mm": -563.7613721113003,
+     "speed": 0.0
+    },
+    "3": {
+     "x_mm": 462.57567737074703,
+     "y_mm": 422.9771166699101,
+     "speed": 0.0
+    },
+    "4": {
+     "x_mm": -880.2837206361891,
+     "y_mm": 309.42827072769586,
+     "speed": 0.0
+    },
+    "5": {
+     "x_mm": -726.0868647965098,
+     "y_mm": 329.97221525345856,
+     "speed": 0.0
+    },
+    "6": {
+     "x_mm": 513.8782418251938,
+     "y_mm": 314.79063033237287,
+     "speed": 0.0
+    },
+    "7": {
+     "x_mm": 1299.486352775479,
+     "y_mm": 664.486352775479,
+     "speed": 0.0
+    },
+    "8": {
+     "x_mm": 472.2929169407386,
+     "y_mm": 52.81653424134802,
+     "speed": 0.0
+    },
+    "9": {
+     "x_mm": 336.93247219749935,
+     "y_mm": 445.26133020369184,
+     "speed": 0.0
+    },
+    "10": {
+     "x_mm": 485.43615288573807,
+     "y_mm": -345.1983392934414,
+     "speed": 0.0
+    },
+    "11": {
+     "x_mm": -1172.2833731829303,
+     "y_mm": -605.3691949060404,
+     "speed": 0.0
+    },
+    "12": {
+     "x_mm": 717.1842774419086,
+     "y_mm": 349.03540338512795,
+     "speed": 0.0
+    },
+    "13": {
+     "x_mm": 387.35925431995867,
+     "y_mm": 560.2853704429241,
+     "speed": 0.0
+    },
+    "14": {
+     "x_mm": -651.9152864599113,
+     "y_mm": 271.8649151337854,
+     "speed": 0.0
+    },
+    "15": {
+     "x_mm": 23.093767132385203,
+     "y_mm": -369.2588169626138,
+     "speed": 0.0
+    }
+   },
+   "event_types": {
+    "ball_ball": 118,
+    "ball_linear_cushion": 26,
+    "ball_pocket": 1,
+    "none": 2,
+    "rolling_stationary": 16,
+    "sliding_rolling": 58,
+    "stick_ball": 1
+   }
+  }
+ ]
+}

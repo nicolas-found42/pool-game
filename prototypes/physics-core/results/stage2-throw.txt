@@ -1,0 +1,17 @@
+  cut=5 v=0.50 m/s roll=0.00 eng=-1.00 -> file 3.555 deg, prototype 3.385 (signed)
+  cut=6 v=0.50 m/s roll=0.00 eng=-1.00 -> file 3.527 deg, prototype 3.379 (signed)
+  cut=7 v=0.50 m/s roll=0.00 eng=-1.00 -> file 3.500 deg, prototype 3.374 (signed)
+  cut=8 v=0.50 m/s roll=0.00 eng=-1.00 -> file 3.472 deg, prototype 3.369 (signed)
+  cut=9 v=0.50 m/s roll=0.00 eng=-1.00 -> file 3.445 deg, prototype 3.365 (signed)
+  cut=10 v=0.50 m/s roll=0.00 eng=-1.00 -> file 3.418 deg, prototype 3.362 (signed)
+stage2 throw vs TP A-28 contours: 2130 points, mean |err| = 1.413 deg, max = 10.756 deg
+stage2 split: roll=0 mean 1.706 deg (1065 pts); roll>0 mean 1.120 deg (1065 pts)
+stage2 measured: cut=30 speed=1.11 m/s measured=7.595 deg, file A-28 model=3.945, prototype=1.623
+stage2 measured: cut=45 speed=1.11 m/s measured=8.842 deg, file A-28 model=3.199, prototype=2.252
+stage2 measured: cut=30 speed=2.22 m/s measured=5.553 deg, file A-28 model=2.416, prototype=2.060
+stage2 measured: cut=45 speed=2.22 m/s measured=4.764 deg, file A-28 model=1.689, prototype=1.713
+stage2 measured: cut=30 speed=3.33 m/s measured=4.764 deg, file A-28 model=1.579, prototype=1.493
+stage2 measured: cut=45 speed=3.33 m/s measured=3.656 deg, file A-28 model=1.046, prototype=1.030
+stage2 mu_b fit on the 6 TP B-3 measured points: a=0.00100 b=0.2732 c=0.620 -> mean |err| 0.908 deg (published A-28: 0.00995/0.108/1.088 -> 4.167 deg)
+stage2 refit residual check: mean |err| with fitted mu_b = 0.908 deg (vs 4.167 with TP A-28's fit)
+stage2 prototype max |throw| over the grid = 4.412 deg (published family: max throw ~5 deg, zero at gearing)

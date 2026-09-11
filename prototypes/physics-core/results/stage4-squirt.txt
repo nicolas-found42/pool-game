@@ -1,0 +1,10 @@
+stage4 Platinum table: 46 shafts; if tan(alpha)=a/L holds, the implied reference tip offset is a = 8.07 mm (0.28 R), sd 0.10 mm, range 1.00-8.35 mm
+stage4 squirt band: 1.34-2.31 deg (Shepard band 0.5-2.3, Platinum 1.3-2.3); pivot 7.6-14.1 in
+stage4 prototype: pivot 7.6 in, tip offset 0.25 R -> squirt -2.119 deg, launch -2.1 deg off aim
+stage4 prototype: pivot 7.6 in, tip offset 0.50 R -> squirt -4.233 deg, launch -4.2 deg off aim
+stage4 prototype: pivot 10.0 in, tip offset 0.25 R -> squirt -1.611 deg, launch -1.6 deg off aim
+stage4 prototype: pivot 10.0 in, tip offset 0.50 R -> squirt -3.219 deg, launch -3.2 deg off aim
+stage4 prototype: pivot 12.0 in, tip offset 0.25 R -> squirt -1.343 deg, launch -1.3 deg off aim
+stage4 prototype: pivot 12.0 in, tip offset 0.50 R -> squirt -2.684 deg, launch -2.7 deg off aim
+stage4 prototype: pivot 14.1 in, tip offset 0.25 R -> squirt -1.143 deg, launch -1.1 deg off aim
+stage4 prototype: pivot 14.1 in, tip offset 0.50 R -> squirt -2.285 deg, launch -2.3 deg off aim

@@ -1,0 +1,37 @@
+stage3 single square hit v=800 mm/s: horizontal speed 564 -> 379 mm/s, COR 0.6714 (closed form 0.6224, e_n=0.75 nose normal |n_x|=0.96286)
+stage3 single square hit v=1500 mm/s: horizontal speed 1389 -> 932 mm/s, COR 0.6714 (closed form 0.6224, e_n=0.75 nose normal |n_x|=0.96286)
+stage3 single square hit v=3000 mm/s: horizontal speed 2946 -> 1978 mm/s, COR 0.6714 (closed form 0.6224, e_n=0.75 nose normal |n_x|=0.96286)
+stage3 WPA stroke v=1.5 m/s -> 1.242 table lengths
+stage3 WPA stroke v=2.0 m/s -> 1.710 table lengths
+stage3 WPA stroke v=2.5 m/s -> 1.796 table lengths
+stage3 WPA stroke v=3.0 m/s -> 1.894 table lengths
+stage3 WPA stroke v=4.0 m/s -> 2.144 table lengths
+stage3 WPA stroke v=5.0 m/s -> 3.144 table lengths
+stage3 WPA stroke v=6.0 m/s -> 3.726 table lengths
+stage3 WPA stroke v=7.0 m/s -> 3.849 table lengths
+stage3 WPA stroke v=8.0 m/s -> 3.963 table lengths
+stage3 WPA stroke v=9.0 m/s -> 4.106 table lengths
+stage3 WPA stroke v=10.0 m/s -> 4.790 table lengths
+stage3 WPA acceptance: the stroke must be about 9.0 m/s to run 4.11 table lengths (gate 4.0-4.5)
+stage3 TP B-6 anchor 1.5 mph: printed 0.903 lengths, prototype 0.760 (delta -0.143)
+stage3 TP B-6 anchor 3.0 mph: printed 1.684 lengths, prototype 1.121 (delta -0.563)
+stage3 TP B-6 anchor 7.0 mph: printed 3.005 lengths, prototype 1.922 (delta -1.083)
+stage3 TP B-6 anchor 12.0 mph: printed 3.690 lengths, prototype 3.431 (delta -0.259)
+stage3 TP B-6 anchor 20.0 mph: printed 4.715 lengths, prototype 4.086 (delta -0.629)
+stage3 anchor mean |err| = 0.535 table lengths over 5 anchors (source says +/-2%)
+stage3 WPA scan: mu_r=0.010 e_n=0.75 -> 4 m/s stroke 2.14 lengths, 7 m/s stroke 3.85 lengths
+stage3 WPA scan: mu_r=0.010 e_n=0.80 -> 4 m/s stroke 2.55 lengths, 7 m/s stroke 4.17 lengths
+stage3 WPA scan: mu_r=0.010 e_n=0.85 -> 4 m/s stroke 2.92 lengths, 7 m/s stroke 4.72 lengths
+stage3 WPA scan: mu_r=0.010 e_n=0.90 -> 4 m/s stroke 3.34 lengths, 7 m/s stroke 5.77 lengths
+stage3 WPA scan: mu_r=0.008 e_n=0.75 -> 4 m/s stroke 2.23 lengths, 7 m/s stroke 3.90 lengths
+stage3 WPA scan: mu_r=0.008 e_n=0.80 -> 4 m/s stroke 2.71 lengths, 7 m/s stroke 4.28 lengths
+stage3 WPA scan: mu_r=0.008 e_n=0.85 -> 4 m/s stroke 3.01 lengths, 7 m/s stroke 4.77 lengths
+stage3 WPA scan: mu_r=0.006 e_n=0.75 -> 4 m/s stroke 2.38 lengths, 7 m/s stroke 3.97 lengths
+stage3 WPA scan: mu_r=0.006 e_n=0.80 -> 4 m/s stroke 2.76 lengths, 7 m/s stroke 4.46 lengths
+stage3 WPA scan: mu_r=0.005 e_n=0.85 -> 4 m/s stroke 3.27 lengths, 7 m/s stroke 4.90 lengths
+stage3 retention fit: e_n=0.75 -> simulated speed retention 0.6714 (TP B-6 measured e_c = 0.70)
+stage3 retention fit: e_n=0.80 -> simulated speed retention 0.7178 (TP B-6 measured e_c = 0.70)
+stage3 retention fit: e_n=0.83 -> simulated speed retention 0.7456 (TP B-6 measured e_c = 0.70)
+stage3 retention fit: e_n=0.85 -> simulated speed retention 0.7641 (TP B-6 measured e_c = 0.70)
+stage3 retention fit: e_n=0.90 -> simulated speed retention 0.8105 (TP B-6 measured e_c = 0.70)
+stage3 bank grid: 30 measured rows exist, but the file records aim/through diamonds only -- the ball's start position and speed are not pinned, so a like-for-like simulation is under-determined (spec gap for the ladder's stage-3 gate)
