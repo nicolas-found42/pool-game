@@ -1,0 +1,19 @@
+[package]
+name = "physics-core"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+# Throwaway prototype for wayfinder ticket #8. No dependencies on purpose:
+# nothing here is a shipping decision, and the core must be readable as the
+# set of formulations the spec's physics section will lock.
+[dependencies]
+
+[[bin]]
+name = "physics-core"
+path = "src/main.rs"
+
+[profile.release]
+debug = false
+opt-level = 3
+panic = "abort"

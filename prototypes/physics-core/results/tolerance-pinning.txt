@@ -1,0 +1,37 @@
+  break   aim +0.05 deg: median  592.68 mm, p90 1068.62 mm, max  1320.54 mm (t_rest 5.56 -> 5.78)
+  break   aim +0.20 deg: median  376.59 mm, p90 1011.94 mm, max  1092.05 mm (t_rest 5.56 -> 5.90)
+  break     speed +0.5%: median  560.67 mm, p90  997.16 mm, max  2021.76 mm (t_rest 5.56 -> 7.23)
+  break       speed +2%: median  855.14 mm, p90 1386.77 mm, max  1430.91 mm (t_rest 5.56 -> 6.18)
+  break  spin a +0.02 R: median  443.71 mm, p90  955.32 mm, max   985.29 mm (t_rest 5.56 -> 5.53)
+  break  spin b +0.02 R: median  836.69 mm, p90  940.84 mm, max  1468.67 mm (t_rest 5.56 -> 6.15)
+   draw   aim +0.05 deg: median  620.55 mm, p90  620.55 mm, max   620.55 mm (t_rest 4.72 -> 4.05)
+   draw   aim +0.20 deg: median  914.51 mm, p90  914.51 mm, max   914.51 mm (t_rest 4.72 -> 6.07)
+   draw     speed +0.5%: median  670.77 mm, p90  670.77 mm, max   670.77 mm (t_rest 4.72 -> 3.94)
+   draw       speed +2%: median  664.27 mm, p90  664.27 mm, max   664.27 mm (t_rest 4.72 -> 4.31)
+   draw  spin a +0.02 R: median  907.91 mm, p90  907.91 mm, max   907.91 mm (t_rest 4.72 -> 6.03)
+   draw  spin b +0.02 R: median  665.09 mm, p90  665.09 mm, max   665.09 mm (t_rest 4.72 -> 4.26)
+ follow   aim +0.05 deg: median  692.20 mm, p90  692.20 mm, max   692.20 mm (t_rest 4.76 -> 4.05)
+ follow   aim +0.20 deg: median 2190.29 mm, p90 2190.29 mm, max  2190.29 mm (t_rest 4.76 -> 6.07)
+ follow     speed +0.5%: median 1634.77 mm, p90 1634.77 mm, max  1634.77 mm (t_rest 4.76 -> 3.94)
+ follow       speed +2%: median 1509.87 mm, p90 1509.87 mm, max  1509.87 mm (t_rest 4.76 -> 4.31)
+ follow  spin a +0.02 R: median 2199.38 mm, p90 2199.38 mm, max  2199.38 mm (t_rest 4.76 -> 6.03)
+ follow  spin b +0.02 R: median 1529.80 mm, p90 1529.80 mm, max  1529.80 mm (t_rest 4.76 -> 4.26)
+    cut   aim +0.05 deg: median  659.79 mm, p90  659.79 mm, max   659.79 mm (t_rest 4.37 -> 4.89)
+    cut   aim +0.20 deg: median  261.06 mm, p90  261.06 mm, max   261.06 mm (t_rest 4.37 -> 4.25)
+    cut     speed +0.5%: median  619.02 mm, p90  619.02 mm, max   619.02 mm (t_rest 4.37 -> 4.73)
+    cut       speed +2%: median  672.34 mm, p90  672.34 mm, max   672.34 mm (t_rest 4.37 -> 4.90)
+    cut  spin a +0.02 R: median  259.54 mm, p90  259.54 mm, max   259.54 mm (t_rest 4.37 -> 4.26)
+    cut  spin b +0.02 R: median  670.90 mm, p90  670.90 mm, max   670.90 mm (t_rest 4.37 -> 4.90)
+cut aim +0.0005 deg -> median rest deviation   0.474 mm
+cut aim +0.0010 deg -> median rest deviation   0.949 mm
+cut aim +0.0020 deg -> median rest deviation   1.902 mm
+cut aim +0.0050 deg -> median rest deviation   4.770 mm
+cut aim +0.0100 deg -> median rest deviation   9.512 mm
+cut aim +0.0200 deg -> median rest deviation  17.598 mm
+cut aim +0.0500 deg -> median rest deviation  37.161 mm
+cut speed +0.0010% -> median rest deviation   0.008 mm
+cut speed +0.0100% -> median rest deviation   0.084 mm
+cut speed +0.0500% -> median rest deviation   0.420 mm
+cut speed +0.1000% -> median rest deviation   0.839 mm
+cut speed +0.5000% -> median rest deviation   4.189 mm
+cut speed +1.0000% -> median rest deviation   8.367 mm

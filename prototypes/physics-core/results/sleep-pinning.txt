@@ -1,0 +1,5 @@
+sleep_v=  0.01 mm/s sleep_w=  0.0001 rad/s -> t_rest=5.5558s events=2155 groups=2126 max_pen=0.00000mm max_rest_deviation_vs_strictest=0.000000mm
+sleep_v=   0.1 mm/s sleep_w=   0.001 rad/s -> t_rest=5.5558s events=2154 groups=2125 max_pen=0.00000mm max_rest_deviation_vs_strictest=0.000003mm
+sleep_v=     1 mm/s sleep_w=    0.01 rad/s -> t_rest=5.5558s events=2154 groups=2125 max_pen=0.00000mm max_rest_deviation_vs_strictest=0.000106mm
+sleep_v=    10 mm/s sleep_w=     0.1 rad/s -> t_rest=5.5558s events=2147 groups=2118 max_pen=0.00000mm max_rest_deviation_vs_strictest=7.333037mm
+sleep_v=    50 mm/s sleep_w=     0.5 rad/s -> t_rest=6.3237s events=1944 groups=1916 max_pen=0.00000mm max_rest_deviation_vs_strictest=infmm

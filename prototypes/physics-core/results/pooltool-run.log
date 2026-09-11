@@ -1,0 +1,28 @@
+BallParams fields: ['R', 'e_b', 'e_c', 'f_c', 'g', 'm', 'u_b', 'u_r', 'u_s', 'u_sp_proportionality']
+params in force: {'R': 0.028575, 'e_b': 0.95, 'e_c': 0.75, 'f_c': 0.2, 'g': 9.80665, 'm': 0.17, 'u_b': 0.06, 'u_r': 0.01, 'u_s': 0.2}
+straight_stun_1p4: t=5.655s events=14 ball_ball=2 cushion=1 pocketed=[]
+     1 (  176.68,     0.00)
+   cue ( -295.08,    -0.00)
+cut30_follow_1p4: t=4.677s events=13 ball_ball=1 cushion=2 pocketed=['1']
+     1 ( 1299.49,   664.49)
+   cue (  880.83,  -396.58)
+cushion_roll_1p5: t=6.731s events=9 ball_ball=0 cushion=2 pocketed=[]
+   cue (-1035.11,   400.00)
+break_rack: t=7.014s events=222 ball_ball=118 cushion=26 pocketed=['7']
+     1 ( -953.53,   323.65)
+    10 (  485.44,  -345.20)
+    11 (-1172.28,  -605.37)
+    12 (  717.18,   349.04)
+    13 (  387.36,   560.29)
+    14 ( -651.92,   271.86)
+    15 (   23.09,  -369.26)
+     2 (  105.97,  -563.76)
+     3 (  462.58,   422.98)
+     4 ( -880.28,   309.43)
+     5 ( -726.09,   329.97)
+     6 (  513.88,   314.79)
+     7 ( 1299.49,   664.49)
+     8 (  472.29,    52.82)
+     9 (  336.93,   445.26)
+   cue (  211.67,  -114.29)
+wrote out/pooltool-diff.json

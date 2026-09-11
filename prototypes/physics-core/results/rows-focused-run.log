@@ -1,0 +1,13 @@
+row pb-03: not produced (1231 samples, 13.9s)
+      near miss: {"aim_deg":-0.607,"aim_offset_deg":0.000,"cue_speed_mm_s":1850.0,"spin_a_tip":0.000,"spin_b_tip":0.000,"elevation_deg":0.00} -> {"distinct_object_balls_to_rails":3,"rail_contacts_total":3,"pocketed":[3],"off_table":[],"legal":true,"cue_ball_pocketed":false,"tree":"legal_pocketed","rule":"4.3(c)","object_ball_contacts":1,"frozen_contacts_suppressed":0,"t_rest_s":3.486,"max_hop_mm":0.00}
+row pb-07: not produced (891 samples, 44.2s)
+      near miss: {"aim_deg":-4.378,"aim_offset_deg":-3.000,"cue_speed_mm_s":1400.0,"spin_a_tip":0.000,"spin_b_tip":0.000,"elevation_deg":0.00} -> {"distinct_object_balls_to_rails":3,"rail_contacts_total":3,"pocketed":[],"off_table":[],"legal":false,"cue_ball_pocketed":false,"tree":"illegal_break","rule":"4.3(d)","object_ball_contacts":2,"frozen_contacts_suppressed":0,"t_rest_s":2.866,"max_hop_mm":0.11}
+row pb-09: not produced (891 samples, 16.7s)
+      near miss: {"aim_deg":-2.917,"aim_offset_deg":-2.500,"cue_speed_mm_s":2550.0,"spin_a_tip":0.000,"spin_b_tip":0.000,"elevation_deg":0.00} -> {"distinct_object_balls_to_rails":4,"rail_contacts_total":4,"pocketed":[],"off_table":[],"legal":false,"cue_ball_pocketed":true,"tree":"break_foul","rule":"4.3(h)","object_ball_contacts":1,"frozen_contacts_suppressed":0,"t_rest_s":3.917,"max_hop_mm":0.05}
+row pb-10: not produced (1231 samples, 15.2s)
+      near miss: {"aim_deg":1.802,"aim_offset_deg":1.400,"cue_speed_mm_s":5800.0,"spin_a_tip":0.000,"spin_b_tip":0.000,"elevation_deg":0.00} -> {"distinct_object_balls_to_rails":11,"rail_contacts_total":15,"pocketed":[8],"off_table":[],"legal":true,"cue_ball_pocketed":false,"tree":"eight_on_break","rule":"4.3(e)","object_ball_contacts":3,"frozen_contacts_suppressed":0,"t_rest_s":6.215,"max_hop_mm":6.17}
+row pb-11: not produced (1231 samples, 29.1s)
+      near miss: {"aim_deg":-11.098,"aim_offset_deg":-11.500,"cue_speed_mm_s":6000.0,"spin_a_tip":0.000,"spin_b_tip":0.000,"elevation_deg":0.00} -> {"distinct_object_balls_to_rails":0,"rail_contacts_total":0,"pocketed":[],"off_table":[],"legal":false,"cue_ball_pocketed":true,"tree":"illegal_break","rule":"4.3(d)","object_ball_contacts":0,"frozen_contacts_suppressed":0,"t_rest_s":1.142,"max_hop_mm":4.99}
+row pb-12: not produced (891 samples, 90.7s)
+      near miss: {"aim_deg":-3.952,"aim_offset_deg":-3.000,"cue_speed_mm_s":1000.0,"spin_a_tip":0.000,"spin_b_tip":0.000,"elevation_deg":0.00} -> {"distinct_object_balls_to_rails":0,"rail_contacts_total":0,"pocketed":[],"off_table":[],"legal":false,"cue_ball_pocketed":false,"tree":"illegal_break","rule":"4.3(d)","object_ball_contacts":2,"frozen_contacts_suppressed":0,"t_rest_s":6.375,"max_hop_mm":0.00}
+rows produced: 0/6

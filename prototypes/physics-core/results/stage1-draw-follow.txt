@@ -1,0 +1,15 @@
+stage1 rows skipped as outside the relation's domain (non-negative pre-impact spin, or free-space draw beyond 2.5 m): 85 of 120
+stage1 pure-spin branch w=-50 rad/s: relation 892.0 mm, prototype 892.1 mm, rel err 0.012%
+stage1 pure-spin branch w=-100 rad/s: relation 3568.0 mm, prototype 3568.4 mm, rel err 0.012%
+stage1 pure-spin branch w=-150 rad/s: relation 8028.0 mm, prototype 8028.9 mm, rel err 0.012%
+stage1 pure-spin branch w=-200 rad/s: relation 14272.0 mm, prototype 14273.6 mm, rel err 0.012%
+stage1 TP B-5 rolling direct hit 1.5 mph: file cb 0.1697 m / ob 1.2826 m (ratio 7.558), prototype cb 0.1084 m / ob 0.8432 m (ratio 7.781)
+stage1 TP B-5 rolling direct hit 3.0 mph: file cb 0.6787 m / ob 5.1304 m (ratio 7.559), prototype cb 0.5343 m / ob 4.1574 m (ratio 7.781)
+stage1 TP B-5 rolling direct hit 5.0 mph: file cb 1.8853 m / ob 14.2512 m (ratio 7.559), prototype cb 1.5439 m / ob 12.0133 m (ratio 7.781)
+stage1 TP B-5 ratio: prototype mean 7.781; the file's re-derived constant gives 7.559, TP B-5's printed ratio is 6.08
+stage1 draw/follow (TP B-8 parameters e_b=1.0, mu_b=0.06, free space): 35 points, mean |err| = 461.3 mm, mean |err|/want = 50.42% (where want>1mm)
+stage1 worst absolute: 1233.2 mm  [speed=12670 spin=-110.8 drag=2438 want=2133.0 got=899.8]
+stage1 worst relative: 57.8%  [speed=12670 b/R=0.10 want=2133.0 got=899.8]
+stage1 cloth sensitivity: mu_s=0.2 mu_r=0.01 -> mean relative err 78.8%
+stage1 cloth sensitivity: mu_s=0.15 mu_r=0.005 -> mean relative err 52.0%
+stage1 cloth sensitivity: mu_s=0.4 mu_r=0.015 -> mean relative err 176.6%
