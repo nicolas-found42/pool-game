@@ -1,11 +1,11 @@
-random baseline: mean=2.220 std=1.675 (0.7s)
+random baseline: mean=2.220 std=1.675 (1.5s)
 Using cpu device
 ---------------------------------
 | rollout/           |          |
 |    ep_len_mean     | 7.86     |
 |    ep_rew_mean     | 2.34     |
 | time/              |          |
-|    fps             | 3198     |
+|    fps             | 1904     |
 |    iterations      | 1        |
 |    time_elapsed    | 0        |
 |    total_timesteps | 512      |
@@ -15,7 +15,7 @@ Using cpu device
 |    ep_len_mean          | 7.96          |
 |    ep_rew_mean          | 1.92          |
 | time/                   |               |
-|    fps                  | 2407          |
+|    fps                  | 1644          |
 |    iterations           | 2             |
 |    time_elapsed         | 0             |
 |    total_timesteps      | 1024          |
@@ -36,7 +36,7 @@ Using cpu device
 |    ep_len_mean          | 7.91          |
 |    ep_rew_mean          | 2.27          |
 | time/                   |               |
-|    fps                  | 2173          |
+|    fps                  | 1544          |
 |    iterations           | 3             |
 |    time_elapsed         | 0             |
 |    total_timesteps      | 1536          |
@@ -57,7 +57,7 @@ Using cpu device
 |    ep_len_mean          | 7.93          |
 |    ep_rew_mean          | 2.37          |
 | time/                   |               |
-|    fps                  | 2039          |
+|    fps                  | 1474          |
 |    iterations           | 4             |
 |    time_elapsed         | 1             |
 |    total_timesteps      | 2048          |
@@ -78,7 +78,7 @@ Using cpu device
 |    ep_len_mean          | 7.91          |
 |    ep_rew_mean          | 2.12          |
 | time/                   |               |
-|    fps                  | 1947          |
+|    fps                  | 1409          |
 |    iterations           | 5             |
 |    time_elapsed         | 1             |
 |    total_timesteps      | 2560          |
@@ -99,9 +99,9 @@ Using cpu device
 |    ep_len_mean          | 7.92         |
 |    ep_rew_mean          | 2.05         |
 | time/                   |              |
-|    fps                  | 1896         |
+|    fps                  | 1376         |
 |    iterations           | 6            |
-|    time_elapsed         | 1            |
+|    time_elapsed         | 2            |
 |    total_timesteps      | 3072         |
 | train/                  |              |
 |    approx_kl            | 4.248577e-06 |
@@ -121,9 +121,9 @@ Using cpu device
 |    ep_len_mean          | 7.98          |
 |    ep_rew_mean          | 1.95          |
 | time/                   |               |
-|    fps                  | 1292          |
+|    fps                  | 1060          |
 |    iterations           | 7             |
-|    time_elapsed         | 2             |
+|    time_elapsed         | 3             |
 |    total_timesteps      | 3584          |
 | train/                  |               |
 |    approx_kl            | 7.4303243e-06 |
@@ -142,7 +142,7 @@ Using cpu device
 |    ep_len_mean          | 7.94          |
 |    ep_rew_mean          | 2.06          |
 | time/                   |               |
-|    fps                  | 1298          |
+|    fps                  | 1117          |
 |    iterations           | 8             |
 |    time_elapsed         | 3             |
 |    total_timesteps      | 4096          |
@@ -163,7 +163,7 @@ Using cpu device
 |    ep_len_mean          | 7.92          |
 |    ep_rew_mean          | 2.3           |
 | time/                   |               |
-|    fps                  | 1330          |
+|    fps                  | 1159          |
 |    iterations           | 9             |
 |    time_elapsed         | 3             |
 |    total_timesteps      | 4608          |
@@ -184,9 +184,9 @@ Using cpu device
 |    ep_len_mean          | 7.92          |
 |    ep_rew_mean          | 2.42          |
 | time/                   |               |
-|    fps                  | 1360          |
+|    fps                  | 1173          |
 |    iterations           | 10            |
-|    time_elapsed         | 3             |
+|    time_elapsed         | 4             |
 |    total_timesteps      | 5120          |
 | train/                  |               |
 |    approx_kl            | 4.0313113e-05 |
@@ -205,7 +205,7 @@ Using cpu device
 |    ep_len_mean          | 7.91         |
 |    ep_rew_mean          | 2.74         |
 | time/                   |              |
-|    fps                  | 1390         |
+|    fps                  | 1183         |
 |    iterations           | 11           |
 |    time_elapsed         | 4            |
 |    total_timesteps      | 5632         |
@@ -226,9 +226,9 @@ Using cpu device
 |    ep_len_mean          | 7.84         |
 |    ep_rew_mean          | 2.68         |
 | time/                   |              |
-|    fps                  | 1416         |
+|    fps                  | 1194         |
 |    iterations           | 12           |
-|    time_elapsed         | 4            |
+|    time_elapsed         | 5            |
 |    total_timesteps      | 6144         |
 | train/                  |              |
 |    approx_kl            | 7.242046e-05 |
@@ -247,9 +247,9 @@ Using cpu device
 |    ep_len_mean          | 7.86          |
 |    ep_rew_mean          | 2.4           |
 | time/                   |               |
-|    fps                  | 1386          |
+|    fps                  | 1201          |
 |    iterations           | 13            |
-|    time_elapsed         | 4             |
+|    time_elapsed         | 5             |
 |    total_timesteps      | 6656          |
 | train/                  |               |
 |    approx_kl            | 0.00021627487 |
@@ -268,7 +268,7 @@ Using cpu device
 |    ep_len_mean          | 7.87         |
 |    ep_rew_mean          | 2.37         |
 | time/                   |              |
-|    fps                  | 1397         |
+|    fps                  | 1204         |
 |    iterations           | 14           |
 |    time_elapsed         | 5            |
 |    total_timesteps      | 7168         |
@@ -289,9 +289,9 @@ Using cpu device
 |    ep_len_mean          | 7.88          |
 |    ep_rew_mean          | 2.33          |
 | time/                   |               |
-|    fps                  | 1409          |
+|    fps                  | 1208          |
 |    iterations           | 15            |
-|    time_elapsed         | 5             |
+|    time_elapsed         | 6             |
 |    total_timesteps      | 7680          |
 | train/                  |               |
 |    approx_kl            | 0.00074313674 |
@@ -310,9 +310,9 @@ Using cpu device
 |    ep_len_mean          | 7.8           |
 |    ep_rew_mean          | 2.79          |
 | time/                   |               |
-|    fps                  | 1420          |
+|    fps                  | 1212          |
 |    iterations           | 16            |
-|    time_elapsed         | 5             |
+|    time_elapsed         | 6             |
 |    total_timesteps      | 8192          |
 | train/                  |               |
 |    approx_kl            | 0.00074097735 |
@@ -331,9 +331,9 @@ Using cpu device
 |    ep_len_mean          | 7.77         |
 |    ep_rew_mean          | 2.95         |
 | time/                   |              |
-|    fps                  | 1428         |
+|    fps                  | 1219         |
 |    iterations           | 17           |
-|    time_elapsed         | 6            |
+|    time_elapsed         | 7            |
 |    total_timesteps      | 8704         |
 | train/                  |              |
 |    approx_kl            | 0.0022263662 |
@@ -352,9 +352,9 @@ Using cpu device
 |    ep_len_mean          | 7.73         |
 |    ep_rew_mean          | 3.08         |
 | time/                   |              |
-|    fps                  | 1439         |
+|    fps                  | 1224         |
 |    iterations           | 18           |
-|    time_elapsed         | 6            |
+|    time_elapsed         | 7            |
 |    total_timesteps      | 9216         |
 | train/                  |              |
 |    approx_kl            | 0.0026129046 |
@@ -373,9 +373,9 @@ Using cpu device
 |    ep_len_mean          | 7.74        |
 |    ep_rew_mean          | 3.32        |
 | time/                   |             |
-|    fps                  | 1450        |
+|    fps                  | 1229        |
 |    iterations           | 19          |
-|    time_elapsed         | 6           |
+|    time_elapsed         | 7           |
 |    total_timesteps      | 9728        |
 | train/                  |             |
 |    approx_kl            | 0.003795138 |
@@ -394,9 +394,9 @@ Using cpu device
 |    ep_len_mean          | 7.59         |
 |    ep_rew_mean          | 3.98         |
 | time/                   |              |
-|    fps                  | 1461         |
+|    fps                  | 1233         |
 |    iterations           | 20           |
-|    time_elapsed         | 7            |
+|    time_elapsed         | 8            |
 |    total_timesteps      | 10240        |
 | train/                  |              |
 |    approx_kl            | 0.0070261913 |
@@ -415,9 +415,9 @@ Using cpu device
 |    ep_len_mean          | 7.45         |
 |    ep_rew_mean          | 4.09         |
 | time/                   |              |
-|    fps                  | 1473         |
+|    fps                  | 1237         |
 |    iterations           | 21           |
-|    time_elapsed         | 7            |
+|    time_elapsed         | 8            |
 |    total_timesteps      | 10752        |
 | train/                  |              |
 |    approx_kl            | 0.0051132017 |
@@ -436,9 +436,9 @@ Using cpu device
 |    ep_len_mean          | 7.54        |
 |    ep_rew_mean          | 4.44        |
 | time/                   |             |
-|    fps                  | 1484        |
+|    fps                  | 1237        |
 |    iterations           | 22          |
-|    time_elapsed         | 7           |
+|    time_elapsed         | 9           |
 |    total_timesteps      | 11264       |
 | train/                  |             |
 |    approx_kl            | 0.005234454 |
@@ -457,9 +457,9 @@ Using cpu device
 |    ep_len_mean          | 7.31         |
 |    ep_rew_mean          | 4.63         |
 | time/                   |              |
-|    fps                  | 1496         |
+|    fps                  | 1233         |
 |    iterations           | 23           |
-|    time_elapsed         | 7            |
+|    time_elapsed         | 9            |
 |    total_timesteps      | 11776        |
 | train/                  |              |
 |    approx_kl            | 0.0016345204 |
@@ -478,9 +478,9 @@ Using cpu device
 |    ep_len_mean          | 6.85         |
 |    ep_rew_mean          | 5.71         |
 | time/                   |              |
-|    fps                  | 1507         |
+|    fps                  | 1231         |
 |    iterations           | 24           |
-|    time_elapsed         | 8            |
+|    time_elapsed         | 9            |
 |    total_timesteps      | 12288        |
 | train/                  |              |
 |    approx_kl            | 0.0057251756 |
@@ -499,9 +499,9 @@ Using cpu device
 |    ep_len_mean          | 6.83        |
 |    ep_rew_mean          | 5.42        |
 | time/                   |             |
-|    fps                  | 1517        |
+|    fps                  | 1228        |
 |    iterations           | 25          |
-|    time_elapsed         | 8           |
+|    time_elapsed         | 10          |
 |    total_timesteps      | 12800       |
 | train/                  |             |
 |    approx_kl            | 0.003264958 |
@@ -520,9 +520,9 @@ Using cpu device
 |    ep_len_mean          | 6.6          |
 |    ep_rew_mean          | 5.71         |
 | time/                   |              |
-|    fps                  | 1525         |
+|    fps                  | 1223         |
 |    iterations           | 26           |
-|    time_elapsed         | 8            |
+|    time_elapsed         | 10           |
 |    total_timesteps      | 13312        |
 | train/                  |              |
 |    approx_kl            | 0.0014919667 |
@@ -541,9 +541,9 @@ Using cpu device
 |    ep_len_mean          | 6.41         |
 |    ep_rew_mean          | 5.83         |
 | time/                   |              |
-|    fps                  | 1534         |
+|    fps                  | 1212         |
 |    iterations           | 27           |
-|    time_elapsed         | 9            |
+|    time_elapsed         | 11           |
 |    total_timesteps      | 13824        |
 | train/                  |              |
 |    approx_kl            | 0.0025723726 |
@@ -562,9 +562,9 @@ Using cpu device
 |    ep_len_mean          | 6.18        |
 |    ep_rew_mean          | 6.08        |
 | time/                   |             |
-|    fps                  | 1543        |
+|    fps                  | 1206        |
 |    iterations           | 28          |
-|    time_elapsed         | 9           |
+|    time_elapsed         | 11          |
 |    total_timesteps      | 14336       |
 | train/                  |             |
 |    approx_kl            | 0.010130977 |
@@ -583,9 +583,9 @@ Using cpu device
 |    ep_len_mean          | 6.13         |
 |    ep_rew_mean          | 6.31         |
 | time/                   |              |
-|    fps                  | 1551         |
+|    fps                  | 1203         |
 |    iterations           | 29           |
-|    time_elapsed         | 9            |
+|    time_elapsed         | 12           |
 |    total_timesteps      | 14848        |
 | train/                  |              |
 |    approx_kl            | 0.0014434297 |
@@ -604,9 +604,9 @@ Using cpu device
 |    ep_len_mean          | 6.49         |
 |    ep_rew_mean          | 5.88         |
 | time/                   |              |
-|    fps                  | 1557         |
+|    fps                  | 1200         |
 |    iterations           | 30           |
-|    time_elapsed         | 9            |
+|    time_elapsed         | 12           |
 |    total_timesteps      | 15360        |
 | train/                  |              |
 |    approx_kl            | 0.0019941148 |
@@ -625,9 +625,9 @@ Using cpu device
 |    ep_len_mean          | 5.53        |
 |    ep_rew_mean          | 6.65        |
 | time/                   |             |
-|    fps                  | 1564        |
+|    fps                  | 1196        |
 |    iterations           | 31          |
-|    time_elapsed         | 10          |
+|    time_elapsed         | 13          |
 |    total_timesteps      | 15872       |
 | train/                  |             |
 |    approx_kl            | 0.015249534 |
@@ -647,9 +647,9 @@ Using cpu device
 |    ep_len_mean          | 5.16         |
 |    ep_rew_mean          | 6.65         |
 | time/                   |              |
-|    fps                  | 1494         |
+|    fps                  | 1114         |
 |    iterations           | 32           |
-|    time_elapsed         | 10           |
+|    time_elapsed         | 14           |
 |    total_timesteps      | 16384        |
 | train/                  |              |
 |    approx_kl            | 0.0048518414 |
@@ -668,9 +668,9 @@ Using cpu device
 |    ep_len_mean          | 4.96       |
 |    ep_rew_mean          | 6.75       |
 | time/                   |            |
-|    fps                  | 1509       |
+|    fps                  | 1115       |
 |    iterations           | 33         |
-|    time_elapsed         | 11         |
+|    time_elapsed         | 15         |
 |    total_timesteps      | 16896      |
 | train/                  |            |
 |    approx_kl            | 0.00211043 |
@@ -689,9 +689,9 @@ Using cpu device
 |    ep_len_mean          | 5.24         |
 |    ep_rew_mean          | 6.73         |
 | time/                   |              |
-|    fps                  | 1520         |
+|    fps                  | 1108         |
 |    iterations           | 34           |
-|    time_elapsed         | 11           |
+|    time_elapsed         | 15           |
 |    total_timesteps      | 17408        |
 | train/                  |              |
 |    approx_kl            | 0.0011696712 |
@@ -710,9 +710,9 @@ Using cpu device
 |    ep_len_mean          | 5.3         |
 |    ep_rew_mean          | 6.76        |
 | time/                   |             |
-|    fps                  | 1529        |
+|    fps                  | 1089        |
 |    iterations           | 35          |
-|    time_elapsed         | 11          |
+|    time_elapsed         | 16          |
 |    total_timesteps      | 17920       |
 | train/                  |             |
 |    approx_kl            | 0.004135049 |
@@ -731,9 +731,9 @@ Using cpu device
 |    ep_len_mean          | 4.77         |
 |    ep_rew_mean          | 7            |
 | time/                   |              |
-|    fps                  | 1536         |
+|    fps                  | 1077         |
 |    iterations           | 36           |
-|    time_elapsed         | 11           |
+|    time_elapsed         | 17           |
 |    total_timesteps      | 18432        |
 | train/                  |              |
 |    approx_kl            | 0.0044730124 |
@@ -752,9 +752,9 @@ Using cpu device
 |    ep_len_mean          | 4.77          |
 |    ep_rew_mean          | 6.89          |
 | time/                   |               |
-|    fps                  | 1536          |
+|    fps                  | 1076          |
 |    iterations           | 37            |
-|    time_elapsed         | 12            |
+|    time_elapsed         | 17            |
 |    total_timesteps      | 18944         |
 | train/                  |               |
 |    approx_kl            | 0.00048731733 |
@@ -773,9 +773,9 @@ Using cpu device
 |    ep_len_mean          | 5           |
 |    ep_rew_mean          | 6.8         |
 | time/                   |             |
-|    fps                  | 1536        |
+|    fps                  | 1073        |
 |    iterations           | 38          |
-|    time_elapsed         | 12          |
+|    time_elapsed         | 18          |
 |    total_timesteps      | 19456       |
 | train/                  |             |
 |    approx_kl            | 0.001784041 |
@@ -794,9 +794,9 @@ Using cpu device
 |    ep_len_mean          | 4.44         |
 |    ep_rew_mean          | 7.04         |
 | time/                   |              |
-|    fps                  | 1537         |
+|    fps                  | 1071         |
 |    iterations           | 39           |
-|    time_elapsed         | 12           |
+|    time_elapsed         | 18           |
 |    total_timesteps      | 19968        |
 | train/                  |              |
 |    approx_kl            | 0.0020851344 |
@@ -815,9 +815,9 @@ Using cpu device
 |    ep_len_mean          | 4.64        |
 |    ep_rew_mean          | 6.99        |
 | time/                   |             |
-|    fps                  | 1533        |
+|    fps                  | 1068        |
 |    iterations           | 40          |
-|    time_elapsed         | 13          |
+|    time_elapsed         | 19          |
 |    total_timesteps      | 20480       |
 | train/                  |             |
 |    approx_kl            | 0.003202559 |
@@ -836,9 +836,9 @@ Using cpu device
 |    ep_len_mean          | 4.6          |
 |    ep_rew_mean          | 6.96         |
 | time/                   |              |
-|    fps                  | 1524         |
+|    fps                  | 1066         |
 |    iterations           | 41           |
-|    time_elapsed         | 13           |
+|    time_elapsed         | 19           |
 |    total_timesteps      | 20992        |
 | train/                  |              |
 |    approx_kl            | 0.0016007505 |
@@ -857,9 +857,9 @@ Using cpu device
 |    ep_len_mean          | 4.63         |
 |    ep_rew_mean          | 7.04         |
 | time/                   |              |
-|    fps                  | 1516         |
+|    fps                  | 1067         |
 |    iterations           | 42           |
-|    time_elapsed         | 14           |
+|    time_elapsed         | 20           |
 |    total_timesteps      | 21504        |
 | train/                  |              |
 |    approx_kl            | 0.0011860412 |
@@ -878,9 +878,9 @@ Using cpu device
 |    ep_len_mean          | 4.55         |
 |    ep_rew_mean          | 7            |
 | time/                   |              |
-|    fps                  | 1516         |
+|    fps                  | 1069         |
 |    iterations           | 43           |
-|    time_elapsed         | 14           |
+|    time_elapsed         | 20           |
 |    total_timesteps      | 22016        |
 | train/                  |              |
 |    approx_kl            | 0.0018320802 |
@@ -899,9 +899,9 @@ Using cpu device
 |    ep_len_mean          | 4.58         |
 |    ep_rew_mean          | 6.94         |
 | time/                   |              |
-|    fps                  | 1515         |
+|    fps                  | 1070         |
 |    iterations           | 44           |
-|    time_elapsed         | 14           |
+|    time_elapsed         | 21           |
 |    total_timesteps      | 22528        |
 | train/                  |              |
 |    approx_kl            | 0.0029487514 |
@@ -920,9 +920,9 @@ Using cpu device
 |    ep_len_mean          | 4.57         |
 |    ep_rew_mean          | 6.88         |
 | time/                   |              |
-|    fps                  | 1516         |
+|    fps                  | 1072         |
 |    iterations           | 45           |
-|    time_elapsed         | 15           |
+|    time_elapsed         | 21           |
 |    total_timesteps      | 23040        |
 | train/                  |              |
 |    approx_kl            | 0.0013586667 |
@@ -941,9 +941,9 @@ Using cpu device
 |    ep_len_mean          | 4.57         |
 |    ep_rew_mean          | 6.94         |
 | time/                   |              |
-|    fps                  | 1517         |
+|    fps                  | 1074         |
 |    iterations           | 46           |
-|    time_elapsed         | 15           |
+|    time_elapsed         | 21           |
 |    total_timesteps      | 23552        |
 | train/                  |              |
 |    approx_kl            | 0.0025446406 |
@@ -962,9 +962,9 @@ Using cpu device
 |    ep_len_mean          | 4.54         |
 |    ep_rew_mean          | 7.09         |
 | time/                   |              |
-|    fps                  | 1518         |
+|    fps                  | 1076         |
 |    iterations           | 47           |
-|    time_elapsed         | 15           |
+|    time_elapsed         | 22           |
 |    total_timesteps      | 24064        |
 | train/                  |              |
 |    approx_kl            | 0.0014608253 |
@@ -983,9 +983,9 @@ Using cpu device
 |    ep_len_mean          | 4.52         |
 |    ep_rew_mean          | 7.1          |
 | time/                   |              |
-|    fps                  | 1520         |
+|    fps                  | 1075         |
 |    iterations           | 48           |
-|    time_elapsed         | 16           |
+|    time_elapsed         | 22           |
 |    total_timesteps      | 24576        |
 | train/                  |              |
 |    approx_kl            | 0.0021845738 |
@@ -1004,9 +1004,9 @@ Using cpu device
 |    ep_len_mean          | 4.41        |
 |    ep_rew_mean          | 6.93        |
 | time/                   |             |
-|    fps                  | 1524        |
+|    fps                  | 1033        |
 |    iterations           | 49          |
-|    time_elapsed         | 16          |
+|    time_elapsed         | 24          |
 |    total_timesteps      | 25088       |
 | train/                  |             |
 |    approx_kl            | 0.001861289 |
@@ -1025,9 +1025,9 @@ Using cpu device
 |    ep_len_mean          | 4.52          |
 |    ep_rew_mean          | 7.02          |
 | time/                   |               |
-|    fps                  | 1529          |
+|    fps                  | 1031          |
 |    iterations           | 50            |
-|    time_elapsed         | 16            |
+|    time_elapsed         | 24            |
 |    total_timesteps      | 25600         |
 | train/                  |               |
 |    approx_kl            | 0.00079416705 |
@@ -1046,9 +1046,9 @@ Using cpu device
 |    ep_len_mean          | 4.67          |
 |    ep_rew_mean          | 7.06          |
 | time/                   |               |
-|    fps                  | 1533          |
+|    fps                  | 1032          |
 |    iterations           | 51            |
-|    time_elapsed         | 17            |
+|    time_elapsed         | 25            |
 |    total_timesteps      | 26112         |
 | train/                  |               |
 |    approx_kl            | 0.00080222706 |
@@ -1067,9 +1067,9 @@ Using cpu device
 |    ep_len_mean          | 4.51          |
 |    ep_rew_mean          | 6.99          |
 | time/                   |               |
-|    fps                  | 1538          |
+|    fps                  | 1034          |
 |    iterations           | 52            |
-|    time_elapsed         | 17            |
+|    time_elapsed         | 25            |
 |    total_timesteps      | 26624         |
 | train/                  |               |
 |    approx_kl            | 0.00060185627 |
@@ -1088,9 +1088,9 @@ Using cpu device
 |    ep_len_mean          | 4.4         |
 |    ep_rew_mean          | 6.77        |
 | time/                   |             |
-|    fps                  | 1543        |
+|    fps                  | 1036        |
 |    iterations           | 53          |
-|    time_elapsed         | 17          |
+|    time_elapsed         | 26          |
 |    total_timesteps      | 27136       |
 | train/                  |             |
 |    approx_kl            | 0.000505533 |
@@ -1109,9 +1109,9 @@ Using cpu device
 |    ep_len_mean          | 4.25         |
 |    ep_rew_mean          | 7            |
 | time/                   |              |
-|    fps                  | 1547         |
+|    fps                  | 1037         |
 |    iterations           | 54           |
-|    time_elapsed         | 17           |
+|    time_elapsed         | 26           |
 |    total_timesteps      | 27648        |
 | train/                  |              |
 |    approx_kl            | 0.0013184365 |
@@ -1130,9 +1130,9 @@ Using cpu device
 |    ep_len_mean          | 4.25         |
 |    ep_rew_mean          | 7.04         |
 | time/                   |              |
-|    fps                  | 1550         |
+|    fps                  | 1038         |
 |    iterations           | 55           |
-|    time_elapsed         | 18           |
+|    time_elapsed         | 27           |
 |    total_timesteps      | 28160        |
 | train/                  |              |
 |    approx_kl            | 0.0007258873 |
@@ -1151,9 +1151,9 @@ Using cpu device
 |    ep_len_mean          | 4.42        |
 |    ep_rew_mean          | 6.99        |
 | time/                   |             |
-|    fps                  | 1554        |
+|    fps                  | 1038        |
 |    iterations           | 56          |
-|    time_elapsed         | 18          |
+|    time_elapsed         | 27          |
 |    total_timesteps      | 28672       |
 | train/                  |             |
 |    approx_kl            | 0.004104862 |
@@ -1172,9 +1172,9 @@ Using cpu device
 |    ep_len_mean          | 4.47         |
 |    ep_rew_mean          | 6.99         |
 | time/                   |              |
-|    fps                  | 1558         |
+|    fps                  | 1039         |
 |    iterations           | 57           |
-|    time_elapsed         | 18           |
+|    time_elapsed         | 28           |
 |    total_timesteps      | 29184        |
 | train/                  |              |
 |    approx_kl            | 0.0023834575 |
@@ -1193,9 +1193,9 @@ Using cpu device
 |    ep_len_mean          | 4.41          |
 |    ep_rew_mean          | 6.91          |
 | time/                   |               |
-|    fps                  | 1562          |
+|    fps                  | 1038          |
 |    iterations           | 58            |
-|    time_elapsed         | 19            |
+|    time_elapsed         | 28            |
 |    total_timesteps      | 29696         |
 | train/                  |               |
 |    approx_kl            | 0.00067006866 |
@@ -1214,9 +1214,9 @@ Using cpu device
 |    ep_len_mean          | 4.41         |
 |    ep_rew_mean          | 7.07         |
 | time/                   |              |
-|    fps                  | 1565         |
+|    fps                  | 1035         |
 |    iterations           | 59           |
-|    time_elapsed         | 19           |
+|    time_elapsed         | 29           |
 |    total_timesteps      | 30208        |
 | train/                  |              |
 |    approx_kl            | 0.0011187193 |
@@ -1235,9 +1235,9 @@ Using cpu device
 |    ep_len_mean          | 4.4           |
 |    ep_rew_mean          | 6.99          |
 | time/                   |               |
-|    fps                  | 1568          |
+|    fps                  | 1035          |
 |    iterations           | 60            |
-|    time_elapsed         | 19            |
+|    time_elapsed         | 29            |
 |    total_timesteps      | 30720         |
 | train/                  |               |
 |    approx_kl            | 0.00085781066 |
@@ -1256,9 +1256,9 @@ Using cpu device
 |    ep_len_mean          | 4.31         |
 |    ep_rew_mean          | 7.1          |
 | time/                   |              |
-|    fps                  | 1571         |
+|    fps                  | 1035         |
 |    iterations           | 61           |
-|    time_elapsed         | 19           |
+|    time_elapsed         | 30           |
 |    total_timesteps      | 31232        |
 | train/                  |              |
 |    approx_kl            | 0.0017428404 |
@@ -1277,9 +1277,9 @@ Using cpu device
 |    ep_len_mean          | 4.39         |
 |    ep_rew_mean          | 7.03         |
 | time/                   |              |
-|    fps                  | 1574         |
+|    fps                  | 1036         |
 |    iterations           | 62           |
-|    time_elapsed         | 20           |
+|    time_elapsed         | 30           |
 |    total_timesteps      | 31744        |
 | train/                  |              |
 |    approx_kl            | 0.0007181444 |
@@ -1299,9 +1299,9 @@ Using cpu device
 |    ep_len_mean          | 4.31         |
 |    ep_rew_mean          | 7.13         |
 | time/                   |              |
-|    fps                  | 1540         |
+|    fps                  | 1010         |
 |    iterations           | 63           |
-|    time_elapsed         | 20           |
+|    time_elapsed         | 31           |
 |    total_timesteps      | 32256        |
 | train/                  |              |
 |    approx_kl            | 0.0011563771 |
@@ -1319,8 +1319,8 @@ Using cpu device
  "algorithm": "MaskablePPO(sb3-contrib 2.9.0)",
  "policy_class": "CandidateScoringPolicy",
  "timesteps": 32256,
- "wall_clock_s": 21.494,
- "steps_per_sec": 1500.71,
+ "wall_clock_s": 32.607,
+ "steps_per_sec": 989.25,
  "n_envs": 8,
  "env_start_method": "spawn",
  "n_steps": 64,
@@ -1336,29 +1336,29 @@ Using cpu device
    "fraction": 0.1,
    "timesteps": 3584,
    "mean_return_100": 6.770119179021463,
-   "wall_clock_s": 2.772,
-   "eval_wall_clock_s": 0.82
+   "wall_clock_s": 3.38,
+   "eval_wall_clock_s": 0.71
   },
   {
    "fraction": 0.5,
    "timesteps": 16384,
    "mean_return_100": 6.972275227063651,
-   "wall_clock_s": 10.965,
-   "eval_wall_clock_s": 0.475
+   "wall_clock_s": 14.701,
+   "eval_wall_clock_s": 0.941
   },
   {
    "fraction": 1.0,
    "timesteps": 32256,
    "mean_return_100": 7.10427522706365,
-   "wall_clock_s": 20.94,
-   "eval_wall_clock_s": 0.485
+   "wall_clock_s": 31.91,
+   "eval_wall_clock_s": 0.797
   }
  ],
  "random_baseline": {
   "episodes": 100,
   "mean": 2.219885739708574,
   "std": 1.6748118771230607,
-  "wall_clock_s": 0.704
+  "wall_clock_s": 1.497
  },
  "final_eval": {
   "episodes": 100,
@@ -1373,7 +1373,7 @@ Using cpu device
   "name": "rollout/ep_rew_mean >= random_baseline_mean + 0.5 for 3 consecutive rollouts",
   "threshold": 2.719885739708574,
   "reached_at_timesteps": 9216,
-  "wall_clock_to_gate_s": 6.402
+  "wall_clock_to_gate_s": 7.524
  },
  "final_logger_values": {
   "value_loss_final": 0.08360601477324962,
@@ -1388,4 +1388,4 @@ Using cpu device
   "mean_return_100": 7.10427522706365
  }
 }
-curve points: 63 (written to /Users/Nicolas/.omp/wt/t31f39e546/m/prototypes/ai-spine/python/runs/ppo_smoke/train_metrics.json)
+curve points: 63 (written to /Users/Nicolas/.omp/wt/t31f39e546/m/prototypes/ai-spine/python/runs/ppo_repro/train_metrics.json)

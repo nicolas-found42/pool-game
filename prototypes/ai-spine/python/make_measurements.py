@@ -248,7 +248,7 @@ def main() -> None:
 
     if meta is not None:
         measurements["onnx"] = {
-            "path": str(onnx_path.relative_to(HERE.parent.parent)),
+            "path": str(onnx_path.relative_to(HERE.parents[2])),
             "size_bytes": meta["onnx_bytes"],
             "sha256": meta["sha256"],
             "opset": meta["opset"][0] if isinstance(meta["opset"], list) else meta["opset"],

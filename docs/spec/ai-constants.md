@@ -123,10 +123,11 @@ here and for the later human playtest (#9 §8's debug view).
 
 | Quantity | Value |
 |---|---|
-| Model | `policy-smoke.onnx` (the trained smoke policy), 91,668 B, sha256 `1553dac9…b250f`, opset 17, 30,210 params; the untrained checkpoint `policy-scratch.onnx` (sha256 `5220b8f2…ebf2e5`, byte-identical architecture) is kept beside it |
+| Model | `policy-smoke.onnx` (the trained smoke policy, exported from the run's `final.zip`), 91,668 B, sha256 `1553dac9…b250f`, opset 17, 30,210 params; the untrained checkpoint `policy-scratch.onnx` (sha256 `5220b8f2…ebf2e5`, byte-identical architecture) is kept beside it |
 | ORT (Rust, in-process) vs Python golden vectors | max abs error **4.77e-7** at k = 5 — the same error the Python side's own ORT run reports (4.77e-7), i.e. the Rust path reproduces the export bit-for-bit at f32 granularity |
 | ORT (Python) golden checks | 4.77e-7 at K = 5, 1.91e-6 at K = 9 (dynamic candidate axis verified) |
 | Session load | 21–34 ms, once at startup |
+| Policy path, cross-implementation | driving the SB3 policy on 20 live episodes, the Rust ORT masked argmax agreed on **83/83 shots**, max logit abs error 2.4e-6 — the strongest end-to-end check of the export, on top of the golden vectors |
 | Inference per decision (32 candidates) | **min 0.014 ms, p50 0.016, p90 0.017, p99 0.022 ms**, max 0.034 (loaded-run band: p50 0.039–0.056, p99 0.70–2.9) |
 | Generation per decision (same loop) | min 0.086, p50 0.097 ms |
 | Encoding per decision | p50 0.0013 ms |
@@ -185,16 +186,16 @@ Commands: `prototypes/ai-spine/python/README.md`. Raw record:
 | Quantity | Value |
 |---|---|
 | Env | shot-granularity Gymnasium, 3 object balls + cue, `max_shots = 8`, obs 64, cand 16, K_max 32, `Discrete(32)` + mask |
-| Env throughput | **1,209 env steps/s** single process (~153 episodes/s, mean episode 7.9 shots) with uniformly random legal actions; the prototype env is pure Python. The shipped env is #11's pipe to the headless binary, where one decision costs 0.10–0.14 ms of Rust — so this number measures the prototype's inner loop, not the design |
+| Env throughput | **1,439 env steps/s** single process (~183 episodes/s, mean episode 7.9 shots) with uniformly random legal actions (block rates 1,409 / 1,439 / 1,438 across the measurement's blocks); the prototype env is pure Python. The shipped env is #11's pipe to the headless binary, where one decision costs 0.10–0.14 ms of Rust — so this number measures the prototype's inner loop, not the design |
 | Policy | `MaskablePPO` (sb3-contrib 2.9.0) with a custom per-candidate shared-scoring policy head; 8 envs, `n_steps 64`, `batch 256`, `n_epochs 10`, `lr 1e-4`, `ent_coef 0.005`, `target_kl 0.03`, `seed 42`, CPU |
-| Steps/s | **1,501** (32,256 steps in 21.5 s) |
+| Steps/s | **1,501** on a quiet box (32,256 steps in 21.5 s); **989** when the same bit-exact re-run shared the box (32.6 s) — same checkpoints and same ONNX sha256 in both, so this is load, not variance |
 | Drills | 3-ball open table; episode = one rack, reward `+2.0` per ball potted, `+1.0` clear, `+0.05` legal hit, `+0.10 × progress`, `−1.0` scratch, `−0.10` illegal |
 | Learning curve | 2.34 mean return at 512 steps → 7.13 at 32,256 (63 rollout points, monotone from ~9k); random policy **2.22**; greedy heuristic policy 4.3; a full clear is 7.0 + progress |
-| Drill gate reached | `ep_rew_mean ≥ random + 0.5` for 3 consecutive rollouts at **9,216 steps / 6.4 s** wall clock |
+| Drill gate reached | `ep_rew_mean ≥ random + 0.5` for 3 consecutive rollouts at **9,216 steps**, 6.4–7.5 s wall clock depending on load |
 | Checkpoints 10 / 50 / 100 % | mean return 6.770 / 6.972 / 7.104 on a fixed 100-episode eval — monotone in this 32k run **but not in the 150k run** (6.899 / 4.405 / 3.324; see §1 and §5) |
 | Value head | final value loss 0.084, explained variance **0.970** |
 | Return distribution (final policy, 100 episodes) | mean 7.126, sd 0.337, min 6.206, max 7.408 → **0.891 reward per shot** |
-| AI decisions/s (policy forward pass, Python) | 40,153/s — the net is not the constraint; the env/sim is |
+| AI decisions/s (policy forward pass) | 56,324/s (Python ORT, batch 1, K = 32) and 62,500/s implied by the Rust measurement above — the net is not the constraint; the env/sim is |
 | ONNX export of the trained policy | `results/onnx/policy-smoke.onnx`, 91,668 B, sha256 `1553dac9…b250f`, opset 17, 30,210 scoring params |
 | Scripted planner decisions/s (Rust, incl. sim-in-the-loop micro) | **~8,800/s** (3-ball clearance drill, 0.113 ms/decision mean) |
 

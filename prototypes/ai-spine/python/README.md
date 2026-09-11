@@ -16,10 +16,11 @@ uv pip install -p .venv/bin/python gymnasium sb3-contrib torch onnx onnxruntime 
 # onnx 1.22.0, onnxruntime 1.30.0, numpy 2.5.3
 ```
 
-Sanity check:
+Sanity check (`import sb3` is NOT a module in stable-baselines3 2.9.0 — the PyPI
+package named `sb3` is an unrelated 0.1 stub — so the canonical alias is used):
 
 ```bash
-.venv/bin/python -c "import torch, sb3, sb3_contrib, gymnasium, onnx, onnxruntime"
+.venv/bin/python -c "import torch, stable_baselines3 as sb3, sb3_contrib, gymnasium, onnx, onnxruntime"
 .venv/bin/python -c "from gymnasium.utils.env_checker import check_env; import env; check_env(env.PoolShotEnv(sim_seed=1), skip_render_check=True)"
 ```
 
@@ -35,11 +36,11 @@ Sanity check:
 # 3. PPO smoke run (150k steps, 8 envs, CPU)
 .venv/bin/python train_ppo.py --timesteps 150000 --n-envs 8 --eval-episodes 100 \
     --lr 1e-4 --ent-coef 0.005 --target-kl 0.03 --seed 42 --run-name ppo_smoke
-# ~2.5 min total: ~1500 steps/s of training plus checkpoint/random/final evaluations
+# measured: 32,256 timesteps in 21.5 s (1500 steps/s) + checkpoint/random/final evals
 # writes runs/ppo_smoke/{train_metrics.json,ckpt_010.zip,ckpt_050.zip,ckpt_100.zip,final.zip}
 
 # 4. trained ONNX export + ORT golden check
-.venv/bin/python export_onnx.py --checkpoint runs/ppo_smoke/final.zip   # ~25 s
+.venv/bin/python export_onnx.py --checkpoint runs/ppo_smoke/final.zip   # ~2 s warm, ~25 s cold
 
 # 5. assemble results/python-measurements.json (env throughput, ORT decision rate)
 .venv/bin/python make_measurements.py
@@ -81,6 +82,28 @@ ONNX: single graph, opset 17, inputs `obs` `[1,64]` and `cand` `[1,K,16]` (axes 
 and 1 dynamic), output `logits` `[1,K]` **raw**; masking stays outside the graph.
 30,210 scorer parameters (value head excluded). `onnx-golden.json` holds the
 golden vectors (K=5) and the ORT-vs-PyTorch max abs error.
+
+## Measured results (see `../results/python-measurements.json`)
+
+| what | value |
+|------|-------|
+| env throughput (1 process, random legal policy, fresh racks) | 1439 steps/s (3-block best; spread 1439/1439/1409) |
+| PPO training | 32,256 timesteps in 32.6 s = 989 steps/s on 8 envs, CPU (a bit-exact re-run of the same deterministic config took 21.5 s = 1501 steps/s when the shared box was quieter) |
+| learning curve | 63 rollout points, 2.338 (t=512) -> 7.127 (t=32,256) |
+| random-policy baseline (100 eps) / final policy (100 eps) | 2.220 / 7.126 |
+| checkpoints 10 / 50 / 100 % | 6.770 / 6.972 / 7.104 |
+| gate (>= random + 0.5 for 3 rollouts) | reached at t=9216, 6.4 s wall |
+| ONNX | 91,668 B, opset 17, 30,210 params, sha256 1553dac9..., ORT-vs-PyTorch golden max abs err 4.8e-07 |
+| ORT serve-path agreement | 83/83 masked argmax match vs the SB3 policy, max logit err 2.4e-06 |
+| ORT decision rate (batch 1, K=32, CPU) | 56,324 decisions/s (3-block best; spread 52.5k/56.3k/56.1k) |
+
+The training run is bit-exactly reproducible (`seed=42`, 8 envs, spawn): an identical re-run
+produced the same checkpoints, the same 100-episode evaluations and the same ONNX sha256.
+
+A 150k-step run degraded after ~30k steps (checkpoint means 6.899 / 4.405 / 3.324 at
+10/50/100 %, log kept at `runs/long_run_150k_degradation.log`): the chosen recipe stops
+at 32k. Root cause not diagnosed inside the time-box; the prime suspect is the value head
+sharing the candidate encoder (`mean_k c_k`), which is fixed by the cross-language contract.
 
 ## What the prototype does NOT model (all documented in `env.py`)
 
