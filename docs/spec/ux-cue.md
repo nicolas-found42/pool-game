@@ -2,9 +2,10 @@
 
 Status: **gate resolved at #10** (2026-09-11). The nine open questions are answered in §10 and the
 `spin` unit + sign convention are pinned in `docs/spec/input-log.schema.json`. §1–§9 stand as the
-decided UX/controls section except where §10 overrides them: §3 (the strike card is face-on), §4
-(the gauge gains a tick scale), §5 (the tangent line goes default-off) and §7 (the unit is the
-envelope fraction) are the four places it does. Ticket #12 merges the section into the assembled
+decided UX/controls section, and each place a ruling changes this text says so inline: the card's
+shape (§3), the gauge's tick scale and the guide set (§4, §5), the envelope's
+elevation-dependence and limit test (§6), the `(a, b)` unit (§7), the read-out's offsets and the
+dev/player split (§8). Ticket #12 merges the section into the assembled
 spec; ticket #11 owns the `input.rs` seam it plugs into. Evidence: the throwaway prototype in
 `prototypes/` and the resolution on #10.
 
@@ -96,11 +97,13 @@ avoid the gauge's pixels, but the gauge is the only signal that read correctly.
 
 ## 5. Aim guides
 
-Drawn from the aim ray only (input geometry; no squirt/swerve in the preview): the **aim
-line**, the **ghost ball** at first contact, the **object-ball path**, and the **tangent
-line** the cue ball leaves on for a stun hit. With no ball on the line, the first **cushion**
-and its reflection are shown instead. The read-out states the cut angle and the guide's
-first contact.
+Drawn from the aim ray: the **aim line**, the **ghost ball** at first contact, the
+**object-ball path**, and the **tangent line** the cue ball leaves on for a stun hit. With no
+ball on the line, the first **cushion** and its reflection are shown instead. The read-out
+states the cut angle and the guide's first contact. Once squirt is modelled (`#7` §3), the aim
+line and the ghost ball follow the **squirt-corrected cue-ball path** while the stick stays on
+the input aim line (§10.8); **swerve is never previewed** — a curved path is a sim result, and
+the preview stays a preview.
 
 The vision pass consistently reported the guide cluster as needing the legend and rarely
 resolved it without one; every frame that drew the cluster drew the same complaint. Draft
@@ -115,7 +118,8 @@ The prototype implements **visible rejection**:
 
 - the offset is authored freely; the contact marker turns **red**;
 - the ring on the ball face is the limit itself; the read-out prints
-  `offset 27.0 mm | miscue envelope 14.7 mm (0.514 R, mu 0.6) = 2.32 tr`;
+  `offset 27.0 mm | miscue envelope 14.7 mm (0.514 R, mu 0.6) = 2.32 tr` — the `tr` reading is
+  the *envelope*'s (14.7 mm = 2.32 tip radii at a 6.35 mm tip; the 27.0 mm offset is 4.25 tr);
 - the status line turns red and names the overage: *"offset 27.0 mm is 12.3 mm past the
   miscue envelope ... the declaration cannot be committed"*;
 - **commit is refused** — release and `Enter` do nothing while the declaration is illegal.
@@ -126,9 +130,10 @@ caught by the vision pass as a contradiction between the read-out and the status
 fixed with a tolerance (`1e-3 mm`). The spec should state the comparison, not inherit it.
 
 The envelope used is the pure friction cone, `rho = R * mu / sqrt(1 + mu^2)`, independent of
-elevation. Whether elevation *should* modulate it (tip weight helps a downward offset,
-hurts an upward one; extreme elevation adds a shaft-clearance constraint) is not settled by #7;
-§10.5 rules on it — the fixed cone stays, and the direction is recorded as a deviation.
+elevation. Whether elevation *should* modulate it (tip weight helps a downward offset, hurts an
+upward one; extreme elevation adds a shaft-clearance constraint) is not settled by #7 and **is
+settled at the gate (§10.5): the fixed cone stays**, with the physical direction recorded as a
+named deviation and the measurement that would settle it.
 
 ## 7. The unit of `(a, b)` — resolved: fraction of the miscue envelope
 
@@ -185,7 +190,7 @@ box that produced the frames. Frames are 1600x920, ~260 KB each, committed under
 | The elevation gauge "has no scale, tick marks, or direction" and was taken for "another aiming or power affordance" before it had a label | `01`-`03` | **Accept.** Label + arc are the fix; a tick scale is added at the gate (§10.1). |
 | The strike card is crowded: tip, dot, crosshair, ring, spin axis overlap, and the shaft partly covers the dot | `07`, `11`, `12`, `15` | **Partly accept.** The crosshair + halo fix landed mid-prototype (the later frames are markedly more readable), but the shaft still crosses the face. Ruled at the gate (§10.2): the card goes face-on, so no shaft can cross it. |
 | `a`/`b` and the "across/up the ball face" labels are not self-evident, nor is the sign of `a` | `01`-`05`, `11`, `12` | **Accept.** §3 pins the convention; the widget should print axis glyphs (`R`, `L`, `T`/`D`). |
-| The guide cluster "is not immediately obvious without the legend", and the ghost-ball ring is taken for a strike marker | `01`, `03`, `05`, `06`, `12`, `15` | **Accept.** The table-side strike marker does not exist by design (§3) — the ring is the ghost ball — so the legend, and possibly a default-off tangent line, carry it. |
+| The guide cluster "is not immediately obvious without the legend", and the ghost-ball ring is taken for a strike marker | `01`, `03`, `05`, `06`, `12`, `15` | **Accept.** The table-side strike marker does not exist by design (§3) — the ring is the ghost ball — so the legend — and the tangent line's move to default-off (§10.8) — carry it. |
 | `pull 175 mm` sits next to the white cue ball and was read as "another ball / drag handle" | `05`, `10` | **Accept.** Move the label onto the cue butt side or draw it as a dimension bracket. |
 | "No prominent player-facing power meter" / the panel "reads like a debug overlay" | `04`, `05`, `06` | **Accept, by design.** §8: the prototype's panel is the developer read-out; the shipping HUD is a separate, smaller design. |
 | The read-out says "no physics" yet asks to drag again ("somewhat confusing") | `15` | **Rebut.** Artifact framing, not UX: the parenthetical exists so nobody reads the prototype as a simulation. It has no bearing on the shipped flow. |
@@ -217,8 +222,10 @@ measurement that would settle each open item — on #10. They are cited elsewher
    readability is elevation-dependent (the shaft obscures the face at 45°).
 3. **Axis glyphs: `R`/`L` and `T`/`D` on the face edges.** `a > 0` = the shooter's right; `b > 0` = above centre (the
    follow side at zero elevation); `(a, b)` live in the plane perpendicular to the cue axis, with `b` the world-up
-   direction projected into it. Elevation is capped at 75°: the frame degenerates at 90°, and a vertical cue is a
-   jump stroke, which the physics does not model.
+   direction projected into it. Elevation is capped at 75°: the `(a, b)` frame is undefined for a vertical cue
+   (`b` needs the world-up direction projected into the face plane), so a cap is required. The cap bounds
+   *authoring*, not the model — jump and masse stay in the physics section's scope, and the strike's launch
+   angle already carries a vertical component.
 4. **Envelope: visible rejection with a refused commit.** The limit test is on the tip offset in millimetres,
    `|offset_mm| <= rho_max + 1e-3` (≈ 6.8e-5 in the envelope-fraction unit of §7) — exactly at the limit is legal. Rejection is authoring-time only: it never reaches the rules layer, and with no
    shot clock it cannot cost a turn.
