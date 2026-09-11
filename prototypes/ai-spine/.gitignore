@@ -1,0 +1,6 @@
+# Throwaway prototype build outputs and training checkpoints are not committed.
+# The ONNX artifacts that ARE committed (small, hashed) live in results/onnx/.
+
+python/.venv/
+python/runs/**/*.zip
+rust/target/

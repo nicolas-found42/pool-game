@@ -1,0 +1,105 @@
+{
+  "binary_path": "/tmp/serve-onnx-final",
+  "binary_size_bytes": 26552480,
+  "golden": {
+    "k": 5,
+    "logits_ort": [
+      -3.6668975353240967,
+      1.1850100755691528,
+      -3.795830011367798,
+      3.239777088165283,
+      -5.004698753356934
+    ],
+    "logits_python": [
+      -3.666897773742676,
+      1.1850097179412842,
+      -3.7958297729492188,
+      3.239776611328125,
+      -5.004699230194092
+    ],
+    "max_abs_err_ort_vs_python": 4.76837158203125e-07,
+    "pass": true
+  },
+  "latency_ms": {
+    "encode": {
+      "max": 3.7824579999999997,
+      "mean": 0.007914739999999997,
+      "min": 0.0006670000000000001,
+      "n": 600,
+      "note": "min is the least-contended sample: this box was shared with other agent workloads, so min/p50 are the useful figures and p99/max are upper bounds",
+      "p50": 0.0012920000000000002,
+      "p90": 0.0025830000000000002,
+      "p99": 0.005791999999999999
+    },
+    "generate": {
+      "max": 31.919084,
+      "mean": 0.8763281216666666,
+      "min": 0.235334,
+      "n": 600,
+      "note": "min is the least-contended sample: this box was shared with other agent workloads, so min/p50 are the useful figures and p99/max are upper bounds",
+      "p50": 0.317375,
+      "p90": 0.8097500000000001,
+      "p99": 14.529
+    },
+    "inference": {
+      "max": 13.257583,
+      "mean": 0.20411338499999998,
+      "min": 0.035040999999999996,
+      "n": 600,
+      "note": "min is the least-contended sample: this box was shared with other agent workloads, so min/p50 are the useful figures and p99/max are upper bounds",
+      "p50": 0.056125,
+      "p90": 0.189917,
+      "p99": 2.8817500000000003
+    },
+    "select": {
+      "max": 0.000375,
+      "mean": 7.359333333333347e-05,
+      "min": 4.1e-05,
+      "n": 600,
+      "note": "min is the least-contended sample: this box was shared with other agent workloads, so min/p50 are the useful figures and p99/max are upper bounds",
+      "p50": 8.3e-05,
+      "p90": 0.000125,
+      "p99": 0.00020800000000000001
+    },
+    "total": {
+      "max": 32.057167,
+      "mean": 1.0897662566666668,
+      "min": 0.27295899999999995,
+      "n": 600,
+      "note": "min is the least-contended sample: this box was shared with other agent workloads, so min/p50 are the useful figures and p99/max are upper bounds",
+      "p50": 0.377958,
+      "p90": 1.281833,
+      "p99": 16.453374999999998
+    }
+  },
+  "machine": {
+    "arch": "aarch64",
+    "cpu": "Apple M5",
+    "mem_bytes": 17179869184,
+    "ncpu": 10,
+    "os": "macOS 26.4.1"
+  },
+  "model": {
+    "load_ms": 40.1045,
+    "path": "results/onnx/policy-smoke.onnx",
+    "sha256": "1553dac9b14e466d0ae1649a7bc928c79b4735da6e9ffde98deeec3ab60d250f",
+    "size_bytes": 91668
+  },
+  "onnx_feature": true,
+  "section": "serve path: per-decision latency and binary size",
+  "workload": {
+    "balls": 3,
+    "candidates_per_decision": {
+      "max": 32.0,
+      "mean": 32.0,
+      "min": 32.0,
+      "n": 600,
+      "note": "min is the least-contended sample: this box was shared with other agent workloads, so min/p50 are the useful figures and p99/max are upper bounds",
+      "p50": 32.0,
+      "p90": 32.0,
+      "p99": 32.0
+    },
+    "note": "generate -> mask -> encode -> policy forward -> masked argmax. The sim-verified shortlist and the micro are NOT in this loop; they are measured by the `measure decision` harness.",
+    "positions": 600
+  }
+}

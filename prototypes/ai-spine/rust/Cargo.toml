@@ -1,0 +1,30 @@
+[package]
+name = "ai-spine-proto"
+version = "0.1.0"
+edition = "2021"
+publish = false
+description = "Throwaway prototype: candidate generator, scripted planner, toy sim, ONNX serve path (wayfinder #16)"
+
+[dependencies]
+serde_json = "1"
+
+[dependencies.ort]
+version = "=2.0.0-rc.13"
+optional = true
+default-features = false
+features = ["std", "download-binaries", "tls-native", "ndarray"]
+
+[features]
+default = []
+onnx = ["dep:ort"]
+
+[[bin]]
+name = "measure"
+path = "src/bin/measure.rs"
+
+[[bin]]
+name = "serve"
+path = "src/bin/serve.rs"
+
+[profile.release]
+debug = false

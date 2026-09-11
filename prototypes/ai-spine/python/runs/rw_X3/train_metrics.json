@@ -1,0 +1,69 @@
+{
+ "algorithm": "MaskablePPO(sb3-contrib 2.9.0)",
+ "policy_class": "CandidateScoringPolicy",
+ "timesteps": 16384,
+ "wall_clock_s": 10.907,
+ "steps_per_sec": 1502.17,
+ "n_envs": 8,
+ "env_start_method": "spawn",
+ "n_steps": 64,
+ "batch_size": 256,
+ "n_epochs": 10,
+ "ent_coef": 0.01,
+ "vf_coef": 0.5,
+ "target_kl": 0.03,
+ "seed": 42,
+ "curve": [],
+ "checkpoints": [
+  {
+   "fraction": 0.1,
+   "timesteps": 1640,
+   "mean_return_100": 6.654510880452403,
+   "wall_clock_s": 1.133,
+   "eval_wall_clock_s": 0.314
+  },
+  {
+   "fraction": 0.5,
+   "timesteps": 8192,
+   "mean_return_100": 6.88012463938264,
+   "wall_clock_s": 5.676,
+   "eval_wall_clock_s": 0.28
+  },
+  {
+   "fraction": 1.0,
+   "timesteps": 16384,
+   "mean_return_100": 7.260692788731986,
+   "wall_clock_s": 10.383,
+   "eval_wall_clock_s": 0.257
+  }
+ ],
+ "random_baseline": {
+  "episodes": 50,
+  "mean": 2.437852856738815,
+  "std": 1.7833763359231523,
+  "wall_clock_s": 0.336
+ },
+ "final_eval": {
+  "episodes": 50,
+  "deterministic": true,
+  "mean": 7.224692788731985,
+  "std": 0.23804611259265762,
+  "min": 6.256969504189214,
+  "max": 7.457230153539761,
+  "per_shot_mean": 0.9030865985914981
+ },
+ "gate": {
+  "name": "rollout/ep_rew_mean >= random_baseline_mean + 0.5 for 3 consecutive rollouts",
+  "threshold": 2.937852856738815,
+  "reached_at_timesteps": null,
+  "wall_clock_to_gate_s": null
+ },
+ "final_logger_values": {
+  "value_loss_final": 0.06124626826494932,
+  "explained_variance_final": 0.9764665961265564,
+  "entropy_loss_final": -1.2912164866924285,
+  "approx_kl_final": 0.00849464163184166,
+  "ep_rew_mean_final": null
+ },
+ "checkpoint_best_index": 2
+}

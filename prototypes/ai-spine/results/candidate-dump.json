@@ -1,0 +1,2892 @@
+{
+  "encoding": {
+    "cand_dim": 16,
+    "cand_feature_order": [
+      "kind_pot",
+      "kind_safety",
+      "kind_bank",
+      "kind_kick",
+      "kind_combo",
+      "cut_cos",
+      "cut_angle_over_pi",
+      "d_cue_contact_over_L",
+      "d_obj_pocket_over_L",
+      "clearance_over_4R",
+      "rails_over_3",
+      "intermediates",
+      "makeability",
+      "leave",
+      "contact_x_over_hl",
+      "contact_y_over_hw"
+    ],
+    "obs_dim": 64
+  },
+  "encoding_sample": {
+    "cand_dim": 16,
+    "cand_tensor_len": 512,
+    "first_cand_row": [
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.9527612924575806,
+      0.09822877496480942,
+      0.24233517050743103,
+      0.08923313766717911,
+      1.0,
+      0.0,
+      0.0,
+      0.7310962080955505,
+      0.0,
+      -0.1898760050535202,
+      -0.7643368244171143
+    ],
+    "k_live": 32,
+    "obs": [
+      -0.6598588228225708,
+      -0.5275121927261353,
+      1.0,
+      -0.1516401618719101,
+      -0.8117929697036743,
+      1.0,
+      0.8175283074378967,
+      0.5090935826301575,
+      1.0,
+      0.47915372252464294,
+      -0.15276749432086945,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      0.37462538480758667,
+      0.7820006012916565,
+      1.0,
+      1.0,
+      0.4612122178077698,
+      0.8255727291107178,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0
+    ],
+    "obs_dim": 64,
+    "obs_len": 64
+  },
+  "machine": {
+    "arch": "aarch64",
+    "cpu": "Apple M5",
+    "mem_bytes": 17179869184,
+    "ncpu": 10,
+    "os": "macOS 26.4.1",
+    "profile": "release"
+  },
+  "note": "Per-candidate scores for a handful of positions (#9 §8's debug view). 'score' is the planner's decision score after sim verification; 'seed_score'/'makeability' are the analytic pre-sim estimates. Rows are the verified shortlist in rank order; the full generated set is counted but not listed.",
+  "positions": [
+    {
+      "balls": [
+        {
+          "alive": true,
+          "id": 1,
+          "p": [
+            -192.58300822893116,
+            -515.4885311865922
+          ]
+        },
+        {
+          "alive": true,
+          "id": 2,
+          "p": [
+            1038.26094442699,
+            323.27441139061
+          ]
+        },
+        {
+          "alive": true,
+          "id": 3,
+          "p": [
+            608.5252155338429,
+            -97.00735513512689
+          ]
+        }
+      ],
+      "chosen": {
+        "aim": [
+          0.9489428924533866,
+          0.31544791465818955
+        ],
+        "ball": 2,
+        "chain": [],
+        "clearance_mm": 173.34671180861085,
+        "contact_point": [
+          1004.1647720689928,
+          277.40968059957896
+        ],
+        "cut_cos": 0.8193045337423805,
+        "d_cue_contact": 1941.3028087852933,
+        "d_obj_pocket": 388.42738378201574,
+        "intermediates": 0,
+        "kind": "direct",
+        "makeability": 0.3811408297990943,
+        "pocket": 0,
+        "rails": 0,
+        "seed_score": 0.3811408297990943,
+        "speed_mm_s": 1238.6734717852714
+      },
+      "constructed": 1940,
+      "cue": [
+        -838.0207304276071,
+        -334.97024215182785
+      ],
+      "decision": {
+        "candidates": 32,
+        "gen_ms": 0.136083,
+        "micro_ms": 0.019,
+        "score": 1.300906104992058,
+        "scratch": false,
+        "sim_evals": 23,
+        "total_ms": 0.1725,
+        "verified_pot": true,
+        "verify_ms": 0.016082999999999997
+      },
+      "generated": 32,
+      "generated_after_dedup": 164,
+      "refined": {
+        "aim": [
+          0.9489428924533866,
+          0.31544791465818955
+        ],
+        "kind": "direct",
+        "score": 1.300906104992058,
+        "speed_mm_s": 1238.6734717852714,
+        "verified_leave": 0.6018122099841161,
+        "verified_pot": true,
+        "verified_scratch": false
+      },
+      "rows": [
+        {
+          "aim": [
+            0.9696958757057113,
+            -0.24431518298978847
+          ],
+          "ball": 1,
+          "chain": [],
+          "clearance_mm": 755.0932048772163,
+          "contact_point": [
+            -241.14252086322966,
+            -485.3538960847795
+          ],
+          "cut_cos": 0.952761295135407,
+          "d_cue_contact": 615.531348042488,
+          "d_obj_pocket": 226.65217015604043,
+          "intermediates": 0,
+          "kind": "direct",
+          "legal": true,
+          "makeability": 0.7310962285135062,
+          "pocket": 5,
+          "rails": 0,
+          "rank": 0,
+          "score": 1.2020387848557834,
+          "seed_score": 0.7310962285135062,
+          "speed_mm_s": 860.2739883694637,
+          "verified_leave": 0.40407756971156694,
+          "verified_pot": true,
+          "verified_scratch": false
+        },
+        {
+          "aim": [
+            0.9581301716389766,
+            -0.28633297783361467
+          ],
+          "ball": 1,
+          "chain": [],
+          "clearance_mm": 425.1842347492171,
+          "contact_point": [
+            -249.54316453956312,
+            -510.8341683871993
+          ],
+          "cut_cos": 0.9782666999607511,
+          "d_cue_contact": 614.1937529024838,
+          "d_obj_pocket": 1467.4576815492594,
+          "intermediates": 0,
+          "kind": "direct",
+          "legal": true,
+          "makeability": 0.5338091115880209,
+          "pocket": 1,
+          "rails": 0,
+          "rank": 1,
+          "score": 0.0,
+          "seed_score": 0.5338091115880209,
+          "speed_mm_s": 987.6431574106156,
+          "verified_leave": 0.0,
+          "verified_pot": false,
+          "verified_scratch": false
+        },
+        {
+          "aim": [
+            0.9489428924533866,
+            0.31544791465818955
+          ],
+          "ball": 2,
+          "chain": [],
+          "clearance_mm": 173.34671180861085,
+          "contact_point": [
+            1004.1647720689928,
+            277.40968059957896
+          ],
+          "cut_cos": 0.8193045337423805,
+          "d_cue_contact": 1941.3028087852933,
+          "d_obj_pocket": 388.42738378201574,
+          "intermediates": 0,
+          "kind": "direct",
+          "legal": true,
+          "makeability": 0.3811408297990943,
+          "pocket": 0,
+          "rails": 0,
+          "rank": 2,
+          "score": 1.2637277784006073,
+          "seed_score": 0.3811408297990943,
+          "speed_mm_s": 1126.066792532065,
+          "verified_leave": 0.5274555568012145,
+          "verified_pot": true,
+          "verified_scratch": false
+        },
+        {
+          "aim": [
+            0.8782016890547164,
+            -0.4782904905404698
+          ],
+          "ball": 1,
+          "chain": [
+            2
+          ],
+          "clearance_mm": 44.58369417951622,
+          "contact_point": [
+            -237.50145726423608,
+            -550.8220200641814
+          ],
+          "cut_cos": 0.9859515230147214,
+          "d_cue_contact": 638.1343020623382,
+          "d_obj_pocket": 1860.8527390290378,
+          "intermediates": 0,
+          "kind": "kick",
+          "legal": true,
+          "makeability": 0.36907468204288496,
+          "pocket": 0,
+          "rails": 1,
+          "rank": 3,
+          "score": 0.013979415014973438,
+          "seed_score": 0.36907468204288496,
+          "speed_mm_s": 1333.756511056337,
+          "verified_leave": 0.17474268768716797,
+          "verified_pot": false,
+          "verified_scratch": false
+        },
+        {
+          "aim": [
+            -0.9921501791327036,
+            -0.12505207733957832
+          ],
+          "ball": 1,
+          "chain": [
+            0
+          ],
+          "clearance_mm": 425.1842347492171,
+          "contact_point": [
+            -249.54316453956312,
+            -510.8341683871993
+          ],
+          "cut_cos": 0.9990387930669546,
+          "d_cue_contact": 614.1937529024838,
+          "d_obj_pocket": 1467.4576815492594,
+          "intermediates": 0,
+          "kind": "kick",
+          "legal": true,
+          "makeability": 0.30833429166479154,
+          "pocket": 1,
+          "rails": 1,
+          "rank": 4,
+          "score": 0.02599741607808779,
+          "seed_score": 0.30833429166479154,
+          "speed_mm_s": 1316.523453375937,
+          "verified_leave": 0.32496770097609734,
+          "verified_pot": false,
+          "verified_scratch": false
+        },
+        {
+          "aim": [
+            0.9726693678418517,
+            -0.23219453236915938
+          ],
+          "ball": 1,
+          "chain": [],
+          "clearance_mm": 830.0131167449888,
+          "contact_point": [
+            -186.61154534272725,
+            -490.47390671911944
+          ],
+          "cut_cos": 0.9992635042705401,
+          "d_cue_contact": 669.7128609387787,
+          "d_obj_pocket": 0.0,
+          "intermediates": 0,
+          "kind": "safety_escape",
+          "legal": true,
+          "makeability": 0.8249341761542109,
+          "pocket": null,
+          "rails": 0,
+          "rank": 5,
+          "score": 0.5510048969921248,
+          "seed_score": 0.3,
+          "speed_mm_s": 714.4035922043684,
+          "verified_leave": 0.3836452672584087,
+          "verified_pot": false,
+          "verified_scratch": false
+        },
+        {
+          "aim": [
+            0.9782974912349485,
+            -0.20720525727743044
+          ],
+          "ball": 1,
+          "chain": [],
+          "clearance_mm": 820.0116251898476,
+          "contact_point": [
+            -183.70167288887728,
+            -473.5562549685343
+          ],
+          "cut_cos": 0.9979528364593853,
+          "d_cue_contact": 668.834442898094,
+          "d_obj_pocket": 0.0,
+          "intermediates": 0,
+          "kind": "safety_escape",
+          "legal": true,
+          "makeability": 0.8235183490069504,
+          "pocket": null,
+          "rails": 0,
+          "rank": 6,
+          "score": 0.6221462555405928,
+          "seed_score": 0.3,
+          "speed_mm_s": 714.2830011899568,
+          "verified_leave": 0.5129931918919869,
+          "verified_pot": false,
+          "verified_scratch": false
+        },
+        {
+          "aim": [
+            0.9816974300994074,
+            -0.19044725184737954
+          ],
+          "ball": 1,
+          "chain": [],
+          "clearance_mm": 813.8682382387034,
+          "contact_point": [
+            -182.24315080800727,
+            -462.18972346292014
+          ],
+          "cut_cos": 0.9967134009797445,
+          "d_cue_contact": 668.0037652265172,
+          "d_obj_pocket": 0.0,
+          "intermediates": 0,
+          "kind": "safety_escape",
+          "legal": true,
+          "makeability": 0.8221797480308498,
+          "pocket": null,
+          "rails": 0,
+          "rank": 7,
+          "score": 0.6206962561556416,
+          "seed_score": 0.3,
+          "speed_mm_s": 714.1689453379869,
+          "verified_leave": 0.5103568293738937,
+          "verified_pot": false,
+          "verified_scratch": false
+        }
+      ],
+      "seed": 5150,
+      "tag": "drill-3ball",
+      "top_unverified": [
+        {
+          "aim": [
+            0.9696958757057113,
+            -0.24431518298978847
+          ],
+          "ball": 1,
+          "chain": [],
+          "clearance_mm": 755.0932048772163,
+          "contact_point": [
+            -241.14252086322966,
+            -485.3538960847795
+          ],
+          "cut_cos": 0.952761295135407,
+          "d_cue_contact": 615.531348042488,
+          "d_obj_pocket": 226.65217015604043,
+          "intermediates": 0,
+          "kind": "direct",
+          "legal": true,
+          "makeability": 0.7310962285135062,
+          "pocket": 5,
+          "rails": 0,
+          "seed_score": 0.7310962285135062,
+          "speed_mm_s": 860.2739883694637
+        },
+        {
+          "aim": [
+            0.9581301716389766,
+            -0.28633297783361467
+          ],
+          "ball": 1,
+          "chain": [],
+          "clearance_mm": 425.1842347492171,
+          "contact_point": [
+            -249.54316453956312,
+            -510.8341683871993
+          ],
+          "cut_cos": 0.9782666999607511,
+          "d_cue_contact": 614.1937529024838,
+          "d_obj_pocket": 1467.4576815492594,
+          "intermediates": 0,
+          "kind": "direct",
+          "legal": true,
+          "makeability": 0.5338091115880209,
+          "pocket": 1,
+          "rails": 0,
+          "seed_score": 0.5338091115880209,
+          "speed_mm_s": 987.6431574106156
+        },
+        {
+          "aim": [
+            0.9489428924533866,
+            0.31544791465818955
+          ],
+          "ball": 2,
+          "chain": [],
+          "clearance_mm": 173.34671180861085,
+          "contact_point": [
+            1004.1647720689928,
+            277.40968059957896
+          ],
+          "cut_cos": 0.8193045337423805,
+          "d_cue_contact": 1941.3028087852933,
+          "d_obj_pocket": 388.42738378201574,
+          "intermediates": 0,
+          "kind": "direct",
+          "legal": true,
+          "makeability": 0.3811408297990943,
+          "pocket": 0,
+          "rails": 0,
+          "seed_score": 0.3811408297990943,
+          "speed_mm_s": 1126.066792532065
+        },
+        {
+          "aim": [
+            0.8782016890547164,
+            -0.4782904905404698
+          ],
+          "ball": 1,
+          "chain": [
+            2
+          ],
+          "clearance_mm": 44.58369417951622,
+          "contact_point": [
+            -237.50145726423608,
+            -550.8220200641814
+          ],
+          "cut_cos": 0.9859515230147214,
+          "d_cue_contact": 638.1343020623382,
+          "d_obj_pocket": 1860.8527390290378,
+          "intermediates": 0,
+          "kind": "kick",
+          "legal": true,
+          "makeability": 0.36907468204288496,
+          "pocket": 0,
+          "rails": 1,
+          "seed_score": 0.36907468204288496,
+          "speed_mm_s": 1333.756511056337
+        },
+        {
+          "aim": [
+            -0.9921501791327036,
+            -0.12505207733957832
+          ],
+          "ball": 1,
+          "chain": [
+            0
+          ],
+          "clearance_mm": 425.1842347492171,
+          "contact_point": [
+            -249.54316453956312,
+            -510.8341683871993
+          ],
+          "cut_cos": 0.9990387930669546,
+          "d_cue_contact": 614.1937529024838,
+          "d_obj_pocket": 1467.4576815492594,
+          "intermediates": 0,
+          "kind": "kick",
+          "legal": true,
+          "makeability": 0.30833429166479154,
+          "pocket": 1,
+          "rails": 1,
+          "seed_score": 0.30833429166479154,
+          "speed_mm_s": 1316.523453375937
+        },
+        {
+          "aim": [
+            0.9726693678418517,
+            -0.23219453236915938
+          ],
+          "ball": 1,
+          "chain": [],
+          "clearance_mm": 830.0131167449888,
+          "contact_point": [
+            -186.61154534272725,
+            -490.47390671911944
+          ],
+          "cut_cos": 0.9992635042705401,
+          "d_cue_contact": 669.7128609387787,
+          "d_obj_pocket": 0.0,
+          "intermediates": 0,
+          "kind": "safety_escape",
+          "legal": true,
+          "makeability": 0.8249341761542109,
+          "pocket": null,
+          "rails": 0,
+          "seed_score": 0.3,
+          "speed_mm_s": 714.4035922043684
+        },
+        {
+          "aim": [
+            0.9782974912349485,
+            -0.20720525727743044
+          ],
+          "ball": 1,
+          "chain": [],
+          "clearance_mm": 820.0116251898476,
+          "contact_point": [
+            -183.70167288887728,
+            -473.5562549685343
+          ],
+          "cut_cos": 0.9979528364593853,
+          "d_cue_contact": 668.834442898094,
+          "d_obj_pocket": 0.0,
+          "intermediates": 0,
+          "kind": "safety_escape",
+          "legal": true,
+          "makeability": 0.8235183490069504,
+          "pocket": null,
+          "rails": 0,
+          "seed_score": 0.3,
+          "speed_mm_s": 714.2830011899568
+        },
+        {
+          "aim": [
+            0.9816974300994074,
+            -0.19044725184737954
+          ],
+          "ball": 1,
+          "chain": [],
+          "clearance_mm": 813.8682382387034,
+          "contact_point": [
+            -182.24315080800727,
+            -462.18972346292014
+          ],
+          "cut_cos": 0.9967134009797445,
+          "d_cue_contact": 668.0037652265172,
+          "d_obj_pocket": 0.0,
+          "intermediates": 0,
+          "kind": "safety_escape",
+          "legal": true,
+          "makeability": 0.8221797480308498,
+          "pocket": null,
+          "rails": 0,
+          "seed_score": 0.3,
+          "speed_mm_s": 714.1689453379869
+        },
+        {
+          "aim": [
+            0.9837383257395672,
+            0.17960764591495879
+          ],
+          "ball": 3,
+          "chain": [],
+          "clearance_mm": 236.35830928924773,
+          "contact_point": [
+            603.9061559000249,
+            -71.70806474291953
+          ],
+          "cut_cos": 0.9998461137035075,
+          "d_cue_contact": 1465.7626409376721,
+          "d_obj_pocket": 0.0,
+          "intermediates": 0,
+          "kind": "safety_escape",
+          "legal": true,
+          "makeability": 0.6576909274102807,
+          "pocket": null,
+          "rails": 0,
+          "seed_score": 0.3,
+          "speed_mm_s": 816.39703824489
+        },
+        {
+          "aim": [
+            0.9815699292501252,
+            0.19110330711922352
+          ],
+          "ball": 3,
+          "chain": [],
+          "clearance_mm": 243.386607447873,
+          "contact_point": [
+            600.3340500324452,
+            -54.93481404264344
+          ],
+          "cut_cos": 0.9995724795687063,
+          "d_cue_contact": 1465.3614965149657,
+          "d_obj_pocket": 0.0,
+          "intermediates": 0,
+          "kind": "safety_escape",
+          "legal": true,
+          "makeability": 0.6574963074074681,
+          "pocket": null,
+          "rails": 0,
+          "seed_score": 0.3,
+          "speed_mm_s": 816.3488509185088
+        },
+        {
+          "aim": [
+            0.9800492622784149,
+            0.1987547320380943
+          ],
+          "ball": 3,
+          "chain": [],
+          "clearance_mm": 248.0506175191583,
+          "contact_point": [
+            597.7343242446645,
+            -43.79803056287602
+          ],
+          "cut_cos": 0.9993139785315358,
+          "d_cue_contact": 1464.9825370353665,
+          "d_obj_pocket": 0.0,
+          "intermediates": 0,
+          "kind": "safety_escape",
+          "legal": true,
+          "makeability": 0.6573124357251129,
+          "pocket": null,
+          "rails": 0,
+          "seed_score": 0.3,
+          "speed_mm_s": 816.3033259373366
+        },
+        {
+          "aim": [
+            0.9392550904019383,
+            0.3432198641600549
+          ],
+          "ball": 2,
+          "chain": [],
+          "clearance_mm": 215.82545011698934,
+          "contact_point": [
+            1029.4341875704538,
+            347.4297041780219
+          ],
+          "cut_cos": 0.9999163550220451,
+          "d_cue_contact": 1988.229754707973,
+          "d_obj_pocket": 0.0,
+          "intermediates": 0,
+          "kind": "safety_escape",
+          "legal": true,
+          "makeability": 0.5665493338728252,
+          "pocket": null,
+          "rails": 0,
+          "seed_score": 0.3,
+          "speed_mm_s": 876.9134315769937
+        },
+        {
+          "aim": [
+            0.9362603287631998,
+            0.35130698368268315
+          ],
+          "ball": 2,
+          "chain": [],
+          "clearance_mm": 228.23648220243396,
+          "contact_point": [
+            1023.2030488388909,
+            363.40486973222255
+          ],
+          "cut_cos": 0.9997676355597345,
+          "d_cue_contact": 1987.9340415129789,
+          "d_obj_pocket": 0.0,
+          "intermediates": 0,
+          "kind": "safety_escape",
+          "legal": true,
+          "makeability": 0.5664708014359383,
+          "pocket": null,
+          "rails": 0,
+          "seed_score": 0.3,
+          "speed_mm_s": 876.8803609182186
+        },
+        {
+          "aim": [
+            0.9342248201630242,
+            0.35668471426648624
+          ],
+          "ball": 2,
+          "chain": [],
+          "clearance_mm": 236.49999207995236,
+          "contact_point": [
+            1018.8956395776768,
+            373.99581243931095
+          ],
+          "cut_cos": 0.9996271579737127,
+          "d_cue_contact": 1987.6547164324406,
+          "d_obj_pocket": 0.0,
+          "intermediates": 0,
+          "kind": "safety_escape",
+          "legal": true,
+          "makeability": 0.5663966139161617,
+          "pocket": null,
+          "rails": 0,
+          "seed_score": 0.3,
+          "speed_mm_s": 876.8491218550909
+        },
+        {
+          "aim": [
+            0.967496621426999,
+            -0.2528839408253165
+          ],
+          "ball": 1,
+          "chain": [],
+          "clearance_mm": 839.0334862045075,
+          "contact_point": [
+            -189.69254478529786,
+            -504.43004480368165
+          ],
+          "cut_cos": 0.9998545623589626,
+          "d_cue_contact": 670.1089918909116,
+          "d_obj_pocket": 0.0,
+          "intermediates": 0,
+          "kind": "safety_rollup",
+          "legal": true,
+          "makeability": 0.825572755615547,
+          "pocket": null,
+          "rails": 0,
+          "seed_score": 0.28,
+          "speed_mm_s": 897.3534904966605
+        },
+        {
+          "aim": [
+            0.9716698796469053,
+            -0.23634222006863004
+          ],
+          "ball": 1,
+          "chain": [],
+          "clearance_mm": 831.7685070273608,
+          "contact_point": [
+            -187.18022507816215,
+            -493.27615773786397
+          ],
+          "cut_cos": 0.9994181224493233,
+          "d_cue_contact": 669.816487041827,
+          "d_obj_pocket": 0.0,
+          "intermediates": 0,
+          "kind": "safety_rollup",
+          "legal": true,
+          "makeability": 0.8251012197927295,
+          "pocket": null,
+          "rails": 0,
+          "seed_score": 0.28,
+          "speed_mm_s": 897.3215237878643
+        },
+        {
+          "aim": [
+            0.9854421716511853,
+            0.17001095944496006
+          ],
+          "ball": 3,
+          "chain": [],
+          "clearance_mm": 230.4718211821411,
+          "contact_point": [
+            606.5819902673868,
+            -85.74375111315385
+          ],
+          "cut_cos": 0.9999696045837885,
+          "d_cue_contact": 1465.9436771154712,
+          "d_obj_pocket": 0.0,
+          "intermediates": 0,
+          "kind": "safety_rollup",
+          "legal": true,
+          "makeability": 0.6577787539329869,
+          "pocket": null,
+          "rails": 0,
+          "seed_score": 0.28,
+          "speed_mm_s": 980.4757677901524
+        },
+        {
+          "aim": [
+            0.984086595028391,
+            0.17768954241999643
+          ],
+          "ball": 3,
+          "chain": [],
+          "clearance_mm": 235.18316191465962,
+          "contact_point": [
+            604.463232594122,
+            -74.5111355727779
+          ],
+          "cut_cos": 0.9998784127911918,
+          "d_cue_contact": 1465.8099910202652,
+          "d_obj_pocket": 0.0,
+          "intermediates": 0,
+          "kind": "safety_rollup",
+          "legal": true,
+          "makeability": 0.6577138987921087,
+          "pocket": null,
+          "rails": 0,
+          "seed_score": 0.28,
+          "speed_mm_s": 980.4623965093091
+        },
+        {
+          "aim": [
+            0.8484858277800665,
+            -0.5292181025403186
+          ],
+          "ball": 1,
+          "chain": [
+            2
+          ],
+          "clearance_mm": 425.1842347492171,
+          "contact_point": [
+            -249.54316453956312,
+            -510.8341683871993
+          ],
+          "cut_cos": 0.8025671448552859,
+          "d_cue_contact": 614.1937529024838,
+          "d_obj_pocket": 1467.4576815492594,
+          "intermediates": 0,
+          "kind": "kick",
+          "legal": true,
+          "makeability": 0.2721529236792435,
+          "pocket": 1,
+          "rails": 1,
+          "seed_score": 0.2721529236792435,
+          "speed_mm_s": 1547.364445887821
+        },
+        {
+          "aim": [
+            0.9814350986040901,
+            0.19179454431234436
+          ],
+          "ball": 3,
+          "chain": [],
+          "clearance_mm": 243.8084186097682,
+          "contact_point": [
+            564.1881638418612,
+            -60.94701199667994
+          ],
+          "cut_cos": 0.6403807807375249,
+          "d_cue_contact": 1428.733184969491,
+          "d_obj_pocket": 852.6341398356334,
+          "intermediates": 0,
+          "kind": "direct",
+          "legal": true,
+          "makeability": 0.26703976472032465,
+          "pocket": 1,
+          "rails": 0,
+          "seed_score": 0.26703976472032465,
+          "speed_mm_s": 1402.1840097902293
+        },
+        {
+          "aim": [
+            -0.9943100058876086,
+            -0.1065251716346114
+          ],
+          "ball": 1,
+          "chain": [
+            0
+          ],
+          "clearance_mm": 755.0932048772163,
+          "contact_point": [
+            -241.14252086322966,
+            -485.3538960847795
+          ],
+          "cut_cos": 0.9010202356898642,
+          "d_cue_contact": 615.531348042488,
+          "d_obj_pocket": 226.65217015604043,
+          "intermediates": 0,
+          "kind": "kick",
+          "legal": true,
+          "makeability": 0.2635814499614557,
+          "pocket": 5,
+          "rails": 1,
+          "seed_score": 0.2635814499614557,
+          "speed_mm_s": 1228.0189274895395
+        },
+        {
+          "aim": [
+            0.9696958757057113,
+            -0.24431518298978847
+          ],
+          "ball": 1,
+          "chain": [],
+          "clearance_mm": 755.0932048772163,
+          "contact_point": [
+            -241.14252086322966,
+            -485.3538960847795
+          ],
+          "cut_cos": 0.952761295135407,
+          "d_cue_contact": 615.531348042488,
+          "d_obj_pocket": 226.65217015604043,
+          "intermediates": 0,
+          "kind": "safety_twoway",
+          "legal": true,
+          "makeability": 0.7310962285135062,
+          "pocket": 5,
+          "rails": 0,
+          "seed_score": 0.26,
+          "speed_mm_s": 731.2328901140442
+        },
+        {
+          "aim": [
+            0.9423893645684162,
+            0.33451798987249826
+          ],
+          "ball": 2,
+          "chain": [
+            1
+          ],
+          "clearance_mm": 202.49194821470113,
+          "contact_point": [
+            982.3967930675508,
+            311.2195744821456
+          ],
+          "cut_cos": 0.9917470150942427,
+          "d_cue_contact": 1931.7042317522867,
+          "d_obj_pocket": 1477.839768741927,
+          "intermediates": 0,
+          "kind": "bank",
+          "legal": true,
+          "makeability": 0.20506602603901095,
+          "pocket": 4,
+          "rails": 1,
+          "seed_score": 0.20506602603901095,
+          "speed_mm_s": 1364.4264889073904
+        },
+        {
+          "aim": [
+            0.9571680162391079,
+            -0.28953305284352404
+          ],
+          "ball": 1,
+          "chain": [
+            1
+          ],
+          "clearance_mm": 396.6640976108703,
+          "contact_point": [
+            -249.67607472749495,
+            -512.9381865450638
+          ],
+          "cut_cos": 0.9691350178705619,
+          "d_cue_contact": 614.6722892098173,
+          "d_obj_pocket": 2678.100963873253,
+          "intermediates": 0,
+          "kind": "bank",
+          "legal": true,
+          "makeability": 0.20481331608490896,
+          "pocket": 5,
+          "rails": 1,
+          "seed_score": 0.20481331608490896,
+          "speed_mm_s": 1463.5847532862172
+        }
+      ]
+    },
+    {
+      "balls": [
+        {
+          "alive": true,
+          "id": 1,
+          "p": [
+            454.84131124842463,
+            -147.22528647710936
+          ]
+        },
+        {
+          "alive": true,
+          "id": 2,
+          "p": [
+            -120.72366064820092,
+            265.72647433002135
+          ]
+        },
+        {
+          "alive": true,
+          "id": 3,
+          "p": [
+            108.0495129682119,
+            -46.43082724548475
+          ]
+        },
+        {
+          "alive": true,
+          "id": 4,
+          "p": [
+            133.65882920348724,
+            89.56448633549542
+          ]
+        },
+        {
+          "alive": true,
+          "id": 5,
+          "p": [
+            716.9953719530178,
+            -458.2676590867189
+          ]
+        },
+        {
+          "alive": true,
+          "id": 6,
+          "p": [
+            682.8026523208157,
+            70.91760527790882
+          ]
+        }
+      ],
+      "chosen": {
+        "aim": [
+          0.7556716091961796,
+          0.6549506997132354
+        ],
+        "ball": 3,
+        "chain": [],
+        "clearance_mm": 47.205020704781624,
+        "contact_point": [
+          58.75164532687246,
+          -75.34177233583034
+        ],
+        "cut_cos": 0.9831713505995454,
+        "d_cue_contact": 538.2958458789069,
+        "d_obj_pocket": 1347.0252063840064,
+        "intermediates": 0,
+        "kind": "direct",
+        "makeability": 0.5688599845842864,
+        "pocket": 0,
+        "rails": 0,
+        "seed_score": 0.5688599845842864,
+        "speed_mm_s": 866.2182783463068
+      },
+      "constructed": 3974,
+      "cue": [
+        -348.0232427520598,
+        -427.89901324694836
+      ],
+      "decision": {
+        "candidates": 32,
+        "gen_ms": 0.271625,
+        "micro_ms": 0.030875,
+        "score": 1.327506371071815,
+        "scratch": false,
+        "sim_evals": 23,
+        "total_ms": 0.32699999999999996,
+        "verified_pot": true,
+        "verify_ms": 0.023333
+      },
+      "generated": 32,
+      "generated_after_dedup": 221,
+      "refined": {
+        "aim": [
+          0.7556716091961796,
+          0.6549506997132354
+        ],
+        "kind": "direct",
+        "score": 1.327506371071815,
+        "speed_mm_s": 866.2182783463068,
+        "verified_leave": 0.6550127421436298,
+        "verified_pot": true,
+        "verified_scratch": false
+      },
+      "rows": [
+        {
+          "aim": [
+            0.3114605043881439,
+            0.9502590984601427
+          ],
+          "ball": 2,
+          "chain": [],
+          "clearance_mm": 239.4033288584897,
+          "contact_point": [
+            -138.4823362381308,
+            211.40565013439976
+          ],
+          "cut_cos": 0.9999997110104684,
+          "d_cue_contact": 672.7687894989019,
+          "d_obj_pocket": 388.5062920996755,
+          "intermediates": 0,
+          "kind": "direct",
+          "legal": true,
+          "makeability": 0.7384352302173713,
+          "pocket": 4,
+          "rails": 0,
+          "rank": 0,
+          "score": 1.1116954853681815,
+          "seed_score": 0.7384352302173713,
+          "speed_mm_s": 852.9709874689657,
+          "verified_leave": 0.22339097073636308,
+          "verified_pot": true,
+          "verified_scratch": false
+        },
+        {
+          "aim": [
+            0.9999176368906063,
+            -0.01283430695852532
+          ],
+          "ball": 5,
+          "chain": [],
+          "clearance_mm": 233.8048197411388,
+          "contact_point": [
+            662.5577881903874,
+            -440.8701887508737
+          ],
+          "cut_cos": 0.9563671844016759,
+          "d_cue_contact": 1010.6642723944748,
+          "d_obj_pocket": 580.5587299886803,
+          "intermediates": 0,
+          "kind": "direct",
+          "legal": true,
+          "makeability": 0.5935966819253332,
+          "pocket": 1,
+          "rails": 0,
+          "rank": 1,
+          "score": 0.03436395732296637,
+          "seed_score": 0.5935966819253332,
+          "speed_mm_s": 944.8497580484042,
+          "verified_leave": 0.4295494665370796,
+          "verified_pot": false,
+          "verified_scratch": false
+        },
+        {
+          "aim": [
+            0.7556716091961796,
+            0.6549506997132354
+          ],
+          "ball": 3,
+          "chain": [],
+          "clearance_mm": 47.205020704781624,
+          "contact_point": [
+            58.75164532687246,
+            -75.34177233583034
+          ],
+          "cut_cos": 0.9831713505995454,
+          "d_cue_contact": 538.2958458789069,
+          "d_obj_pocket": 1347.0252063840064,
+          "intermediates": 0,
+          "kind": "direct",
+          "legal": true,
+          "makeability": 0.5688599845842864,
+          "pocket": 0,
+          "rails": 0,
+          "rank": 2,
+          "score": 1.277008209411588,
+          "seed_score": 0.5688599845842864,
+          "speed_mm_s": 962.4647537181186,
+          "verified_leave": 0.554016418823176,
+          "verified_pot": true,
+          "verified_scratch": false
+        },
+        {
+          "aim": [
+            0.6576541423629494,
+            0.7533200044024142
+          ],
+          "ball": 4,
+          "chain": [],
+          "clearance_mm": 35.54459764347366,
+          "contact_point": [
+            82.13664057323955,
+            64.83420977519032
+          ],
+          "cut_cos": 0.9188730152855573,
+          "d_cue_contact": 654.0822228834994,
+          "d_obj_pocket": 1260.4646587721734,
+          "intermediates": 0,
+          "kind": "direct",
+          "legal": true,
+          "makeability": 0.4529309089353639,
+          "pocket": 0,
+          "rails": 0,
+          "rank": 3,
+          "score": 0.032920329226731035,
+          "seed_score": 0.4529309089353639,
+          "speed_mm_s": 1023.1230073086323,
+          "verified_leave": 0.41150411533413794,
+          "verified_pot": false,
+          "verified_scratch": false
+        },
+        {
+          "aim": [
+            0.9070921921852061,
+            0.420932007427134
+          ],
+          "ball": 6,
+          "chain": [],
+          "clearance_mm": 26.20444230306976,
+          "contact_point": [
+            641.5884462660109,
+            31.325791486771486
+          ],
+          "cut_cos": 0.9457663372915206,
+          "d_cue_contact": 1090.9714553204049,
+          "d_obj_pocket": 814.2417780714018,
+          "intermediates": 0,
+          "kind": "direct",
+          "legal": true,
+          "makeability": 0.3496100969917537,
+          "pocket": 0,
+          "rails": 0,
+          "rank": 4,
+          "score": 1.2031643514135537,
+          "seed_score": 0.3496100969917537,
+          "speed_mm_s": 988.9641184536193,
+          "verified_leave": 0.4063287028271076,
+          "verified_pot": true,
+          "verified_scratch": false
+        },
+        {
+          "aim": [
+            0.20580508766140873,
+            -0.978593003190131
+          ],
+          "ball": 2,
+          "chain": [
+            2
+          ],
+          "clearance_mm": 234.2409717775769,
+          "contact_point": [
+            -138.4823362381308,
+            211.40565013439976
+          ],
+          "cut_cos": 0.9940998122815838,
+          "d_cue_contact": 672.7687894989019,
+          "d_obj_pocket": 388.5062920996755,
+          "intermediates": 0,
+          "kind": "kick",
+          "legal": true,
+          "makeability": 0.3362723833974041,
+          "pocket": 4,
+          "rails": 1,
+          "rank": 5,
+          "score": 0.046766020766480745,
+          "seed_score": 0.3362723833974041,
+          "speed_mm_s": 1127.4557672018288,
+          "verified_leave": 0.5845752595810093,
+          "verified_pot": false,
+          "verified_scratch": false
+        },
+        {
+          "aim": [
+            0.49732179190775755,
+            -0.867566156148139
+          ],
+          "ball": 3,
+          "chain": [
+            2
+          ],
+          "clearance_mm": 47.205020704781624,
+          "contact_point": [
+            58.75164532687246,
+            -75.34177233583034
+          ],
+          "cut_cos": 0.8678750896809,
+          "d_cue_contact": 538.2958458789069,
+          "d_obj_pocket": 1347.0252063840064,
+          "intermediates": 0,
+          "kind": "kick",
+          "legal": true,
+          "makeability": 0.3018299217598222,
+          "pocket": 0,
+          "rails": 1,
+          "rank": 6,
+          "score": 0.041142580147824445,
+          "seed_score": 0.3018299217598222,
+          "speed_mm_s": 1425.830743832161,
+          "verified_leave": 0.5142822518478055,
+          "verified_pot": false,
+          "verified_scratch": false
+        },
+        {
+          "aim": [
+            0.16438286896309937,
+            0.9863966100871702
+          ],
+          "ball": 2,
+          "chain": [
+            3
+          ],
+          "clearance_mm": 128.12823004283104,
+          "contact_point": [
+            -128.31554404705443,
+            322.3699718072977
+          ],
+          "cut_cos": 0.9994913292913985,
+          "d_cue_contact": 781.7768369583342,
+          "d_obj_pocket": 908.7807127130794,
+          "intermediates": 0,
+          "kind": "kick",
+          "legal": true,
+          "makeability": 0.30003998630004214,
+          "pocket": 5,
+          "rails": 1,
+          "rank": 7,
+          "score": 1.096715862606828,
+          "seed_score": 0.30003998630004214,
+          "speed_mm_s": 1230.0833228017013,
+          "verified_leave": 0.19343172521365615,
+          "verified_pot": true,
+          "verified_scratch": false
+        }
+      ],
+      "seed": 5151,
+      "tag": "drill-6ball",
+      "top_unverified": [
+        {
+          "aim": [
+            0.3114605043881439,
+            0.9502590984601427
+          ],
+          "ball": 2,
+          "chain": [],
+          "clearance_mm": 239.4033288584897,
+          "contact_point": [
+            -138.4823362381308,
+            211.40565013439976
+          ],
+          "cut_cos": 0.9999997110104684,
+          "d_cue_contact": 672.7687894989019,
+          "d_obj_pocket": 388.5062920996755,
+          "intermediates": 0,
+          "kind": "direct",
+          "legal": true,
+          "makeability": 0.7384352302173713,
+          "pocket": 4,
+          "rails": 0,
+          "seed_score": 0.7384352302173713,
+          "speed_mm_s": 852.9709874689657
+        },
+        {
+          "aim": [
+            0.9999176368906063,
+            -0.01283430695852532
+          ],
+          "ball": 5,
+          "chain": [],
+          "clearance_mm": 233.8048197411388,
+          "contact_point": [
+            662.5577881903874,
+            -440.8701887508737
+          ],
+          "cut_cos": 0.9563671844016759,
+          "d_cue_contact": 1010.6642723944748,
+          "d_obj_pocket": 580.5587299886803,
+          "intermediates": 0,
+          "kind": "direct",
+          "legal": true,
+          "makeability": 0.5935966819253332,
+          "pocket": 1,
+          "rails": 0,
+          "seed_score": 0.5935966819253332,
+          "speed_mm_s": 944.8497580484042
+        },
+        {
+          "aim": [
+            0.7556716091961796,
+            0.6549506997132354
+          ],
+          "ball": 3,
+          "chain": [],
+          "clearance_mm": 47.205020704781624,
+          "contact_point": [
+            58.75164532687246,
+            -75.34177233583034
+          ],
+          "cut_cos": 0.9831713505995454,
+          "d_cue_contact": 538.2958458789069,
+          "d_obj_pocket": 1347.0252063840064,
+          "intermediates": 0,
+          "kind": "direct",
+          "legal": true,
+          "makeability": 0.5688599845842864,
+          "pocket": 0,
+          "rails": 0,
+          "seed_score": 0.5688599845842864,
+          "speed_mm_s": 962.4647537181186
+        },
+        {
+          "aim": [
+            0.6576541423629494,
+            0.7533200044024142
+          ],
+          "ball": 4,
+          "chain": [],
+          "clearance_mm": 35.54459764347366,
+          "contact_point": [
+            82.13664057323955,
+            64.83420977519032
+          ],
+          "cut_cos": 0.9188730152855573,
+          "d_cue_contact": 654.0822228834994,
+          "d_obj_pocket": 1260.4646587721734,
+          "intermediates": 0,
+          "kind": "direct",
+          "legal": true,
+          "makeability": 0.4529309089353639,
+          "pocket": 0,
+          "rails": 0,
+          "seed_score": 0.4529309089353639,
+          "speed_mm_s": 1023.1230073086323
+        },
+        {
+          "aim": [
+            0.9070921921852061,
+            0.420932007427134
+          ],
+          "ball": 6,
+          "chain": [],
+          "clearance_mm": 26.20444230306976,
+          "contact_point": [
+            641.5884462660109,
+            31.325791486771486
+          ],
+          "cut_cos": 0.9457663372915206,
+          "d_cue_contact": 1090.9714553204049,
+          "d_obj_pocket": 814.2417780714018,
+          "intermediates": 0,
+          "kind": "direct",
+          "legal": true,
+          "makeability": 0.3496100969917537,
+          "pocket": 0,
+          "rails": 0,
+          "seed_score": 0.3496100969917537,
+          "speed_mm_s": 988.9641184536193
+        },
+        {
+          "aim": [
+            0.20580508766140873,
+            -0.978593003190131
+          ],
+          "ball": 2,
+          "chain": [
+            2
+          ],
+          "clearance_mm": 234.2409717775769,
+          "contact_point": [
+            -138.4823362381308,
+            211.40565013439976
+          ],
+          "cut_cos": 0.9940998122815838,
+          "d_cue_contact": 672.7687894989019,
+          "d_obj_pocket": 388.5062920996755,
+          "intermediates": 0,
+          "kind": "kick",
+          "legal": true,
+          "makeability": 0.3362723833974041,
+          "pocket": 4,
+          "rails": 1,
+          "seed_score": 0.3362723833974041,
+          "speed_mm_s": 1127.4557672018288
+        },
+        {
+          "aim": [
+            0.49732179190775755,
+            -0.867566156148139
+          ],
+          "ball": 3,
+          "chain": [
+            2
+          ],
+          "clearance_mm": 47.205020704781624,
+          "contact_point": [
+            58.75164532687246,
+            -75.34177233583034
+          ],
+          "cut_cos": 0.8678750896809,
+          "d_cue_contact": 538.2958458789069,
+          "d_obj_pocket": 1347.0252063840064,
+          "intermediates": 0,
+          "kind": "kick",
+          "legal": true,
+          "makeability": 0.3018299217598222,
+          "pocket": 0,
+          "rails": 1,
+          "seed_score": 0.3018299217598222,
+          "speed_mm_s": 1425.830743832161
+        },
+        {
+          "aim": [
+            0.16438286896309937,
+            0.9863966100871702
+          ],
+          "ball": 2,
+          "chain": [
+            3
+          ],
+          "clearance_mm": 128.12823004283104,
+          "contact_point": [
+            -128.31554404705443,
+            322.3699718072977
+          ],
+          "cut_cos": 0.9994913292913985,
+          "d_cue_contact": 781.7768369583342,
+          "d_obj_pocket": 908.7807127130794,
+          "intermediates": 0,
+          "kind": "kick",
+          "legal": true,
+          "makeability": 0.30003998630004214,
+          "pocket": 5,
+          "rails": 1,
+          "seed_score": 0.30003998630004214,
+          "speed_mm_s": 1230.0833228017013
+        },
+        {
+          "aim": [
+            0.7385872645086572,
+            0.674157884108477
+          ],
+          "ball": 3,
+          "chain": [],
+          "clearance_mm": 67.48388441189593,
+          "contact_point": [
+            90.71185758365209,
+            -27.436209270483403
+          ],
+          "cut_cos": 0.9990641281804161,
+          "d_cue_contact": 594.0193141938062,
+          "d_obj_pocket": 0.0,
+          "intermediates": 0,
+          "kind": "safety_escape",
+          "legal": true,
+          "makeability": 0.8427168433117366,
+          "pocket": null,
+          "rails": 0,
+          "seed_score": 0.3,
+          "speed_mm_s": 703.9364247933004
+        },
+        {
+          "aim": [
+            0.718808982824034,
+            0.6952076281309616
+          ],
+          "ball": 3,
+          "chain": [],
+          "clearance_mm": 61.7363690202698,
+          "contact_point": [
+            78.25117600744846,
+            -15.620877219189595
+          ],
+          "cut_cos": 0.9973981878101297,
+          "d_cue_contact": 593.0287864305407,
+          "d_obj_pocket": 0.0,
+          "intermediates": 0,
+          "kind": "safety_escape",
+          "legal": true,
+          "makeability": 0.8408478085055479,
+          "pocket": null,
+          "rails": 0,
+          "seed_score": 0.3,
+          "speed_mm_s": 703.7984192714425
+        },
+        {
+          "aim": [
+            0.7052665351185555,
+            0.7089422504279649
+          ],
+          "ball": 3,
+          "chain": [],
+          "clearance_mm": 59.704391405789515,
+          "contact_point": [
+            69.55926583685158,
+            -8.140143887560612
+          ],
+          "cut_cos": 0.9958222406343235,
+          "d_cue_contact": 592.0917664393585,
+          "d_obj_pocket": 0.0,
+          "intermediates": 0,
+          "kind": "safety_escape",
+          "legal": true,
+          "makeability": 0.839080321744676,
+          "pocket": null,
+          "rails": 0,
+          "seed_score": 0.3,
+          "speed_mm_s": 703.667843820542
+        },
+        {
+          "aim": [
+            0.6542689754459349,
+            0.7562619306622055
+          ],
+          "ball": 4,
+          "chain": [],
+          "clearance_mm": 38.17766354304823,
+          "contact_point": [
+            114.20966300168203,
+            106.3906487115263
+          ],
+          "cut_cos": 0.9993381080688333,
+          "d_cue_contact": 706.4875809504713,
+          "d_obj_pocket": 0.0,
+          "intermediates": 0,
+          "kind": "safety_escape",
+          "legal": true,
+          "makeability": 0.7792092974355048,
+          "pocket": null,
+          "rails": 0,
+          "seed_score": 0.3,
+          "speed_mm_s": 719.4339641096734
+        },
+        {
+          "aim": [
+            0.6357150804009679,
+            0.7719237893411439
+          ],
+          "ball": 4,
+          "chain": [],
+          "clearance_mm": 52.39833127651817,
+          "contact_point": [
+            100.57224578285252,
+            116.81282396918186
+          ],
+          "cut_cos": 0.9981603275785178,
+          "d_cue_contact": 705.6549425443349,
+          "d_obj_pocket": 0.0,
+          "intermediates": 0,
+          "kind": "safety_escape",
+          "legal": true,
+          "makeability": 0.8151543901497594,
+          "pocket": null,
+          "rails": 0,
+          "seed_score": 0.3,
+          "speed_mm_s": 719.3204576863138
+        },
+        {
+          "aim": [
+            0.6231220362682102,
+            0.7821246242875616
+          ],
+          "ball": 4,
+          "chain": [],
+          "clearance_mm": 61.85449988273799,
+          "contact_point": [
+            91.19532803935488,
+            123.39533948958717
+          ],
+          "cut_cos": 0.9970467018553615,
+          "d_cue_contact": 704.8676587042767,
+          "d_obj_pocket": 0.0,
+          "intermediates": 0,
+          "kind": "safety_escape",
+          "legal": true,
+          "makeability": 0.8139736689483601,
+          "pocket": null,
+          "rails": 0,
+          "seed_score": 0.3,
+          "speed_mm_s": 719.2131175838257
+        },
+        {
+          "aim": [
+            0.27772910705616244,
+            0.9606594313771069
+          ],
+          "ball": 2,
+          "chain": [],
+          "clearance_mm": 261.86774967617356,
+          "contact_point": [
+            -145.42941957464168,
+            272.8689726407381
+          ],
+          "cut_cos": 0.9993791119834952,
+          "d_cue_contact": 729.4655764563038,
+          "d_obj_pocket": 0.0,
+          "intermediates": 0,
+          "kind": "safety_escape",
+          "legal": true,
+          "makeability": 0.8111110071109093,
+          "pocket": null,
+          "rails": 0,
+          "seed_score": 0.3,
+          "speed_mm_s": 722.5593206838482
+        },
+        {
+          "aim": [
+            0.25506409160936805,
+            0.9669241486132653
+          ],
+          "ball": 2,
+          "chain": [],
+          "clearance_mm": 276.6136698658903,
+          "contact_point": [
+            -162.16844696813692,
+            276.65915895662795
+          ],
+          "cut_cos": 0.9982743575637021,
+          "d_cue_contact": 728.6591954643322,
+          "d_obj_pocket": 0.0,
+          "intermediates": 0,
+          "kind": "safety_escape",
+          "legal": true,
+          "makeability": 0.8099530133810595,
+          "pocket": null,
+          "rails": 0,
+          "seed_score": 0.3,
+          "speed_mm_s": 722.4498695300636
+        },
+        {
+          "aim": [
+            0.2398581688983243,
+            0.9708079412596206
+          ],
+          "ball": 2,
+          "chain": [],
+          "clearance_mm": 286.3529331352693,
+          "contact_point": [
+            -173.43125079903885,
+            278.7489739649336
+          ],
+          "cut_cos": 0.9972298546181467,
+          "d_cue_contact": 727.8967931545844,
+          "d_obj_pocket": 0.0,
+          "intermediates": 0,
+          "kind": "safety_escape",
+          "legal": true,
+          "makeability": 0.8088583286693533,
+          "pocket": null,
+          "rails": 0,
+          "seed_score": 0.3,
+          "speed_mm_s": 722.3463724085476
+        },
+        {
+          "aim": [
+            0.7545803934161283,
+            0.6562076118668246
+          ],
+          "ball": 3,
+          "chain": [],
+          "clearance_mm": 74.4535364996971,
+          "contact_point": [
+            100.54905996457416,
+            -37.805973348738405
+          ],
+          "cut_cos": 0.9998152058605649,
+          "d_cue_contact": 594.4658867769705,
+          "d_obj_pocket": 0.0,
+          "intermediates": 0,
+          "kind": "safety_rollup",
+          "legal": true,
+          "makeability": 0.8435596915039373,
+          "pocket": null,
+          "rails": 0,
+          "seed_score": 0.28,
+          "speed_mm_s": 889.0484676164891
+        },
+        {
+          "aim": [
+            0.7418213855502427,
+            0.6705975185909341
+          ],
+          "ball": 3,
+          "chain": [],
+          "clearance_mm": 68.73045653456657,
+          "contact_point": [
+            92.71965369322311,
+            -29.472790371806184
+          ],
+          "cut_cos": 0.9992606183974309,
+          "d_cue_contact": 594.1361425140957,
+          "d_obj_pocket": 0.0,
+          "intermediates": 0,
+          "kind": "safety_rollup",
+          "legal": true,
+          "makeability": 0.8429373293133237,
+          "pocket": null,
+          "rails": 0,
+          "seed_score": 0.28,
+          "speed_mm_s": 889.0120944282576
+        },
+        {
+          "aim": [
+            0.6694237432632473,
+            0.7428807790994607
+          ],
+          "ball": 4,
+          "chain": [],
+          "clearance_mm": 26.29382308657302,
+          "contact_point": [
+            125.16770189838036,
+            97.2159997209942
+          ],
+          "cut_cos": 0.9998692906415905,
+          "d_cue_contact": 706.8631033966184,
+          "d_obj_pocket": 0.0,
+          "intermediates": 0,
+          "kind": "safety_rollup",
+          "legal": true,
+          "makeability": 0.537029436350441,
+          "pocket": null,
+          "rails": 0,
+          "seed_score": 0.28,
+          "speed_mm_s": 901.3611823561569
+        },
+        {
+          "aim": [
+            0.6573222195651081,
+            0.7536096467442542
+          ],
+          "ball": 4,
+          "chain": [],
+          "clearance_mm": 35.80331361207498,
+          "contact_point": [
+            116.43131267891357,
+            104.59087227475368
+          ],
+          "cut_cos": 0.9994770600031149,
+          "d_cue_contact": 706.5858137859112,
+          "d_obj_pocket": 0.0,
+          "intermediates": 0,
+          "kind": "safety_rollup",
+          "legal": true,
+          "makeability": 0.7308805183054017,
+          "pocket": null,
+          "rails": 0,
+          "seed_score": 0.28,
+          "speed_mm_s": 901.3310132328035
+        },
+        {
+          "aim": [
+            0.9248418575170835,
+            0.3803518615497371
+          ],
+          "ball": 1,
+          "chain": [],
+          "clearance_mm": 75.14809130329871,
+          "contact_point": [
+            405.8005771787679,
+            -117.88028857441377
+          ],
+          "cut_cos": 0.5983114437711154,
+          "d_cue_contact": 815.0840209099243,
+          "d_obj_pocket": 949.9515034987448,
+          "intermediates": 0,
+          "kind": "direct",
+          "legal": true,
+          "makeability": 0.2794975808917867,
+          "pocket": 1,
+          "rails": 0,
+          "seed_score": 0.2794975808917867,
+          "speed_mm_s": 1465.3565245194523
+        },
+        {
+          "aim": [
+            0.33051814930251355,
+            0.9437996360359762
+          ],
+          "ball": 2,
+          "chain": [
+            3
+          ],
+          "clearance_mm": 95.36681684964469,
+          "contact_point": [
+            -125.07184135638033,
+            208.74212714126242
+          ],
+          "cut_cos": 0.9662110022221998,
+          "d_cue_contact": 674.551161157624,
+          "d_obj_pocket": 1586.7227397118581,
+          "intermediates": 0,
+          "kind": "bank",
+          "legal": true,
+          "makeability": 0.2737678435994329,
+          "pocket": 5,
+          "rails": 1,
+          "seed_score": 0.2737678435994329,
+          "speed_mm_s": 1318.0602772086108
+        },
+        {
+          "aim": [
+            0.3114605043881439,
+            0.9502590984601427
+          ],
+          "ball": 2,
+          "chain": [],
+          "clearance_mm": 239.4033288584897,
+          "contact_point": [
+            -138.4823362381308,
+            211.40565013439976
+          ],
+          "cut_cos": 0.9999997110104684,
+          "d_cue_contact": 672.7687894989019,
+          "d_obj_pocket": 388.5062920996755,
+          "intermediates": 0,
+          "kind": "safety_twoway",
+          "legal": true,
+          "makeability": 0.7384352302173713,
+          "pocket": 4,
+          "rails": 0,
+          "seed_score": 0.26,
+          "speed_mm_s": 725.0253393486208
+        }
+      ]
+    },
+    {
+      "balls": [
+        {
+          "alive": true,
+          "id": 1,
+          "p": [
+            973.2259696795663,
+            -408.28481479177236
+          ]
+        }
+      ],
+      "chosen": {
+        "aim": [
+          0.9447429137271666,
+          -0.327812182449499
+        ],
+        "ball": 1,
+        "chain": [],
+        "clearance_mm": null,
+        "contact_point": [
+          927.8114665880919,
+          -373.5912215942602
+        ],
+        "cut_cos": 0.9497465000735346,
+        "d_cue_contact": 1064.6979442128004,
+        "d_obj_pocket": 373.46298381049047,
+        "intermediates": 0,
+        "kind": "direct",
+        "makeability": 0.6137034915079352,
+        "pocket": 1,
+        "rails": 0,
+        "seed_score": 0.6137034915079352,
+        "speed_mm_s": 837.3803449644182
+      },
+      "constructed": 636,
+      "cue": [
+        -78.05437146683335,
+        -24.57026485236719
+      ],
+      "decision": {
+        "candidates": 32,
+        "gen_ms": 0.048209,
+        "micro_ms": 0.010417000000000001,
+        "score": 1.5,
+        "scratch": false,
+        "sim_evals": 23,
+        "total_ms": 0.067791,
+        "verified_pot": true,
+        "verify_ms": 0.00825
+      },
+      "generated": 32,
+      "generated_after_dedup": 73,
+      "refined": {
+        "aim": [
+          0.9447429137271666,
+          -0.327812182449499
+        ],
+        "kind": "direct",
+        "score": 1.5,
+        "speed_mm_s": 837.3803449644182,
+        "verified_leave": 1.0,
+        "verified_pot": true,
+        "verified_scratch": false
+      },
+      "rows": [
+        {
+          "aim": [
+            0.9447429137271666,
+            -0.327812182449499
+          ],
+          "ball": 1,
+          "chain": [],
+          "clearance_mm": null,
+          "contact_point": [
+            927.8114665880919,
+            -373.5912215942602
+          ],
+          "cut_cos": 0.9497465000735346,
+          "d_cue_contact": 1064.6979442128004,
+          "d_obj_pocket": 373.46298381049047,
+          "intermediates": 0,
+          "kind": "direct",
+          "legal": true,
+          "makeability": 0.6137034915079352,
+          "pocket": 1,
+          "rails": 0,
+          "rank": 0,
+          "score": 1.5,
+          "seed_score": 0.6137034915079352,
+          "speed_mm_s": 930.4226055160202,
+          "verified_leave": 1.0,
+          "verified_pot": true,
+          "verified_scratch": false
+        },
+        {
+          "aim": [
+            0.9470133063896095,
+            -0.3211943298394602
+          ],
+          "ball": 1,
+          "chain": [],
+          "clearance_mm": null,
+          "contact_point": [
+            981.4862848572127,
+            -383.93000008469755
+          ],
+          "cut_cos": 0.999735921919863,
+          "d_cue_contact": 1118.8234095288858,
+          "d_obj_pocket": 0.0,
+          "intermediates": 0,
+          "kind": "safety_escape",
+          "legal": true,
+          "makeability": 0.7261054689111331,
+          "pocket": null,
+          "rails": 0,
+          "rank": 1,
+          "score": 0.590584981772232,
+          "seed_score": 0.3,
+          "speed_mm_s": 773.6006022367931,
+          "verified_leave": 0.45560905776769445,
+          "verified_pot": false,
+          "verified_scratch": false
+        },
+        {
+          "aim": [
+            0.9518249597607141,
+            -0.30664188555465677
+          ],
+          "ball": 1,
+          "chain": [],
+          "clearance_mm": null,
+          "contact_point": [
+            986.3694074991529,
+            -367.4872174540287
+          ],
+          "cut_cos": 0.9992662774602815,
+          "d_cue_contact": 1118.2978215170774,
+          "d_obj_pocket": 0.0,
+          "intermediates": 0,
+          "kind": "safety_escape",
+          "legal": true,
+          "makeability": 0.7257028459387794,
+          "pocket": null,
+          "rails": 0,
+          "rank": 2,
+          "score": 0.684296959207279,
+          "seed_score": 0.3,
+          "speed_mm_s": 773.533972510328,
+          "verified_leave": 0.6259944712859616,
+          "verified_pot": false,
+          "verified_scratch": false
+        },
+        {
+          "aim": [
+            0.9549099894196634,
+            -0.2968954565272736
+          ],
+          "ball": 1,
+          "chain": [],
+          "clearance_mm": null,
+          "contact_point": [
+            989.3451662530733,
+            -356.4403641912053
+          ],
+          "cut_cos": 0.9988225215950304,
+          "d_cue_contact": 1117.8012059216258,
+          "d_obj_pocket": 0.0,
+          "intermediates": 0,
+          "kind": "safety_escape",
+          "legal": true,
+          "makeability": 0.7253224014005869,
+          "pocket": null,
+          "rails": 0,
+          "rank": 3,
+          "score": 0.654707839369614,
+          "seed_score": 0.3,
+          "speed_mm_s": 773.4710103947182,
+          "verified_leave": 0.5721960715811161,
+          "verified_pot": false,
+          "verified_scratch": false
+        },
+        {
+          "aim": [
+            0.9428350227974188,
+            -0.3332598382442607
+          ],
+          "ball": 1,
+          "chain": [],
+          "clearance_mm": null,
+          "contact_point": [
+            977.0351296306983,
+            -397.50821048119786
+          ],
+          "cut_cos": 0.9999478419560122,
+          "d_cue_contact": 1119.0605732560196,
+          "d_obj_pocket": 0.0,
+          "intermediates": 0,
+          "kind": "safety_rollup",
+          "legal": true,
+          "makeability": 0.7262871409031583,
+          "pocket": null,
+          "rails": 0,
+          "rank": 4,
+          "score": 0.3514512428726529,
+          "seed_score": 0.28,
+          "speed_mm_s": 945.1441728193762,
+          "verified_leave": 0.020820441586641546,
+          "verified_pot": false,
+          "verified_scratch": false
+        },
+        {
+          "aim": [
+            0.9461899044472785,
+            -0.3236119044813561
+          ],
+          "ball": 1,
+          "chain": [],
+          "clearance_mm": null,
+          "contact_point": [
+            980.6237378160104,
+            -386.65491357610756
+          ],
+          "cut_cos": 0.9997913514978726,
+          "d_cue_contact": 1118.8854418197116,
+          "d_obj_pocket": 0.0,
+          "intermediates": 0,
+          "kind": "safety_rollup",
+          "legal": true,
+          "makeability": 0.7261529871797908,
+          "pocket": null,
+          "rails": 0,
+          "rank": 5,
+          "score": 0.559400011389799,
+          "seed_score": 0.28,
+          "speed_mm_s": 945.1260013143356,
+          "verified_leave": 0.39890911161781634,
+          "verified_pot": false,
+          "verified_scratch": false
+        },
+        {
+          "aim": [
+            0.9447429137271666,
+            -0.327812182449499
+          ],
+          "ball": 1,
+          "chain": [],
+          "clearance_mm": null,
+          "contact_point": [
+            927.8114665880919,
+            -373.5912215942602
+          ],
+          "cut_cos": 0.9497465000735346,
+          "d_cue_contact": 1064.6979442128004,
+          "d_obj_pocket": 373.46298381049047,
+          "intermediates": 0,
+          "kind": "safety_twoway",
+          "legal": true,
+          "makeability": 0.6137034915079352,
+          "pocket": 1,
+          "rails": 0,
+          "rank": 6,
+          "score": 0.8900000000000001,
+          "seed_score": 0.26,
+          "speed_mm_s": 790.8592146886172,
+          "verified_leave": 1.0,
+          "verified_pot": false,
+          "verified_scratch": false
+        },
+        {
+          "aim": [
+            0.9356500964930833,
+            -0.35292902534714243
+          ],
+          "ball": 1,
+          "chain": [
+            1
+          ],
+          "clearance_mm": null,
+          "contact_point": [
+            916.7097495147539,
+            -399.7972145253572
+          ],
+          "cut_cos": 0.9776890173262138,
+          "d_cue_contact": 1063.179627416349,
+          "d_obj_pocket": 1526.5531396335045,
+          "intermediates": 0,
+          "kind": "bank",
+          "legal": true,
+          "makeability": 0.2536991646515062,
+          "pocket": 5,
+          "rails": 1,
+          "rank": 7,
+          "score": 1.5,
+          "seed_score": 0.2536991646515062,
+          "speed_mm_s": 1323.991597794669,
+          "verified_leave": 1.0,
+          "verified_pot": true,
+          "verified_scratch": false
+        }
+      ],
+      "seed": 5152,
+      "tag": "easy-pot",
+      "top_unverified": [
+        {
+          "aim": [
+            0.9447429137271666,
+            -0.327812182449499
+          ],
+          "ball": 1,
+          "chain": [],
+          "clearance_mm": null,
+          "contact_point": [
+            927.8114665880919,
+            -373.5912215942602
+          ],
+          "cut_cos": 0.9497465000735346,
+          "d_cue_contact": 1064.6979442128004,
+          "d_obj_pocket": 373.46298381049047,
+          "intermediates": 0,
+          "kind": "direct",
+          "legal": true,
+          "makeability": 0.6137034915079352,
+          "pocket": 1,
+          "rails": 0,
+          "seed_score": 0.6137034915079352,
+          "speed_mm_s": 930.4226055160202
+        },
+        {
+          "aim": [
+            0.9470133063896095,
+            -0.3211943298394602
+          ],
+          "ball": 1,
+          "chain": [],
+          "clearance_mm": null,
+          "contact_point": [
+            981.4862848572127,
+            -383.93000008469755
+          ],
+          "cut_cos": 0.999735921919863,
+          "d_cue_contact": 1118.8234095288858,
+          "d_obj_pocket": 0.0,
+          "intermediates": 0,
+          "kind": "safety_escape",
+          "legal": true,
+          "makeability": 0.7261054689111331,
+          "pocket": null,
+          "rails": 0,
+          "seed_score": 0.3,
+          "speed_mm_s": 773.6006022367931
+        },
+        {
+          "aim": [
+            0.9518249597607141,
+            -0.30664188555465677
+          ],
+          "ball": 1,
+          "chain": [],
+          "clearance_mm": null,
+          "contact_point": [
+            986.3694074991529,
+            -367.4872174540287
+          ],
+          "cut_cos": 0.9992662774602815,
+          "d_cue_contact": 1118.2978215170774,
+          "d_obj_pocket": 0.0,
+          "intermediates": 0,
+          "kind": "safety_escape",
+          "legal": true,
+          "makeability": 0.7257028459387794,
+          "pocket": null,
+          "rails": 0,
+          "seed_score": 0.3,
+          "speed_mm_s": 773.533972510328
+        },
+        {
+          "aim": [
+            0.9549099894196634,
+            -0.2968954565272736
+          ],
+          "ball": 1,
+          "chain": [],
+          "clearance_mm": null,
+          "contact_point": [
+            989.3451662530733,
+            -356.4403641912053
+          ],
+          "cut_cos": 0.9988225215950304,
+          "d_cue_contact": 1117.8012059216258,
+          "d_obj_pocket": 0.0,
+          "intermediates": 0,
+          "kind": "safety_escape",
+          "legal": true,
+          "makeability": 0.7253224014005869,
+          "pocket": null,
+          "rails": 0,
+          "seed_score": 0.3,
+          "speed_mm_s": 773.4710103947182
+        },
+        {
+          "aim": [
+            0.9428350227974188,
+            -0.3332598382442607
+          ],
+          "ball": 1,
+          "chain": [],
+          "clearance_mm": null,
+          "contact_point": [
+            977.0351296306983,
+            -397.50821048119786
+          ],
+          "cut_cos": 0.9999478419560122,
+          "d_cue_contact": 1119.0605732560196,
+          "d_obj_pocket": 0.0,
+          "intermediates": 0,
+          "kind": "safety_rollup",
+          "legal": true,
+          "makeability": 0.7262871409031583,
+          "pocket": null,
+          "rails": 0,
+          "seed_score": 0.28,
+          "speed_mm_s": 945.1441728193762
+        },
+        {
+          "aim": [
+            0.9461899044472785,
+            -0.3236119044813561
+          ],
+          "ball": 1,
+          "chain": [],
+          "clearance_mm": null,
+          "contact_point": [
+            980.6237378160104,
+            -386.65491357610756
+          ],
+          "cut_cos": 0.9997913514978726,
+          "d_cue_contact": 1118.8854418197116,
+          "d_obj_pocket": 0.0,
+          "intermediates": 0,
+          "kind": "safety_rollup",
+          "legal": true,
+          "makeability": 0.7261529871797908,
+          "pocket": null,
+          "rails": 0,
+          "seed_score": 0.28,
+          "speed_mm_s": 945.1260013143356
+        },
+        {
+          "aim": [
+            0.9447429137271666,
+            -0.327812182449499
+          ],
+          "ball": 1,
+          "chain": [],
+          "clearance_mm": null,
+          "contact_point": [
+            927.8114665880919,
+            -373.5912215942602
+          ],
+          "cut_cos": 0.9497465000735346,
+          "d_cue_contact": 1064.6979442128004,
+          "d_obj_pocket": 373.46298381049047,
+          "intermediates": 0,
+          "kind": "safety_twoway",
+          "legal": true,
+          "makeability": 0.6137034915079352,
+          "pocket": 1,
+          "rails": 0,
+          "seed_score": 0.26,
+          "speed_mm_s": 790.8592146886172
+        },
+        {
+          "aim": [
+            0.9356500964930833,
+            -0.35292902534714243
+          ],
+          "ball": 1,
+          "chain": [
+            1
+          ],
+          "clearance_mm": null,
+          "contact_point": [
+            916.7097495147539,
+            -399.7972145253572
+          ],
+          "cut_cos": 0.9776890173262138,
+          "d_cue_contact": 1063.179627416349,
+          "d_obj_pocket": 1526.5531396335045,
+          "intermediates": 0,
+          "kind": "bank",
+          "legal": true,
+          "makeability": 0.2536991646515062,
+          "pocket": 5,
+          "rails": 1,
+          "seed_score": 0.2536991646515062,
+          "speed_mm_s": 1323.991597794669
+        },
+        {
+          "aim": [
+            0.9719444444230836,
+            -0.23521053750864016
+          ],
+          "ball": 1,
+          "chain": [
+            1
+          ],
+          "clearance_mm": null,
+          "contact_point": [
+            1028.8856847933878,
+            -395.3187585892011
+          ],
+          "cut_cos": 0.9999633233915016,
+          "d_cue_contact": 1167.3777168344068,
+          "d_obj_pocket": 999.2840253214964,
+          "intermediates": 0,
+          "kind": "kick",
+          "legal": true,
+          "makeability": 0.2511303681414515,
+          "pocket": 5,
+          "rails": 1,
+          "seed_score": 0.2511303681414515,
+          "speed_mm_s": 1261.7970421201333
+        },
+        {
+          "aim": [
+            0.970845199688532,
+            -0.23970731787272223
+          ],
+          "ball": 1,
+          "chain": [
+            1
+          ],
+          "clearance_mm": null,
+          "contact_point": [
+            1030.0863088133085,
+            -402.5381345678668
+          ],
+          "cut_cos": 0.9900281470481225,
+          "d_cue_contact": 1170.826835116538,
+          "d_obj_pocket": 2254.6535268747684,
+          "intermediates": 0,
+          "kind": "kick",
+          "legal": true,
+          "makeability": 0.2471146294926877,
+          "pocket": 3,
+          "rails": 1,
+          "seed_score": 0.2471146294926877,
+          "speed_mm_s": 1444.9565513377338
+        },
+        {
+          "aim": [
+            0.5296140732085093,
+            0.848238724333835
+          ],
+          "ball": 1,
+          "chain": [
+            3
+          ],
+          "clearance_mm": null,
+          "contact_point": [
+            927.8114665880919,
+            -373.5912215942602
+          ],
+          "cut_cos": 0.9357936868141891,
+          "d_cue_contact": 1064.6979442128004,
+          "d_obj_pocket": 373.46298381049047,
+          "intermediates": 0,
+          "kind": "kick",
+          "legal": true,
+          "makeability": 0.21347882108333552,
+          "pocket": 1,
+          "rails": 1,
+          "seed_score": 0.21347882108333552,
+          "speed_mm_s": 1255.1273288460568
+        },
+        {
+          "aim": [
+            0.819204025230699,
+            -0.5735021927123036
+          ],
+          "ball": 1,
+          "chain": [
+            2
+          ],
+          "clearance_mm": null,
+          "contact_point": [
+            957.5893513441453,
+            -463.2540668062611
+          ],
+          "cut_cos": 0.7757579570155313,
+          "d_cue_contact": 1124.722809715579,
+          "d_obj_pocket": 1084.6741583755631,
+          "intermediates": 0,
+          "kind": "kick",
+          "legal": true,
+          "makeability": 0.18989945268227015,
+          "pocket": 0,
+          "rails": 1,
+          "seed_score": 0.18989945268227015,
+          "speed_mm_s": 1559.404316185915
+        },
+        {
+          "aim": [
+            0.9344000904755964,
+            -0.3562253092064029
+          ],
+          "ball": 1,
+          "chain": [
+            1
+          ],
+          "clearance_mm": null,
+          "contact_point": [
+            916.2651234678783,
+            -403.63890273401415
+          ],
+          "cut_cos": 0.9602661647084605,
+          "d_cue_contact": 1064.1260687684835,
+          "d_obj_pocket": 2788.854518460727,
+          "intermediates": 0,
+          "kind": "bank",
+          "legal": true,
+          "makeability": 0.17212991557480484,
+          "pocket": 3,
+          "rails": 1,
+          "seed_score": 0.17212991557480484,
+          "speed_mm_s": 1520.460841094732
+        },
+        {
+          "aim": [
+            0.9665081424877031,
+            -0.2566359493620677
+          ],
+          "ball": 1,
+          "chain": [
+            1
+          ],
+          "clearance_mm": null,
+          "contact_point": [
+            1025.0457534430825,
+            -432.38528181426864
+          ],
+          "cut_cos": 0.7681399250219226,
+          "d_cue_contact": 1176.0709900494562,
+          "d_obj_pocket": 2473.9656335163454,
+          "intermediates": 0,
+          "kind": "kick",
+          "legal": true,
+          "makeability": 0.16803967753469004,
+          "pocket": 2,
+          "rails": 1,
+          "seed_score": 0.16803967753469004,
+          "speed_mm_s": 1844.6213828683885
+        },
+        {
+          "aim": [
+            0.897221727521381,
+            -0.441580311680162
+          ],
+          "ball": 1,
+          "chain": [
+            2,
+            1
+          ],
+          "clearance_mm": null,
+          "contact_point": [
+            1025.0457534430825,
+            -432.38528181426864
+          ],
+          "cut_cos": 0.9997572641735386,
+          "d_cue_contact": 1176.0709900494562,
+          "d_obj_pocket": 2473.9656335163454,
+          "intermediates": 0,
+          "kind": "kick",
+          "legal": true,
+          "makeability": 0.13250400813011737,
+          "pocket": 2,
+          "rails": 2,
+          "seed_score": 0.13250400813011737,
+          "speed_mm_s": 1891.9826567875298
+        },
+        {
+          "aim": [
+            -0.9945606118229011,
+            -0.10415944225300319
+          ],
+          "ball": 1,
+          "chain": [
+            0
+          ],
+          "clearance_mm": null,
+          "contact_point": [
+            927.8114665880919,
+            -373.5912215942602
+          ],
+          "cut_cos": 0.8535632772965054,
+          "d_cue_contact": 1064.6979442128004,
+          "d_obj_pocket": 373.46298381049047,
+          "intermediates": 0,
+          "kind": "kick",
+          "legal": true,
+          "makeability": 0.12283407261125183,
+          "pocket": 1,
+          "rails": 1,
+          "seed_score": 0.12283407261125183,
+          "speed_mm_s": 1450.162385182668
+        },
+        {
+          "aim": [
+            0.9026949924915908,
+            -0.4302810134442451
+          ],
+          "ball": 1,
+          "chain": [
+            2,
+            1
+          ],
+          "clearance_mm": null,
+          "contact_point": [
+            1012.209612879072,
+            -450.07474256023875
+          ],
+          "cut_cos": 0.9303893609317606,
+          "d_cue_contact": 1170.354483099568,
+          "d_obj_pocket": 1426.7487490212966,
+          "intermediates": 0,
+          "kind": "kick",
+          "legal": true,
+          "makeability": 0.11901919707214084,
+          "pocket": 4,
+          "rails": 2,
+          "seed_score": 0.11901919707214084,
+          "speed_mm_s": 1814.7253719773687
+        },
+        {
+          "aim": [
+            0.46219398883126933,
+            0.8867788431667957
+          ],
+          "ball": 1,
+          "chain": [
+            3,
+            2
+          ],
+          "clearance_mm": null,
+          "contact_point": [
+            957.5893513441453,
+            -463.2540668062611
+          ],
+          "cut_cos": 0.979400187426646,
+          "d_cue_contact": 1124.722809715579,
+          "d_obj_pocket": 1084.6741583755631,
+          "intermediates": 0,
+          "kind": "kick",
+          "legal": true,
+          "makeability": 0.11209043343026481,
+          "pocket": 0,
+          "rails": 2,
+          "seed_score": 0.11209043343026481,
+          "speed_mm_s": 1695.629036565685
+        },
+        {
+          "aim": [
+            0.9269676286338785,
+            -0.37514132732196265
+          ],
+          "ball": 1,
+          "chain": [
+            1
+          ],
+          "clearance_mm": null,
+          "contact_point": [
+            919.7206183925753,
+            -428.3671424371346
+          ],
+          "cut_cos": 0.7360283036418032,
+          "d_cue_contact": 1076.3860128857818,
+          "d_obj_pocket": 2968.964963536942,
+          "intermediates": 0,
+          "kind": "bank",
+          "legal": true,
+          "makeability": 0.10933030881958374,
+          "pocket": 2,
+          "rails": 1,
+          "seed_score": 0.10933030881958374,
+          "speed_mm_s": 1978.0818140128831
+        },
+        {
+          "aim": [
+            0.9465149699059562,
+            -0.3226599010474141
+          ],
+          "ball": 1,
+          "chain": [
+            2,
+            1
+          ],
+          "clearance_mm": null,
+          "contact_point": [
+            931.866506698406,
+            -368.8447676073427
+          ],
+          "cut_cos": 0.9076653119995239,
+          "d_cue_contact": 1066.9888065960363,
+          "d_obj_pocket": 2085.9800179734484,
+          "intermediates": 0,
+          "kind": "bank",
+          "legal": true,
+          "makeability": 0.10626263205904099,
+          "pocket": 4,
+          "rails": 2,
+          "seed_score": 0.10626263205904099,
+          "speed_mm_s": 1959.0004789235063
+        },
+        {
+          "aim": [
+            0.8896506417398238,
+            -0.45664180234831736
+          ],
+          "ball": 1,
+          "chain": [
+            2,
+            1
+          ],
+          "clearance_mm": null,
+          "contact_point": [
+            1030.0863088133085,
+            -402.5381345678668
+          ],
+          "cut_cos": 0.8392241957115322,
+          "d_cue_contact": 1170.826835116538,
+          "d_obj_pocket": 2254.6535268747684,
+          "intermediates": 0,
+          "kind": "kick",
+          "legal": true,
+          "makeability": 0.10180058867700909,
+          "pocket": 3,
+          "rails": 2,
+          "seed_score": 0.10180058867700909,
+          "speed_mm_s": 2176.6968558424965
+        },
+        {
+          "aim": [
+            0.9238060563287378,
+            -0.3828607714174237
+          ],
+          "ball": 1,
+          "chain": [
+            1
+          ],
+          "clearance_mm": null,
+          "contact_point": [
+            926.2108906221416,
+            -440.7764266512063
+          ],
+          "cut_cos": 0.5423106070153095,
+          "d_cue_contact": 1087.095343453351,
+          "d_obj_pocket": 1835.0498406571992,
+          "intermediates": 0,
+          "kind": "bank",
+          "legal": true,
+          "makeability": 0.09531098820064116,
+          "pocket": 4,
+          "rails": 1,
+          "seed_score": 0.09531098820064116,
+          "speed_mm_s": 2370.1494661785873
+        },
+        {
+          "aim": [
+            0.9417123287185173,
+            -0.3364192175538536
+          ],
+          "ball": 1,
+          "chain": [
+            1,
+            2
+          ],
+          "clearance_mm": null,
+          "contact_point": [
+            922.4779616826023,
+            -382.0024597918854
+          ],
+          "cut_cos": 0.9909346298019501,
+          "d_cue_contact": 1062.4606927584357,
+          "d_obj_pocket": 3130.280765745847,
+          "intermediates": 0,
+          "kind": "bank",
+          "legal": true,
+          "makeability": 0.09006170805318844,
+          "pocket": 2,
+          "rails": 2,
+          "seed_score": 0.09006170805318844,
+          "speed_mm_s": 1986.47777157153
+        },
+        {
+          "aim": [
+            0.9537399788114597,
+            -0.300632754065016
+          ],
+          "ball": 1,
+          "chain": [
+            2
+          ],
+          "clearance_mm": null,
+          "contact_point": [
+            961.6868478491028,
+            -352.31186447305396
+          ],
+          "cut_cos": 0.4870100440516138,
+          "d_cue_contact": 1090.1726281954232,
+          "d_obj_pocket": 1469.837660266001,
+          "intermediates": 0,
+          "kind": "bank",
+          "legal": true,
+          "makeability": 0.08995242950824463,
+          "pocket": 0,
+          "rails": 1,
+          "seed_score": 0.08995242950824463,
+          "speed_mm_s": 2520.01076660933
+        }
+      ]
+    }
+  ],
+  "section": "candidate-set debug dump"
+}

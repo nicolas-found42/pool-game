@@ -1,0 +1,21 @@
+{
+ "model": "untrained-random-init (torch.manual_seed(0))",
+ "onnx_path": "/Users/Nicolas/.omp/wt/t31f39e546/m/prototypes/ai-spine/results/onnx/policy-scratch.onnx",
+ "onnx_bytes": 91668,
+ "sha256": "5220b8f2a85b03f2e75233dd71f5337edf730e1903eee67ad1bf0c5d00ebf2e5",
+ "opset": [
+  17
+ ],
+ "scorer_params": 30210,
+ "golden_path": "/Users/Nicolas/.omp/wt/t31f39e546/m/prototypes/ai-spine/results/onnx-golden.json",
+ "golden_k": 5,
+ "ort_golden_max_abs_err": 1.4901161193847656e-08,
+ "ort_dynamic_k9_max_abs_err": 7.450580596923828e-09,
+ "golden_dynamic_axis_ok": true,
+ "versions": {
+  "torch": "2.14.0",
+  "onnx": "1.22.0",
+  "onnxruntime": "1.30.0"
+ },
+ "export_seconds": 0.373
+}
