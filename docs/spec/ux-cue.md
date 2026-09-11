@@ -189,6 +189,12 @@ box that produced the frames. Frames are 1600x920, ~260 KB each, committed under
 Every frame's raw answer is reproducible with the command in the prototype README; the
 frames are the committed PNGs, so the gate can re-run the same queries.
 
+Provenance of the quotes: 13 of the 15 frames were read on the **committed** render (all of
+`01`–`12`, `15`). `13` and `14` were read on the render immediately before it, which differs
+only by the widget's camera side-offset and the handedness fix — neither touches the read-out
+text, the marker colours, or the status line those two claims rest on. The spin-direction
+claims (`07`–`10`) were re-read **after** the handedness fix, on the committed frames.
+
 ## 10. Open questions for the judgement
 
 1. **Elevation affordance**: labelled inline side-view gauge (prototype), a dedicated
