@@ -29,6 +29,126 @@
         "source": "rack-fixtures.json",
         "agreement": "exact"
       }
+    },
+    {
+      "name": "replay-break-foul-ball-in-hand-eight-loss",
+      "kind": "replay",
+      "note": "A whole match at a race of one rack, both seats human: the standard break (legal-clean, 4.3(d), so the turn passes), the incoming player's scratch (a 3.1 foul, so the cue ball goes in hand anywhere), the placement that earns it, and the 8 potted on an open table — a loss under 4.8(a), which takes the rack and the match for P2. The log is data/matches/break-foul-ball-in-hand-eight-loss.json, a path resolved from the repository root; the final position and every adjudication record are recomputed from it by `Session::replay` in pool-match's harness. The log is the whole free-choice sequence: rack seeds, the breaker, and the adjudications are derived, never read back.",
+      "input": {
+        "log": "data/matches/break-foul-ball-in-hand-eight-loss.json"
+      },
+      "expected": {
+        "final_state_hash": "1c3eaf8fb173809c",
+        "race": [
+          0,
+          1
+        ],
+        "records": [
+          {
+            "verdict": "no_shot",
+            "legality": "cue_ball_placed (1.6)",
+            "fouls": [],
+            "offers": [],
+            "apply": {
+              "action": "place_cue",
+              "breaker": "p1",
+              "rack_seed_unchanged": true,
+              "shot_count_reset": false,
+              "spotted": [],
+              "state": {
+                "kind": "awaiting_shot",
+                "shooter": "p1",
+                "target": "open"
+              }
+            }
+          },
+          {
+            "verdict": "legal",
+            "legality": "legal_break_clean (4.3(d))",
+            "fouls": [],
+            "offers": [],
+            "apply": {
+              "action": "pass_turn",
+              "breaker": "p1",
+              "rack_seed_unchanged": true,
+              "shot_count_reset": false,
+              "spotted": [],
+              "state": {
+                "kind": "awaiting_shot",
+                "shooter": "p2",
+                "target": "open"
+              }
+            }
+          },
+          {
+            "verdict": "foul",
+            "legality": "standard_foul (3.1)",
+            "fouls": [
+              {
+                "rule": "3.1",
+                "reason": "cue_ball_pocketed"
+              },
+              {
+                "rule": "3.2",
+                "reason": "wrong_ball_first"
+              }
+            ],
+            "offers": [],
+            "apply": {
+              "action": "cue_ball_in_hand_anywhere",
+              "breaker": "p1",
+              "rack_seed_unchanged": true,
+              "shot_count_reset": false,
+              "spotted": [],
+              "state": {
+                "kind": "awaiting_placement",
+                "shooter": "p1",
+                "domain": "anywhere"
+              }
+            }
+          },
+          {
+            "verdict": "no_shot",
+            "legality": "cue_ball_placed (1.6)",
+            "fouls": [],
+            "offers": [],
+            "apply": {
+              "action": "place_cue",
+              "breaker": "p1",
+              "rack_seed_unchanged": true,
+              "shot_count_reset": false,
+              "spotted": [],
+              "state": {
+                "kind": "awaiting_shot",
+                "shooter": "p1",
+                "target": "open"
+              }
+            }
+          },
+          {
+            "verdict": "loss",
+            "legality": "eight_pocketed_loss (4.8(a))",
+            "fouls": [
+              {
+                "rule": "3.2",
+                "reason": "wrong_ball_first"
+              }
+            ],
+            "offers": [],
+            "apply": {
+              "action": "rack_over",
+              "breaker": "p1",
+              "rack_seed_unchanged": true,
+              "shot_count_reset": false,
+              "spotted": [],
+              "state": {
+                "kind": "rack_over",
+                "winner": "p2"
+              }
+            }
+          }
+        ]
+      }
     }
   ]
 }

@@ -44,6 +44,10 @@ fn every_golden_entry_verifies() {
         let kind = entry["kind"].as_str().expect("entry kind");
         match kind {
             "rack" => verify_rack(name, entry),
+            // `replay` entries belong to `pool-match`'s harness — the crate that can see the `Session`
+            // and the rules machine at once (`architecture.md` §11). Skipping them here is not a
+            // silent pass: the entry has a verifier, one crate away.
+            "replay" => {}
             other => panic!(
                 "goldens.json entry `{name}` has kind `{other}`, which this harness does not verify"
             ),

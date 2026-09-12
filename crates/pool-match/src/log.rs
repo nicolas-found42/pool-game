@@ -11,6 +11,10 @@
 use pool_rules::{Call, PlacementDomain, Spin, Vec2};
 use serde::{Deserialize, Serialize};
 
+/// The format version a fresh log carries. Bumped only when an entry's meaning changes, never for
+/// additions or key reordering (`architecture.md` §6).
+pub const FORMAT_VERSION: u32 = 1;
+
 /// The log's header plus its entries.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -182,3 +186,14 @@ pub enum LogError {
     /// The document's shape is right but a bound is violated.
     Invalid(String),
 }
+
+impl std::fmt::Display for LogError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Parse(message) => write!(f, "the log does not match its schema: {message}"),
+            Self::Invalid(message) => write!(f, "the log violates a bound: {message}"),
+        }
+    }
+}
+
+impl std::error::Error for LogError {}
