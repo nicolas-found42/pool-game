@@ -1,6 +1,12 @@
 [workspace]
 resolver = "3"
-members = ["crates/pool-rng", "crates/pool-sim", "crates/pool-rules", "crates/pool-match"]
+members = [
+    "crates/pool-rng",
+    "crates/pool-sim",
+    "crates/pool-rules",
+    "crates/pool-match",
+    "crates/pool-app",
+]
 
 [workspace.package]
 version = "0.1.0"
@@ -13,6 +19,10 @@ pool-rng = { path = "crates/pool-rng" }
 pool-sim = { path = "crates/pool-sim" }
 pool-rules = { path = "crates/pool-rules" }
 pool-match = { path = "crates/pool-match" }
+pool-app = { path = "crates/pool-app" }
+# The shell's pins (`architecture.md` §12): Bevy exact, clap on 4.
+bevy = "=0.19.1"
+clap = { version = "4", features = ["derive"] }
 libm = "=0.2.16"
 serde = { version = "1", features = ["derive"] }
 serde_json = { version = "1", features = ["float_roundtrip"] }
@@ -49,6 +59,10 @@ excessive_precision = { level = "allow", priority = 2 }
 missing_errors_doc = { level = "allow", priority = 2 }
 missing_panics_doc = { level = "allow", priority = 2 }
 must_use_candidate = { level = "allow", priority = 2 }
+# A Bevy system's parameters are owned values the scheduler hands over (`Res<T>`, `Commands`); a
+# system cannot take them by reference, so the lint's suggestion has no spelling in the shell
+# (architecture.md §10 — pool-app is the only crate whose functions are systems).
+needless_pass_by_value = { level = "allow", priority = 2 }
 # Long functions are event solvers and ladder stages whose shape mirrors the spec's prose.
 too_many_lines = { level = "allow", priority = 2 }
 # Index loops are the pinned algorithms (Fisher–Yates, slot order) written as specified.
