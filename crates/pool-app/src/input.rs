@@ -46,6 +46,9 @@ pub const MAX_ELEVATION_RAD: f32 = 75.0 * std::f32::consts::PI / 180.0;
 const ELEVATION_STEP_RAD: f32 = 5.0 * std::f32::consts::PI / 180.0;
 /// The fine notch.
 const ELEVATION_FINE_RAD: f32 = std::f32::consts::PI / 180.0;
+/// A pixel-unit wheel's travel per elevation notch: a trackpad reports pixels, a mouse a line count,
+/// and both must move the gauge (§1's wheel gesture).
+const WHEEL_PIXELS_PER_NOTCH: f32 = 50.0;
 /// The spin selector's reach past the envelope, so §6's refused state is reachable.
 const SPIN_SELECT_MAX: f32 = 1.25;
 /// One spin key press (envelope fractions; `Shift` gives a fifth of it).
@@ -641,9 +644,10 @@ fn author_elevation(gestures: &mut Gestures, cue: &mut Cue) {
         delta -= step;
     }
     for event in gestures.wheel.read() {
-        if event.unit == MouseScrollUnit::Line {
-            delta += event.y * step * 0.5;
-        }
+        delta += match event.unit {
+            MouseScrollUnit::Line => event.y * step * 0.5,
+            MouseScrollUnit::Pixel => event.y * step / WHEEL_PIXELS_PER_NOTCH,
+        };
     }
     if delta != 0.0 {
         cue.elevation_rad = (cue.elevation_rad + delta).clamp(0.0, MAX_ELEVATION_RAD);
