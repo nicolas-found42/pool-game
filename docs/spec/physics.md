@@ -295,6 +295,14 @@ The prototype's gate produced the parameters for 8 of them and the dispositions 
 requirements — **the pattern is the requirement, the parameters are the pin**, and a re-aim that
 reproduces the pattern is acceptable.
 
+**Re-pinned at M1.** The parameters in the table below are the prototype's instance, minted on
+phantom-era physics: its ball–ball root solver proposed contacts between balls a metre apart (a crossed
+Newton step clamped to `t = 1e-9`), and those impulses contributed rail counts. On the repaired core the
+prototype's parameters no longer reproduce their rows, so `physics-break.json` carries **M1's re-aims**
+(the corpus's `generator.derivation` records them; the targets are unchanged, so `corpus_version` does
+not bump). All eight produced rows now reproduce their `target_facts.expected`, and the six rows §8
+records as unproduced keep null parameters and their dispositions.
+
 | Row | Produced | Pinned parameters (prototype) | Note |
 |---|---|---|---|
 | pb-01 four to rails | **yes** | aim −2.000°, 1400 mm/s, level, no spin | 4 distinct / 4 contacts / nothing pocketed / legal 4.3(d) |
@@ -375,7 +383,7 @@ travel anchors reported not gated; the off-table rows conditional) and two hones
 
 | Item | State | Settling measurement |
 |---|---|---|
-| `e_slate` (vertical recovery) | carried at 0.60; no measured band | **ball-drop test** on the slate: `e = √(h_rebound / h_drop)` — one phone camera and a metre rule |
+| `e_slate` (vertical recovery) | carried at 0.60; no measured band — the model-side drop test (M1) reproduces the constant to rounding, but that verifies the model, not the world | **ball-drop test** on the slate: `e = √(h_rebound / h_drop)` — one phone camera and a metre rule |
 | `μc` (cushion friction) | bounded below, not pinned: 0.20 sits above the measured knee and is inert there | rail-interaction measurement (speed *and* spin either side of a cushion), or a check-up measurement |
 | `μs`, `μr` | not identifiable from the curves in hand: the pure-spin branch is exact at any value, and the draw rows move 52 % → 79 % → 177 % across the survey's own corners | a draw/follow measurement with the **input** pinned (speed known), not the relation |
 | `μb(v)` band | not portable | pin the stick/slip parametrisation, then refit against TP B-3 |
