@@ -1,11 +1,29 @@
 # prototypes/ — throwaway evidence, not the game
 
-Status after #12: **kept as evidence** (the user's call; the issue threads link to the frames and the
-result files here, and deleting them would re-break those links). None of this is spec, none of it
+Status after #12: **all three are kept as evidence** (the user's call; the issue threads link to the frames
+and result files here, and deleting them would re-break those links). None of this is spec, none of it
 ships, and nothing in it is built by the workspace `architecture.md` §1 defines — each crate is a
 standalone, dependency-light artifact with its own README. The decisions these prototypes informed are
 in `docs/spec/`; where a number here disagrees with the spec, the spec's *merged* value is authoritative
 and the prototype's is the measurement that produced it.
+
+**Retention, per artifact** (they did not arrive with the same disposition, and the merge did not
+flatten them):
+
+- **`cue-ux/`** is the one with a schedule on the record: its README said it "will be deleted once
+  `docs/spec/ux-cue.md` is settled". That section settled at #10 and merged at #12, so the deletion came
+  due — and was **overridden at #12**, recorded in `ux-cue.md` §11 and in the prototype's README, because
+  the frames here are the primary source for `ux-cue.md` §9's vision record and the #10 thread links to
+  them.
+- **`physics-core/`** carried no deletion schedule, only "everything here is disposable except the
+  findings, which live in `RESULTS.md`". It is the most heavily cited of the three: `physics.md` §8 pins
+  eight corpus rows against its runs, §9's testing strategy takes its measurements, and §12's provisional
+  table names its evidence — so deleting it would cost the spec its provenance, not just a link.
+- **`ai-spine/`** carried no deletion schedule either ("nothing here ships"). `ai-constants.md`'s
+  measured rows and `ai.md` §9/§10 cite its `results/*.json` and the ONNX artifacts by sha256.
+
+Deleting any of them later is therefore a spec-provenance change: the citations above would have to move
+first, not after.
 
 | Directory | Ticket | Question it answered | What it fed |
 |---|---|---|---|
