@@ -4601,7 +4601,10 @@ version = "0.1.0"
 dependencies = [
  "bevy",
  "clap",
+ "pool-match",
+ "pool-rules",
  "pool-sim",
+ "serde_json",
 ]
 
 [[package]]

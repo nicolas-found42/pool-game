@@ -381,6 +381,14 @@ impl Session {
         state_hash_hex(&self.positions)
     }
 
+    /// The current position's ball states, in the canonical order (`architecture.md` §11): the
+    /// pre-shot state a shell renders and validates against. The loop's own writes — a placement, a
+    /// spot, a shot's rest block — are the only things that move it.
+    #[must_use]
+    pub fn positions(&self) -> &[BallState; 16] {
+        &self.positions
+    }
+
     /// The current rack's seed (`rules-break.md` §2.7) — a re-rack never changes it.
     #[must_use]
     pub const fn rack_seed(&self) -> u64 {
