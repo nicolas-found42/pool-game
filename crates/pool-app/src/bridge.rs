@@ -2,9 +2,9 @@
 //! sync from the simulation's ball states to the ECS transforms.
 //!
 //! The simulation's numbers are the only source of a position. [`BallStates`] mirrors the sim's ball
-//! states, [`sync_ball_transforms`] writes each entity's transform from it, and nothing reads a
-//! transform back: the shell reaches game state only through a logged input, and this slice has no
-//! session yet (§10).
+//! states — `playback.rs` writes it from the presentation clock, `input.rs` from the ball-in-hand
+//! proposal — [`sync_ball_transforms`] writes each entity's transform from it, and nothing reads a
+//! transform back: the shell reaches game state only through a logged input (§10).
 
 use bevy::prelude::*;
 use pool_sim::BallState;

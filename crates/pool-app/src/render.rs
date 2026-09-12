@@ -6,8 +6,9 @@
 //! `f32` boundary. The shell's display math is exempt from the numeric discipline (§3), and nothing
 //! here can feed game state — the sync runs the other way (`§10`).
 //!
-//! §10 also lists the aim-line and ghost-ball gizmos for this module; they are drawn from a
-//! declaration being authored, so they arrive with the input slice.
+//! §10 also lists the aim-line and ghost-ball gizmos for this module; they are drawn from the
+//! declaration being authored, so `input.rs` owns them, and this module keeps the scene they are
+//! drawn over.
 
 use bevy::prelude::*;
 use pool_sim::constants as c;
