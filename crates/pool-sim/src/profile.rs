@@ -1,6 +1,8 @@
 //! Interaction coefficients: the profile record and the speed-dependent ball–ball friction table
 //! (`physics.md` §5).
 
+use serde::{Deserialize, Serialize};
+
 use crate::constants::GRAVITY_MM_S2;
 
 /// The default profile's cushion normal-channel coefficient (`physics.md` §3.3: the measured
@@ -37,6 +39,33 @@ pub struct MuB {
     pub c: f64,
     /// `(speed mm/s, μ)` pairs, ascending, 25 mm/s apart, `0..=12000`.
     table: Vec<(f64, f64)>,
+}
+
+/// `MuB`'s record shape: the fitted coefficients, never the derived table.
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct MuBRecord {
+    a: f64,
+    b: f64,
+    c: f64,
+}
+
+impl Serialize for MuB {
+    fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+        MuBRecord {
+            a: self.a,
+            b: self.b,
+            c: self.c,
+        }
+        .serialize(serializer)
+    }
+}
+
+impl<'de> Deserialize<'de> for MuB {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        let record = MuBRecord::deserialize(deserializer)?;
+        Ok(Self::new(record.a, record.b, record.c))
+    }
 }
 
 /// The table's step (mm/s).
@@ -97,11 +126,17 @@ impl MuB {
 }
 
 /// A profile: the named record of values, provenance, and condition metadata that makes every fit
-/// reproducible (`physics.md` §5).
-#[derive(Debug, Clone, PartialEq)]
+/// reproducible (`physics.md` §5). The record lives at `config/profiles/<id>.json`
+/// (`architecture.md` §12); the crate parses it, the binaries read it.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct Profile {
-    /// Profile name, as it appears in the input-log header and `config/profiles/`.
-    pub name: String,
+    /// Profile id, as it appears in the input-log header and `config/profiles/<id>.json`.
+    pub id: String,
+    /// Where the values came from and what they assume — the record's own provenance.
+    pub provenance: Provenance,
+    /// Condition metadata: the table, cloth, and ball set the values describe.
+    pub conditions: Conditions,
     /// Cloth sliding friction.
     pub mu_s: f64,
     /// Cloth rolling resistance.
@@ -127,7 +162,9 @@ impl Profile {
     #[must_use]
     pub fn default_profile() -> Self {
         Self {
-            name: "default".to_string(),
+            id: "default".to_string(),
+            provenance: Provenance::default_record(),
+            conditions: Conditions::default_record(),
             mu_s: DEFAULT_MU_S,
             mu_r: DEFAULT_MU_R,
             spin_decay_rad_s2: DEFAULT_SPIN_DECAY_RAD_S2,
@@ -151,6 +188,67 @@ impl Profile {
     #[must_use]
     pub fn roll_decel_mm_s2(&self) -> f64 {
         self.mu_r * GRAVITY_MM_S2
+    }
+}
+
+/// Where a profile's values came from (`physics.md` §5: every fit is reproducible, so the record says
+/// what it was fitted to).
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct Provenance {
+    /// The fitting sources, by the spec's labels.
+    pub sources: Vec<String>,
+    /// The label the constants carry (`fitted`, `measured`, `carried`, `provisional`, `derived`).
+    pub label: String,
+    /// What the record does *not* claim.
+    pub caveats: Vec<String>,
+}
+
+impl Provenance {
+    /// The default profile's provenance (`physics.md` §5's labels).
+    #[must_use]
+    pub fn default_record() -> Self {
+        Self {
+            sources: vec![
+                "Dr. Dave / TP A-28 (μb fit)".to_string(),
+                "TP B-6 (cushion retention: e_c = 0.70 ⇒ e_n ≈ 0.78)".to_string(),
+                "WPA equipment section (geometry)".to_string(),
+                "prototype #8 (sleep thresholds, ε)".to_string(),
+            ],
+            label: "fitted (e_n) / carried (μb, e_slate) / not identifiable (μs, μr)".to_string(),
+            caveats: vec![
+                "μb's published 0.03–0.08 band is provisional and not portable".to_string(),
+                "e_slate is carried, not fitted: pinned by the ball-drop test".to_string(),
+                "μc is weakly identified: bounded below, never pinned in value".to_string(),
+            ],
+        }
+    }
+}
+
+/// The conditions a profile describes (`physics.md` §5: cloth speed, humidity, ball set).
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct Conditions {
+    /// Cloth description.
+    pub cloth: String,
+    /// Relative humidity (%), where recorded.
+    pub humidity_pct: Option<f64>,
+    /// Ball set description.
+    pub balls: String,
+    /// Table description.
+    pub table: String,
+}
+
+impl Conditions {
+    /// The conditions the default values were measured under.
+    #[must_use]
+    pub fn default_record() -> Self {
+        Self {
+            cloth: "9 ft worsted cloth, nominal".to_string(),
+            humidity_pct: None,
+            balls: "standard 2.25 in phenolic set, 170 g nominal".to_string(),
+            table: "9 ft, 2540 × 1270 mm playing surface".to_string(),
+        }
     }
 }
 

@@ -1,6 +1,6 @@
 [workspace]
 resolver = "3"
-members = ["crates/pool-rng", "crates/pool-sim"]
+members = ["crates/pool-rng", "crates/pool-sim", "crates/pool-match"]
 
 [workspace.package]
 version = "0.1.0"
@@ -11,6 +11,7 @@ publish = false
 [workspace.dependencies]
 pool-rng = { path = "crates/pool-rng" }
 pool-sim = { path = "crates/pool-sim" }
+pool-match = { path = "crates/pool-match" }
 libm = "=0.2.16"
 serde = { version = "1", features = ["derive"] }
 serde_json = { version = "1", features = ["float_roundtrip"] }
