@@ -215,6 +215,77 @@ fn a_re_rack_restores_the_snapshot_and_keeps_the_seed() {
     );
 }
 
+/// The stalemate agreement (`rules.md` §7) is a logged input like any other: the agreement enters the
+/// stalemate tree, its single option re-racks with the original breaker, and the whole sequence —
+/// agreement and option — replays byte-identically from the log.
+#[test]
+fn a_stalemate_agreement_re_racks_and_replays() {
+    let mut session = after_the_break(1);
+    let seed = session.rack_seed();
+    let fresh = Session::new(config(fixture_log().match_seed, 1));
+    let breaker = session.state().breaker;
+    let agreement = request(&mut session, Request::Stalemate);
+    assert_eq!(agreement.verdict, pool_rules::Verdict::NoShot);
+    assert_eq!(
+        agreement.legality, "stalemate_declaration",
+        "the agreement is the stalemate declaration, not a shot"
+    );
+    let [offer] = agreement.offers.as_slice() else {
+        panic!("the agreement presents one tree: {:?}", agreement.offers);
+    };
+    assert_eq!(offer.tree, pool_rules::Tree::Stalemate);
+    assert_eq!(
+        offer.options.iter().map(|o| o.option).collect::<Vec<_>>(),
+        vec![pool_rules::OptionId::ReRackAndOriginalBreakerBreaks],
+    );
+
+    // The re-rack the agreement applies: the snapshot restored, the seed kept, the original breaker
+    // back at the table.
+    let applied = request(
+        &mut session,
+        Request::Option {
+            option_id: "re_rack_and_original_breaker_breaks".to_string(),
+        },
+    );
+    assert_eq!(applied.apply.action, Action::ReRack);
+    let view = session.state();
+    assert_eq!(view.breaker, breaker, "the original breaker breaks again");
+    assert_eq!(view.shot_count, 0, "the counter is reset");
+    assert_eq!(session.rack_seed(), seed, "the seed is unchanged");
+    assert_eq!(
+        session.state_hash(),
+        fresh.state_hash(),
+        "the snapshot is restored, ball for ball"
+    );
+
+    // The rack the agreement restarted is played to its decision: the fixture's own rack, from the
+    // top, because the re-rack restored the snapshot and kept the seed.
+    for entry in &fixture_log().entries {
+        request(&mut session, Request::from_entry(entry));
+    }
+    let winner = session.winner().expect("the rack is decided");
+    assert_eq!(
+        winner,
+        Player::P2,
+        "the fixture's rack, re-racked by agreement"
+    );
+
+    // The log carries the agreement like any other input, and it replays byte-identically.
+    let log = session.log().clone();
+    assert_eq!(
+        log.entries.len(),
+        2 + 2 + fixture_log().entries.len(),
+        "the placement, the break, the agreement, the option, then the played rack"
+    );
+    let replay = Session::replay(&log, Profile::default_profile()).expect("the log replays");
+    assert_eq!(
+        replay.final_state_hash,
+        session.state_hash(),
+        "a match re-racked by agreement replays byte-identically"
+    );
+    assert_eq!(replay.winner, winner);
+}
+
 /// A request the state does not await is refused, and the session is left exactly as it was.
 #[test]
 fn a_refused_request_leaves_the_session_untouched() {

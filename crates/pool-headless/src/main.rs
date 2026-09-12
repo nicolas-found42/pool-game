@@ -283,6 +283,7 @@ fn entry_kind(entry: &Entry) -> &'static str {
         Entry::SpotRequest => "spot_request",
         Entry::Declaration(_) => "declaration",
         Entry::Option { .. } => "option",
+        Entry::Stalemate => "stalemate",
     }
 }
 

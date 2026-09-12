@@ -26,13 +26,12 @@ use crate::log::{Declaration, Entry, FORMAT_VERSION, InputLog};
 use crate::match_layer::{MatchConfig, breaker_of, rack_seed};
 use crate::noise::Noise;
 
-/// One request to the session: exactly the four kinds the input log carries (`architecture.md` §6),
+/// One request to the session: exactly the five kinds the input log carries (`architecture.md` §6),
 /// because a request the log cannot express could never be replayed.
 ///
-/// The machine's fifth input — the stalemate declaration of `rules.md` §7 — has no log entry kind; the
-/// agreement's *application* is an ordinary option request (the stalemate tree's single option), so a
-/// session that is already at `AwaitingChoice` accepts one, but nothing can raise the proposal. That
-/// gap belongs to `architecture.md` §6 entry vocabulary and is reported, not papered over here.
+/// The stalemate agreement of `rules.md` §7 is one of them — the agreement is the input, not a shot,
+/// so the log carries it as its own entry kind and a match re-racked by agreement replays like any
+/// other. The re-rack that follows is the stalemate tree's single option, an ordinary option request.
 #[derive(Debug, Clone, PartialEq)]
 pub enum Request {
     /// A cue-ball placement within the domain the state awaits (`rules.md` §6).
@@ -51,6 +50,8 @@ pub enum Request {
         /// The option id, as `rules-break.json` writes it.
         option_id: String,
     },
+    /// The stalemate agreement (`rules.md` §7): the input is the agreement itself.
+    Stalemate,
 }
 
 impl Request {
@@ -60,6 +61,7 @@ impl Request {
         match self {
             Self::Placement { .. } => "placement",
             Self::SpotRequest => "spot_request",
+            Self::Stalemate => "stalemate",
             Self::Declaration(_) => "declaration",
             Self::Option { .. } => "option",
         }
@@ -75,6 +77,7 @@ impl Request {
                 pos: *pos,
             },
             Entry::SpotRequest => Self::SpotRequest,
+            Entry::Stalemate => Self::Stalemate,
             Entry::Declaration(declaration) => Self::Declaration(declaration.clone()),
             Entry::Option { option_id } => Self::Option {
                 option_id: option_id.clone(),
@@ -270,12 +273,23 @@ impl Session {
     }
 
     /// One request, driven through the loop of `architecture.md` §8.
+    ///
+    /// # Errors
+    ///
+    /// [`InputError::NotAwaited`] if the state does not await the request's kind,
+    /// [`InputError::Machine`] if the rules machine refuses the input in its own vocabulary (a
+    /// placement outside the domain's geometry, an option the pending tree does not offer),
+    /// [`InputError::UnknownOption`] if the option id is not one the rules vocabulary defines,
+    /// [`InputError::Strike`] if a declaration leaves `physics.md` §4's miscue envelope, and
+    /// [`InputError::Invariant`] if the simulation refuses an input the rules layer produced — a bug
+    /// in one of the two, never an input problem. A refused request leaves the session as it was.
     pub fn request(&mut self, request: Request) -> Result<Adjudication, InputError> {
         match request {
             Request::Placement { domain, pos } => self.place(domain, pos),
             Request::SpotRequest => self.spot_request(),
             Request::Declaration(declaration) => self.declare(&declaration),
             Request::Option { option_id } => self.choose(&option_id),
+            Request::Stalemate => self.stalemate(),
         }
     }
 
@@ -284,6 +298,13 @@ impl Session {
     ///
     /// A log is a whole match (`architecture.md` §7): the run must end with the race decided, so a
     /// truncated log is refused instead of reported as a partial match.
+    ///
+    /// # Errors
+    ///
+    /// [`InputError::ProfileMismatch`] if the caller loaded a profile other than the one the log's
+    /// header names; whatever [`Session::request`] returns for the first entry the loop refuses; and
+    /// [`InputError::Unfinished`] if the entries end before the race is decided, or
+    /// [`InputError::Invariant`] if the run recorded a log other than the one it consumed.
     pub fn replay(log: &InputLog, profile: Profile) -> Result<Replay, InputError> {
         if log.profile != profile.id {
             return Err(InputError::ProfileMismatch {
@@ -401,6 +422,17 @@ impl Session {
             .adjudicate(Input::SpotRequest)
             .map_err(InputError::Machine)?;
         self.commit(next, record, Entry::SpotRequest)
+    }
+
+    /// The stalemate agreement (`rules.md` §7): the machine's fifth input, accepted in
+    /// `AwaitingShot`. The agreement is the input, not a shot; the re-rack it applies is the
+    /// stalemate tree's single option, taken as an ordinary option request.
+    fn stalemate(&mut self) -> Result<Adjudication, InputError> {
+        let (record, next) = self
+            .rack
+            .adjudicate(Input::Stalemate)
+            .map_err(InputError::Machine)?;
+        self.commit(next, record, Entry::Stalemate)
     }
 
     /// One option of the pending tree (`rules-break.md` §3): the id is resolved against the rules

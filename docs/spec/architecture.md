@@ -130,14 +130,17 @@ Two `u64` seeds live in the input-log header (§6):
 
 **Principle: the input log is the free-choice sequence; everything else is derived.** Racks, seeds' expansions, adjudications, event logs, race scores, and re-rack snapshots are all recomputed on replay.
 
-An input-log entry mirrors the rules machine's input vocabulary exactly — four kinds:
+An input-log entry mirrors the rules machine's input vocabulary exactly — five kinds:
 
 | Entry | Fields | Notes |
 |---|---|---|
 | `placement` | `domain` (`above_head_string` \| `anywhere`), `pos` | #6 §1's `AwaitingPlacement` |
 | `spot_request` | — | the 1.6 ¶2 request; legal only when every legal object ball is above the head string (#6 §9) |
 | `declaration` | `from_policy`, `call` (`{ball, pocket}` \| `safety` \| `break`), `aim` (unit 2-vector), `speed` (mm/s), `spin` (`a`, `b` as **fractions of the miscue envelope**, `|(a, b)| ≤ 1` — the input-log schema's contract, ruled at #10 and confirmed at #12's R1), `elevation` (rad) | one atomic declaration (#7 §4); the call carries the open-table 8-claim (#6 §2) |
-| `option` | `option_id` | one option of the current `AwaitingChoice` tree — break-foul, illegal-break, 8-on-break, stalemate offer/accept; ids are defined by the rules corpus |
+| `option` | `option_id` | one option of the current `AwaitingChoice` tree — break-foul, illegal-break, 8-on-break, stalemate; ids are defined by the rules corpus |
+| `stalemate` | — | the agreement of #6 §7 / WPA 1.13's by-agreement path: **the agreement is the input, not a shot**, so the log carries it as its own kind; the re-rack it applies is the stalemate tree's single option, taken as an ordinary `option` entry |
+
+**Update (M2).** The `stalemate` kind was added after the machine landed: the machine accepts the agreement in `AwaitingShot` (#6 §7) but the log's four kinds could not express it, so a match re-racked by agreement was unreplayable and the shell's stalemate path had no input to send. Additions do not bump `format_version` (#14's corpus discipline, same paragraph below); `pool-match`'s `Session::request` and the shell's choice menu take the kind, and the replay test plays an agreed re-rack through a decided rack.
 
 Header: `format_version`, `profile` id, `match_seed`, `noise_seed`, `difficulty` (`level` + `checkpoint` — inert when both seats are human), `race_target`. **No wall-clock value ever appears in the log** (#9); the AI's 1 s SLO is calibration, never content.
 

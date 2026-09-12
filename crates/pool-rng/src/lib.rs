@@ -44,18 +44,18 @@ impl SplitMix64 {
     #[allow(clippy::cast_possible_truncation)]
     pub fn next_below(&mut self, n: u64) -> u64 {
         assert!(n > 0, "next_below(0) has no value to return");
-        let mut x = self.next_u64();
-        let mut m = u128::from(x) * u128::from(n);
-        let mut l = m as u64;
-        if l < n {
-            let t = n.wrapping_neg() % n; // (2^64 - n) mod n
-            while l < t {
-                x = self.next_u64();
-                m = u128::from(x) * u128::from(n);
-                l = m as u64;
+        let mut word = self.next_u64();
+        let mut product = u128::from(word) * u128::from(n);
+        let mut low = product as u64;
+        if low < n {
+            let threshold = n.wrapping_neg() % n; // (2^64 - n) mod n
+            while low < threshold {
+                word = self.next_u64();
+                product = u128::from(word) * u128::from(n);
+                low = product as u64;
             }
         }
-        (m >> 64) as u64
+        (product >> 64) as u64
     }
 
     /// Fisher–Yates descending over `items` (`rules-break.md` §2.6 step 5).

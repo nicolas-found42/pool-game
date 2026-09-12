@@ -52,7 +52,11 @@ suboptimal_flops = { level = "allow", priority = 2 }
 # Domain vocabulary is deliberately terse and repeated (`mu_s`/`mu_r`, `e_n`/`e_b`, `a`/`b`).
 # Names carry their unit and their frame (`x_mm`, `v_mm_s`), so module prefixes repeat by design.
 module_name_repetitions = { level = "allow", priority = 2 }
-# Constants are literals from the spec's tables, printed as written there.
+similar_names = { level = "allow", priority = 2 }
+# The spec's tables are transcribed as written there, trailing digits and all, so a reader can diff
+# them against `physics.md` by eye; reformatting them would break that correspondence.
+unreadable_literal = { level = "allow", priority = 2 }
+excessive_precision = { level = "allow", priority = 2 }
 # A Bevy system's parameters are owned values the scheduler hands over (`Res<T>`, `Commands`); a
 # system cannot take them by reference, so the lint's suggestion has no spelling in the shell
 # (architecture.md §10 — pool-app is the only crate whose functions are systems).

@@ -3,7 +3,7 @@
 //! **Principle: the input log is the free-choice sequence; everything else is derived.** Racks, seeds'
 //! expansions, adjudications, event logs, race scores, and re-rack snapshots are recomputed on replay.
 //!
-//! The types here mirror `docs/spec/input-log.schema.json` exactly — four entry kinds, the header, and
+//! The types here mirror `docs/spec/input-log.schema.json` exactly — five entry kinds, the header, and
 //! the strike declaration — with the schema's `additionalProperties: false` and its ranges enforced at
 //! the parse boundary. The machine's own vocabulary (`Call`, `Spin`, `Vec2`, `PlacementDomain`) lives in
 //! `pool-rules`; the log reuses it and adds only `from_policy`. No wall-clock value appears in the log.
@@ -59,7 +59,7 @@ pub enum DifficultyLevel {
     Pro,
 }
 
-/// One free choice: the four kinds of `architecture.md` §6's table.
+/// One free choice: the five kinds of `architecture.md` §6's table.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum Entry {
@@ -79,6 +79,9 @@ pub enum Entry {
         /// The option id, defined by the rules corpus.
         option_id: String,
     },
+    /// The stalemate agreement (`rules.md` §7): both players agree the rack is abandoned. The
+    /// agreement is the input, not a shot; the re-rack option that follows is an `option` entry.
+    Stalemate,
 }
 
 /// The logged declaration: the machine's `ShotDeclaration` plus the one field the log adds —
@@ -120,6 +123,12 @@ impl InputLog {
     /// The types enforce the schema's shape (`additionalProperties: false` on structs, the tagged
     /// unions, the ball range); this adds the numeric bounds a JSON Schema states but Rust types
     /// cannot. The tests additionally run the document through the published schema itself.
+    ///
+    /// # Errors
+    ///
+    /// [`LogError::Parse`] if the text is not JSON or does not carry the schema's shape (an unknown
+    /// key, a missing one, a mistyped value), and [`LogError::Invalid`] if it parses but violates one
+    /// of the bounds [`Self::validate`] states.
     pub fn parse(text: &str) -> Result<Self, LogError> {
         let log: Self = serde_json::from_str(text).map_err(|e| LogError::Parse(e.to_string()))?;
         log.validate()?;
@@ -127,6 +136,12 @@ impl InputLog {
     }
 
     /// The header's numeric bounds (`docs/spec/input-log.schema.json`).
+    ///
+    /// # Errors
+    ///
+    /// [`LogError::Invalid`], naming the first bound violated: `format_version` or `race_target`
+    /// below 1, an empty `profile` or `difficulty.checkpoint`, a declaration `speed` or `elevation`
+    /// below zero, or a declaration value that is not finite.
     pub fn validate(&self) -> Result<(), LogError> {
         if self.format_version < 1 {
             return Err(LogError::Invalid(
@@ -173,6 +188,12 @@ impl InputLog {
     }
 
     /// Serialize to the schema's JSON. Entries keep their order; no key is ever dropped.
+    ///
+    /// # Errors
+    ///
+    /// [`LogError::Parse`] if `serde_json` refuses the document. The log's types give it nothing to
+    /// refuse — plain structs and enums, and a non-finite float is written as `null` rather than
+    /// rejected — so the `Result` mirrors [`Self::parse`]'s shape rather than a case that arises.
     pub fn to_json(&self) -> Result<String, LogError> {
         serde_json::to_string_pretty(self).map_err(|e| LogError::Parse(e.to_string()))
     }

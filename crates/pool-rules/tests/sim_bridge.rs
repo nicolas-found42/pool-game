@@ -159,39 +159,7 @@ fn a_real_break_reaches_the_machine() {
         !observation.facts.facts.is_empty(),
         "the break's stream is not empty"
     );
-
-    // The machine's own count of 4.3(d) against the simulation's physical count.
-    let ruling = break_rules::classify(&observation);
-    let physical = pool_sim::facts::rail_summary(shot.events(), &shot.rest().states);
-    assert!(
-        physical.distinct_object_balls >= 4,
-        "the hook's break drives {} object balls to rails",
-        physical.distinct_object_balls
-    );
-    assert!(
-        ruling.rails.counted_2_7.len() >= 4,
-        "2.7's count over the same facts is {}",
-        ruling.rails.counted_2_7.len()
-    );
-    // The two numbers differ exactly by the balls 2.7 adds: the object balls that finished out of
-    // play (`rules.md` §3).
-    let out_of_play: Vec<u8> = shot
-        .rest()
-        .pocketed
-        .iter()
-        .chain(&shot.rest().off_table)
-        .copied()
-        .filter(|ball| *ball != 0)
-        .collect();
-    let added = out_of_play
-        .iter()
-        .filter(|ball| !ruling.rails.physical.contains(ball))
-        .count();
-    assert_eq!(
-        ruling.rails.counted_2_7.len(),
-        physical.distinct_object_balls + added,
-        "2.7's count is the physical count plus {out_of_play:?}"
-    );
+    assert_the_rules_count_matches_the_physics(&observation, &shot);
 
     let rack = Rack::new(RACK_SEED, arrangement, Player::P1);
     let (placement, rack) = rack
@@ -248,6 +216,40 @@ fn a_real_break_reaches_the_machine() {
     assert!(
         next.assignment.is_none(),
         "4.3(c): no group is assigned on the break"
+    );
+}
+
+/// The machine's own count of 4.3(d) against the simulation's physical count: 2.7's count is the
+/// physical count plus the object balls that finished out of play (`rules.md` §3).
+fn assert_the_rules_count_matches_the_physics(observation: &Observation, shot: &Shot) {
+    let ruling = break_rules::classify(observation);
+    let physical = pool_sim::facts::rail_summary(shot.events(), &shot.rest().states);
+    assert!(
+        physical.distinct_object_balls >= 4,
+        "the hook's break drives {} object balls to rails",
+        physical.distinct_object_balls
+    );
+    assert!(
+        ruling.rails.counted_2_7.len() >= 4,
+        "2.7's count over the same facts is {}",
+        ruling.rails.counted_2_7.len()
+    );
+    let out_of_play: Vec<u8> = shot
+        .rest()
+        .pocketed
+        .iter()
+        .chain(&shot.rest().off_table)
+        .copied()
+        .filter(|ball| *ball != 0)
+        .collect();
+    let added = out_of_play
+        .iter()
+        .filter(|ball| !ruling.rails.physical.contains(ball))
+        .count();
+    assert_eq!(
+        ruling.rails.counted_2_7.len(),
+        physical.distinct_object_balls + added,
+        "2.7's count is the physical count plus {out_of_play:?}"
     );
 }
 

@@ -60,6 +60,14 @@ pub fn miscue_envelope_mm() -> f64 {
 
 impl StrikeDecl {
     /// Check the declaration against the miscue envelope and the input domains.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`StrikeError::BadSpin`] for a non-finite spin offset, [`StrikeError::Miscue`] when the
+    /// offsets leave the unit disc, [`StrikeError::BadAim`] for a non-finite or zero aim,
+    /// [`StrikeError::BadSpeed`] for a non-finite or non-positive speed, and
+    /// [`StrikeError::BadElevation`] for a non-finite elevation or one at least `π/2` off the
+    /// horizontal.
     pub fn validate(&self) -> Result<(), StrikeError> {
         let [a, b] = self.spin;
         if !a.is_finite() || !b.is_finite() {
@@ -90,6 +98,10 @@ impl StrikeDecl {
     /// the pivot-length rotation `sin α = a/√(a² + L²)`, `cos α = L/√(a² + L²)` — algebraic, no
     /// transcendental. The elevation's `sin`/`cos` are the pinned `libm` escape hatch of
     /// `architecture.md` §3: they are the declaration's conversion, not part of the evolution.
+    ///
+    /// # Errors
+    ///
+    /// Returns the [`StrikeError`] of [`StrikeDecl::validate`] when the declaration is out of domain.
     pub fn resolve(&self, pivot_mm: f64) -> Result<StrikeOutcome, StrikeError> {
         self.validate()?;
         let aim = v3(self.aim[0], self.aim[1], 0.0).norm();
