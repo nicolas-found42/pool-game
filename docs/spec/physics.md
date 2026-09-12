@@ -303,22 +303,22 @@ prototype's parameters no longer reproduce their rows, so `physics-break.json` c
 not bump). All eight produced rows now reproduce their `target_facts.expected`, and the six rows §8
 records as unproduced keep null parameters and their dispositions.
 
-| Row | Produced | Pinned parameters (prototype) | Note |
-|---|---|---|---|
-| pb-01 four to rails | **yes** | aim −2.000°, 1400 mm/s, level, no spin | 4 distinct / 4 contacts / nothing pocketed / legal 4.3(d) |
-| pb-02 four distinct, five contacts | **yes** | aim −1.000°, 1400 mm/s | 4 / 5 / nothing pocketed / legal 4.3(d) |
-| pb-03 pocketed ball + three to rails | no | — | the pattern is reached with ball **3** pocketed (3/3, 4.3(c)); the row pins ball 12 — **amend the row's ball number or re-pin it** |
-| pb-04 total miss | **yes** | aim −4.721°, 550 mm/s | 0 contacts / illegal break |
-| pb-05 three to rails, illegal | **yes** | aim −1.679°, 2400 mm/s | 3 / 3 / illegal-break tree |
-| pb-06 three to rails + scratch | **yes** | aim +1.821°, 2400 mm/s | 3 / 3 / cue ball pocketed / illegal-break tree |
-| pb-07 off-table object ball | no | — | no off-table event exists at the default `e_slate`; **conditional** (§3.4) |
-| pb-08 legal break + scratch | **yes** | aim +1.000°, 2700 mm/s | 4 / 4 / cue ball pocketed / break-foul tree |
-| pb-09 off-table object ball | no | — | as pb-07 |
-| pb-10 8 on the break, no rails | no | — | the **8 is pocketed with the right tree**, but 11 distinct balls reach rails, not 0 — **the row is over-constrained**: "zero rail contacts" fights the rack and adds nothing to the rule under test |
-| pb-11 8 on a foul break | no | — | no run with the 8 pocketed *and* the cue ball pocketed *and* zero rails — **over-constrained as written** |
-| pb-12 8 off the table | no | — | needs an off-table event; **conditional** (§3.4) |
-| pb-13 frozen ball leaves and returns | **yes** | aim −1.007°, 3100 mm/s; frozen pin: ball 4 from slot 5.0 to (700, 606.4) on the right long cushion | 3 / 3 / frozen contact suppressed / `left_and_returned` false — this row is what made the rail-contact field pair (`rules.md` §10.2) a requirement |
-| pb-14 one ball, two rails | **yes** | aim −3.282°, 3100 mm/s | 3 distinct / 4 contacts / illegal break |
+| Row | Produced | Pinned parameters (prototype) | M1's re-aim (the committed pin) | Note |
+|---|---|---|---|---|
+| pb-01 four to rails | **yes** | aim −2.000°, 1400 mm/s, level, no spin | aim −3.500°, 4200 mm/s | 4 distinct / 4 contacts / nothing pocketed / legal 4.3(d) |
+| pb-02 four distinct, five contacts | **yes** | aim −1.000°, 1400 mm/s | aim +0.500°, 3200 mm/s | 4 / 5 / nothing pocketed / legal 4.3(d) |
+| pb-03 pocketed ball + three to rails | no | — | — | the pattern is reached with ball **3** pocketed (3/3, 4.3(c)); the row pins ball 12 — **amend the row's ball number or re-pin it** |
+| pb-04 total miss | **yes** | aim −4.721°, 550 mm/s | unchanged | 0 contacts / illegal break |
+| pb-05 three to rails, illegal | **yes** | aim −1.679°, 2400 mm/s | aim −4.179°, 3600 mm/s | 3 / 3 / illegal-break tree |
+| pb-06 three to rails + scratch | **yes** | aim +1.821°, 2400 mm/s | unchanged | 3 / 3 / cue ball pocketed / illegal-break tree |
+| pb-07 off-table object ball | no | — | — | no off-table event exists at the default `e_slate`; **conditional** (§3.4) |
+| pb-08 legal break + scratch | **yes** | aim +1.000°, 2700 mm/s | aim +3.500°, 3100 mm/s | 4 / 4 / cue ball pocketed / break-foul tree |
+| pb-09 off-table object ball | no | — | — | as pb-07 |
+| pb-10 8 on the break, no rails | no | — | — | the **8 is pocketed with the right tree**, but 11 distinct balls reach rails, not 0 — **the row is over-constrained**: "zero rail contacts" fights the rack and adds nothing to the rule under test |
+| pb-11 8 on a foul break | no | — | — | no run with the 8 pocketed *and* the cue ball pocketed *and* zero rails — **over-constrained as written** |
+| pb-12 8 off the table | no | — | — | needs an off-table event; **conditional** (§3.4) |
+| pb-13 frozen ball leaves and returns | **yes** | aim −1.007°, 3100 mm/s; frozen pin: ball 4 from slot 5.0 to (700, 606.4) on the right long cushion | aim −2.107°, 3100 mm/s | 3 / 3 / frozen contact suppressed / `left_and_returned` false — this row is what made the rail-contact field pair (`rules.md` §10.2) a requirement |
+| pb-14 one ball, two rails | **yes** | aim −3.282°, 3100 mm/s | aim −0.282°, 3100 mm/s | 3 distinct / 4 contacts / illegal break |
 
 Reachability of the three off-table rows is **reported per ruling**: with the committed 3D tangential
 channel at `e_slate` = 0.9 the level-cue break sends ball 10 off the table (hop 124.31 mm against the
@@ -342,9 +342,16 @@ deterministic-replay goldens ride in `cargo test` and CI (`architecture.md` §11
 2. **Property tests** (the invariants the prototype measured at 0.000 / 0.00000): no cushion
    penetration, minimum ball–ball gap ≥ 0, monotone energy dissipation between timeline segments (max
    rise 0.000 % on the committed break), bit-identical rerun, and the sleep-threshold plateau.
-3. **CI: no fitting.** The repo's `ci` check is a checkout-only placeholder by design (ADR 0001); the
-   fitting harness and the dataset never enter CI. Wiring real CI is a separate effort, outside this
-   spec's scope.
+3. **CI: no fitting.** The fitting harness and the dataset never enter CI: the ladder is run by hand
+   and its results are committed (`data/fitting/ladder-results.json`). CI runs the tests — the golden
+   corpus, the property invariants, the corpus rows, the rack fixtures, the replay goldens — on both
+   host platforms, plus `clippy`, `fmt` and the purity check.
+
+   **Update (M0).** This item's original wording called the repo's `ci` check "a checkout-only
+   placeholder by design (ADR 0001); wiring real CI is a separate effort, outside this spec's scope".
+   That was true when §9 was written and is not true now: M0 wired the real workflow (`.github/`
+   `workflows/ci.yml`, the aggregate `ci` gate ADR-0001 requires) and ADR-0001 carries its own update
+   note. The decision above — no fitting in CI — is unchanged.
 
 ## 10. Out of scope, with reasons
 
