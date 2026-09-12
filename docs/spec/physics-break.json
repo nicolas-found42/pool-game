@@ -4,7 +4,7 @@
   "generator": {
     "prng": "none - this tier generates no parameters and no arrangements",
     "shuffle": "none - arrangements are inline literals; the seeded rack generator and its fixture list belong to the rack layer and are pinned by rack-fixtures.json",
-    "derivation": "source of parameters: pinned by #8 (physics prototype) and recorded row by row in docs/spec/physics.md §8; null parameters are requirements, not gaps"
+    "derivation": "source of parameters: pinned by #8 (physics prototype) and recorded row by row in docs/spec/physics.md §8; null parameters are requirements, not gaps. Re-pinned at M1 on the repaired solver (PR #38): physics.md §8 allows a re-aim — the pattern is the requirement, the parameters are the pin — and the prototype's parameters no longer reproduce their rows. pb-01 pb-02 pb-05 pb-08 pb-13 pb-14 carry the re-aimed shot.aim_deg / shot.cue_speed_mm_s committed here, each verified to produce its target_facts.expected; the parameters §8 records stay as the prototype's instance. The six rows #8 left unproduced keep null parameters and their recorded disposition."
   },
   "rack_fixture_list": "rack-fixtures.json",
   "entries": [
@@ -36,8 +36,8 @@
           "x_mm": -800,
           "y_mm": 0
         },
-        "aim_deg": null,
-        "cue_speed_mm_s": null,
+        "aim_deg": -3.5,
+        "cue_speed_mm_s": 4200,
         "spin": null,
         "elevation_deg": null
       },
@@ -83,8 +83,8 @@
           "x_mm": -800,
           "y_mm": 0
         },
-        "aim_deg": null,
-        "cue_speed_mm_s": null,
+        "aim_deg": 0.5,
+        "cue_speed_mm_s": 3200,
         "spin": null,
         "elevation_deg": null
       },
@@ -179,8 +179,8 @@
           "x_mm": -1100,
           "y_mm": 40
         },
-        "aim_deg": null,
-        "cue_speed_mm_s": null,
+        "aim_deg": -4.721,
+        "cue_speed_mm_s": 550,
         "spin": null,
         "elevation_deg": null
       },
@@ -228,8 +228,8 @@
           "x_mm": -760,
           "y_mm": -20
         },
-        "aim_deg": null,
-        "cue_speed_mm_s": null,
+        "aim_deg": -4.179,
+        "cue_speed_mm_s": 3600,
         "spin": null,
         "elevation_deg": null
       },
@@ -276,8 +276,8 @@
           "x_mm": -760,
           "y_mm": -20
         },
-        "aim_deg": null,
-        "cue_speed_mm_s": null,
+        "aim_deg": 1.821,
+        "cue_speed_mm_s": 2400,
         "spin": null,
         "elevation_deg": null
       },
@@ -374,8 +374,8 @@
           "x_mm": -800,
           "y_mm": 0
         },
-        "aim_deg": null,
-        "cue_speed_mm_s": null,
+        "aim_deg": 3.5,
+        "cue_speed_mm_s": 3100,
         "spin": null,
         "elevation_deg": null
       },
@@ -622,8 +622,8 @@
           "x_mm": -900,
           "y_mm": -40
         },
-        "aim_deg": null,
-        "cue_speed_mm_s": null,
+        "aim_deg": -2.107,
+        "cue_speed_mm_s": 3100,
         "spin": null,
         "elevation_deg": null
       },
@@ -672,8 +672,8 @@
           "x_mm": -830,
           "y_mm": 20
         },
-        "aim_deg": null,
-        "cue_speed_mm_s": null,
+        "aim_deg": -0.282,
+        "cue_speed_mm_s": 3100,
         "spin": null,
         "elevation_deg": null
       },

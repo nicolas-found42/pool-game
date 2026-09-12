@@ -107,9 +107,9 @@
           "cue_ball_pocketed": true,
           "moved_object_balls": [],
           "rest_frozen_rails": [],
-          "t_rest_s": 0.1886493754322196
+          "t_rest_s": 0.1886493754322195
         },
-        "state_hash": "6b7d9ee23044a933"
+        "state_hash": "df5de6e56a13704c"
       }
     },
     {
@@ -242,10 +242,10 @@
             }
           ],
           "off_table": [],
-          "distinct_object_balls_to_rails": 2,
-          "rail_contacts_total": 3,
+          "distinct_object_balls_to_rails": 1,
+          "rail_contacts_total": 2,
           "suppressed_frozen_contacts": 0,
-          "object_ball_contacts": 2,
+          "object_ball_contacts": 1,
           "cue_ball_pocketed": false,
           "moved_object_balls": [
             1,
@@ -270,9 +270,9 @@
               "rail": "RightLong"
             }
           ],
-          "t_rest_s": 6.888498095986784
+          "t_rest_s": 6.23809448196317
         },
-        "state_hash": "faf9ad10da9fa5b9"
+        "state_hash": "42b8d7f9ae20d9d8"
       }
     },
     {
@@ -297,17 +297,12 @@
       },
       "expected": {
         "facts": {
-          "pocketed": [
-            {
-              "ball": 1,
-              "pocket": "SidePlusY"
-            }
-          ],
+          "pocketed": [],
           "off_table": [],
-          "distinct_object_balls_to_rails": 10,
-          "rail_contacts_total": 21,
+          "distinct_object_balls_to_rails": 11,
+          "rail_contacts_total": 16,
           "suppressed_frozen_contacts": 0,
-          "object_ball_contacts": 3,
+          "object_ball_contacts": 1,
           "cue_ball_pocketed": false,
           "moved_object_balls": [
             1,
@@ -326,15 +321,10 @@
             14,
             15
           ],
-          "rest_frozen_rails": [
-            {
-              "ball": 7,
-              "rail": "RightLong"
-            }
-          ],
-          "t_rest_s": 6.386624648209909
+          "rest_frozen_rails": [],
+          "t_rest_s": 7.4717282294566925
         },
-        "state_hash": "67730b642728a028"
+        "state_hash": "927961b6288ea6bb"
       }
     }
   ]

@@ -53,17 +53,23 @@ fn every_golden_entry_verifies() {
     let entries = doc["entries"].as_array().expect("entries is an array");
     assert!(!entries.is_empty(), "the golden corpus must not be empty");
 
+    let mut failures: Vec<String> = Vec::new();
     for entry in entries {
         let name = entry["name"].as_str().expect("entry name");
         let kind = entry["kind"].as_str().expect("entry kind");
         match kind {
             "rack" => verify_rack(name, entry),
-            "shot" => verify_shot(name, entry),
+            "shot" => failures.extend(verify_shot(name, entry)),
             other => panic!(
                 "goldens.json entry `{name}` has kind `{other}`, which this harness does not verify"
             ),
         }
     }
+    assert!(
+        failures.is_empty(),
+        "the golden corpus does not verify:\n\n{}",
+        failures.join("\n\n")
+    );
 }
 
 /// Rack entries defer to `rack-fixtures.json` (#14's fixtures) and assert exact agreement.
@@ -227,8 +233,9 @@ fn produced_facts(shot: &Shot, arrangement: &Arrangement) -> Value {
     })
 }
 
-/// Shot entries pin the rest `state_hash`, the fact pattern's essentials, and nothing else.
-fn verify_shot(name: &str, entry: &Value) {
+/// Shot entries pin the rest `state_hash`, the fact pattern's essentials, and nothing else. Returns
+/// the mismatch dumps rather than panicking, so one run reports every stale entry at once.
+fn verify_shot(name: &str, entry: &Value) -> Vec<String> {
     let (shot, arrangement) = run_shot(entry);
     let golden = &entry["expected"];
     let actual_facts = produced_facts(&shot, &arrangement);
@@ -264,11 +271,13 @@ fn verify_shot(name: &str, entry: &Value) {
             "  `state_hash`: golden {want_hash}, produced {actual_hash}"
         ));
     }
-    assert!(
-        failures.is_empty(),
+    if failures.is_empty() {
+        return Vec::new();
+    }
+    vec![format!(
         "{name}: the run does not match its golden\n{}\n  golden:   {}\n  produced: {}",
         failures.join("\n"),
         serde_json::to_string_pretty(golden).expect("render the golden"),
         serde_json::to_string_pretty(&actual).expect("render the run"),
-    );
+    )]
 }

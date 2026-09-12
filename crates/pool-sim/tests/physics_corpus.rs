@@ -1,52 +1,30 @@
-//! The physics tier's break corpus (`docs/spec/physics-break.json`) at `physics.md` §8's pins.
+//! The physics tier's break corpus (`docs/spec/physics-break.json`) at its committed pins.
 //!
 //! `physics.md` §8 records the prototype's gate dispositions: **8 rows produced** (`pb-01`, `pb-02`,
-//! `pb-04`, `pb-05`, `pb-06`, `pb-08`, `pb-13`, `pb-14`), each with its pinned aim and speed, and six
-//! rows left unproduced with a recorded disposition. This suite runs every produced row at its pin —
-//! the pinned parameters as committed, never a re-aim — and compares its `target_facts.expected`
-//! physics-tier fields: the rail counts in `physics.md` §7's **physical** reading (distinct object
-//! balls that actually touched a rail, excluding balls pocketed or driven off the table), the pocketed
-//! and off-table sets, the cue ball's pocket, its ball contacts, and pb-13's frozen annotations. The
-//! `legal` / `tree` / `rule` fields are the rules layer's (`rules-break.md`), not this tier's, and
-//! are reported beside the comparison rather than asserted.
+//! `pb-04`, `pb-05`, `pb-06`, `pb-08`, `pb-13`, `pb-14`), each with the prototype's pinned aim and
+//! speed, and six rows left unproduced with a recorded disposition. This suite runs every row that
+//! carries a pin in the corpus and compares its `target_facts.expected` physics-tier fields: the rail
+//! counts in `physics.md` §7's **physical** reading (distinct object balls that actually touched a
+//! rail, excluding balls pocketed or driven off the table), the pocketed and off-table sets, the cue
+//! ball's pocket, its ball contacts, and pb-13's frozen annotations. The `legal` / `tree` / `rule`
+//! fields belong to the rules layer (`rules-break.md`) and are printed beside the comparison as a
+//! cross-check of the pattern the row encodes, not asserted.
 //!
-//! ## Divergences this suite records
+//! ## The pins here are not all §8's
 //!
-//! The pins are the prototype's, and they do not transfer. Running the prototype's own committed code
-//! at these pins today reproduces four of the eight rows (`pb-01`, `pb-02`, `pb-04`, `pb-08`) — its
-//! pins were minted by an earlier revision of that code (its `results/rows.json` records the minted
-//! observations, and its search would re-pick different parameters now). This implementation
-//! reproduces `pb-06` alone — and not `pb-04`, the total miss, which is one phantom contact away.
-//!
-//! Two solver defects account for the split: the first is shared with the prototype (it emits the
-//! same class of phantom fact on the same shot), the second was introduced by the port and is fixed:
-//!
-//! - **Phantom ball–ball contacts at `t ≈ 0`.** A pair's contact root is solved with each ball's
-//!   current segment law, which is only valid until that ball's next mode transition. When the
-//!   quadratic root lies beyond the law's validity, the Newton refinement walks the step out of the
-//!   root's basin and the `t <= 0` clamp turns it into `t = 1e-9`: the pair is then treated as
-//!   contacting *now*, and `hit_pair` applies a full impulse between balls that can be a metre apart.
-//!   Minimal instance: the standard rack (fixture seed 1), the cue ball at (−800, 0) struck straight
-//!   down the long string at 1400 mm/s — the first group emits `BallBall { a: 0, b: 6 }` (1634 mm
-//!   apart) and `BallBall { a: 0, b: 10 }`, and ball 6 is at x ≈ 1240 mm one second later while the
-//!   cue ball has not moved. The prototype emits the same class of fact (`BallBall { a: 0, b: 4 }`,
-//!   `{0, 8}`, `{0, 9}` on the same shot) at `t = 1e-9`, so the defect is shared, and a break's
-//!   outcome then depends on which phantom set a rounding difference produces.
-//! - **A far-side face contact at `t = 0`** (found by workstream C and fixed before this branch pinned
-//!   anything, `solve_wall`; rolling retention 0.6374 → 0.6992 at `e_n` 0.78): the `t = 0`
-//!   shortcut for "at the face within rounding" had no lower bound on the signed distance, so a ball
-//!   far *behind* a jaw's face plane — the plane extends past the segment's end into the playing
-//!   area — fired an immediate jaw contact. Minimal instance: one ball at (−300, 0) rolling into the
-//!   right long rail at 1500 mm/s took a 337 mm/s sideways kick from the `SidePlusY` jaw at the rail
-//!   contact; with the shortcut's band made two-sided the same shot reproduces the prototype
-//!   bit-for-bit (`t_rest = 4.234896 s`, post-cushion velocity `(0, −699.08, 175.09)` mm/s at
-//!   `e_n = 0.75`).
-//!
-//! Neither defect is a corpus bug and the pins are not this suite's to amend (`physics.md` §8: "the
-//! pattern is the requirement, the parameters are the pin"; a re-aim reproducing the pattern is
-//! acceptable). `DIVERGENCES` therefore names the rows this implementation does not reproduce, with
-//! the produced and expected facts, and the suite fails if one of them starts matching — so the
-//! ledger cannot rot once the defects are fixed and the pins are re-aimed.
+//! §8's prototype pins were minted on a solver that fabricated ball–ball contacts (a pair's root was
+//! solved against a segment law extrapolated past its validity; the Newton refinement then escaped
+//! the root, the `t <= 0` clamp turned it into `t = 1e-9`, and `hit_pair` applied a full impulse
+//! between balls a metre apart — the standard rack, cue at (−800, 0) straight down the string at
+//! 1400 mm/s, emitted `BallBall { a: 0, b: 6 }` at 1634 mm of separation, and the prototype emits the
+//! same class of phantom on the same shot). PR #38 repaired that, and §8 explicitly allows the
+//! consequence — *the pattern is the requirement, the parameters are the pin* — so the six rows whose
+//! pins no longer reproduced their patterns were **re-aimed at M1**: `pb-01`, `pb-02`, `pb-05`,
+//! `pb-08`, `pb-13`, `pb-14` now carry the re-aimed `shot.aim_deg` / `shot.cue_speed_mm_s` in the
+//! corpus (see its `generator.derivation` note), each searched level and spin-free over (aim, speed)
+//! on the row's own arrangement and verified against the whole expected block. `PROTOTYPE_PINS` below
+//! keeps §8's numbers so the report shows what changed; a row that stops reproducing now fails rather
+//! than being tolerated, because the corpus carries a pin that does.
 
 use std::collections::BTreeMap;
 use std::fmt::Write as _;
@@ -61,9 +39,9 @@ use pool_sim::strike::StrikeDecl;
 use pool_sim::table::Table;
 use serde_json::{Value, json};
 
-/// The prototype's pins for the eight produced rows (`physics.md` §8's table): absolute aim angle in
-/// degrees, and launch speed in mm/s. Every one of them is level, with no spin.
-const PINS: [(&str, f64, f64); 8] = [
+/// `physics.md` §8's prototype pins for the eight produced rows — the record of what the re-aim
+/// moved away from (aim in degrees, speed in mm/s). Every one of them was level, with no spin.
+const PROTOTYPE_PINS: [(&str, f64, f64); 8] = [
     ("pb-01", -2.000, 1400.0),
     ("pb-02", -1.000, 1400.0),
     ("pb-04", -4.721, 550.0),
@@ -74,7 +52,7 @@ const PINS: [(&str, f64, f64); 8] = [
     ("pb-14", -3.282, 3100.0),
 ];
 
-/// The six rows §8 leaves unpinned, with the disposition it records for each: no parameters are
+/// The six rows §8 leaves unproduced, with the disposition it records for each: no parameters are
 /// invented for them, and the suite reports them instead of failing.
 const DISPOSITIONS: [(&str, &str); 6] = [
     (
@@ -106,43 +84,17 @@ const DISPOSITIONS: [(&str, &str); 6] = [
     ),
 ];
 
-/// The rows this implementation's pinned run does not reproduce, with the produced facts beside the
-/// expected ones (measured on this branch; see the module docs for the mechanism). `pb-06` is the one
-/// produced row whose target the pins reproduce.
-const DIVERGENCES: [(&str, &str); 7] = [
-    (
-        "pb-01",
-        "`distinct_object_balls_to_rails` target 4, produced 1; `rail_contacts_total` target 4, \
-         produced 2",
-    ),
-    (
-        "pb-02",
-        "`distinct_object_balls_to_rails` 4 vs 1; `rail_contacts_total` 5 vs 1; `cue_ball_pocketed` \
-         false vs true",
-    ),
-    (
-        "pb-04",
-        "`object_ball_contacts` target 0, produced 1 — the phantom pair of the module docs, on the \
-         row whose whole requirement is that the cue ball contacts nothing",
-    ),
-    (
-        "pb-05",
-        "`distinct_object_balls_to_rails` 3 vs 1; `rail_contacts_total` 3 vs 2",
-    ),
-    (
-        "pb-08",
-        "`distinct_object_balls_to_rails` 4 vs 1; `rail_contacts_total` 4 vs 2; `cue_ball_pocketed` \
-         false vs true",
-    ),
-    (
-        "pb-13",
-        "`distinct_object_balls_to_rails` 3 vs 2; `pocketed` [] vs [11, 14]; the frozen ball is \
-         still frozen to RightLong at rest and `frozen_ball_left_and_returned` is false either way",
-    ),
-    (
-        "pb-14",
-        "`distinct_object_balls_to_rails` target 3, produced 4",
-    ),
+/// The `target_facts.expected` fields this tier produces. `legal`, `tree`, and `rule` are the rules
+/// layer's, so the comparison never reaches for them: they are reported beside it.
+const COMPARABLE: [&str; 8] = [
+    "distinct_object_balls_to_rails",
+    "rail_contacts_total",
+    "pocketed",
+    "off_table",
+    "cue_ball_pocketed",
+    "object_ball_contacts",
+    "frozen_to_rail_at_shot_start",
+    "frozen_ball_left_and_returned",
 ];
 
 fn spec_dir() -> PathBuf {
@@ -168,15 +120,35 @@ fn arrangement_from_json(value: &Value) -> Arrangement {
     Arrangement { slots }
 }
 
-/// The row's pre-state: its arrangement and cue ball, plus pb-13's frozen pin (`physics.md` §8: the
-/// ball of rack slot 5.0 moves to (700, 606.425) mm, on the right long cushion — the spec renders
-/// the exact-contact value `HALF_WIDTH − R` as 606.4).
-fn prestate(row: &Value) -> Sim {
+/// A row's committed pin: `(aim in degrees, launch speed in mm/s)`, or `None` when it is one of the
+/// rows §8 leaves unproduced. `spin` and `elevation_deg` stay null — a pin is level, with no spin.
+fn pin(row: &Value) -> Option<(f64, f64)> {
+    let aim = row["shot"]["aim_deg"].as_f64();
+    let speed = row["shot"]["cue_speed_mm_s"].as_f64();
+    match (aim, speed) {
+        (None, None) => None,
+        (Some(aim), Some(speed)) => {
+            assert!(
+                row["shot"]["spin"].is_null() && row["shot"]["elevation_deg"].is_null(),
+                "{}: a pinned row is level with no spin",
+                row["id"]
+            );
+            Some((aim, speed))
+        }
+        _ => panic!(
+            "{}: a pin carries both aim_deg and cue_speed_mm_s",
+            row["id"]
+        ),
+    }
+}
+
+/// Run a pinned row: the corpus' aim is the absolute aim angle (`physics.md` §8's reading), and the
+/// pin's frozen pre-state moves the ball of rack slot 5.0 to (700, 606.425) mm — the exact-contact
+/// value `HALF_WIDTH − R` that §8 renders as 606.4 — onto the right long cushion.
+fn run_pinned(row: &Value, aim_deg: f64, speed_mm_s: f64) -> Shot {
     let arrangement = arrangement_from_json(&row["arrangement"]);
     let mut sim = Sim::new(Table::new(), arrangement);
-    let frozen =
-        row["target_facts"]["expected"]["frozen_to_rail_at_shot_start"].as_bool() == Some(true);
-    if frozen {
+    if row["target_facts"]["expected"]["frozen_to_rail_at_shot_start"].as_bool() == Some(true) {
         let ball = arrangement.ball_at(Slot::parse("5.0").expect("slot 5.0"));
         sim.place_ball(ball, [700.0, HALF_WIDTH_MM - BALL_RADIUS_MM])
             .expect("the frozen pin is a legal placement");
@@ -187,12 +159,6 @@ fn prestate(row: &Value) -> Sim {
     ];
     sim.place_cue(cue)
         .expect("the cue pin is a legal placement");
-    sim
-}
-
-/// Run a pinned row: the §8 aim is the absolute aim angle, and every pin is level with no spin.
-fn run_pinned(row: &Value, aim_deg: f64, speed_mm_s: f64) -> Shot {
-    let mut sim = prestate(row);
     let rad = aim_deg.to_radians();
     let decl = StrikeDecl {
         aim: [rad.cos(), rad.sin()],
@@ -254,19 +220,6 @@ fn produced(shot: &Shot) -> Value {
     })
 }
 
-/// The `target_facts.expected` fields this tier produces; `legal`, `tree`, and `rule` are the rules
-/// layer's (`rules-break.md`), so a comparison never reaches for them.
-const COMPARABLE: [&str; 8] = [
-    "distinct_object_balls_to_rails",
-    "rail_contacts_total",
-    "pocketed",
-    "off_table",
-    "cue_ball_pocketed",
-    "object_ball_contacts",
-    "frozen_to_rail_at_shot_start",
-    "frozen_ball_left_and_returned",
-];
-
 /// The per-field comparison of a row's produced facts against its target.
 fn differences(expected: &Value, actual: &Value) -> Vec<String> {
     let mut out: Vec<String> = Vec::new();
@@ -283,49 +236,74 @@ fn differences(expected: &Value, actual: &Value) -> Vec<String> {
 }
 
 #[test]
-fn pinned_rows_are_compared_to_their_target_facts() {
+fn pinned_rows_reproduce_their_target_facts() {
     let doc = corpus();
     let rows = doc["entries"].as_array().expect("entries is an array");
     let mut report = String::new();
     let mut failures: Vec<String> = Vec::new();
+    let mut pinned = 0;
 
-    for (id, aim_deg, speed_mm_s) in PINS {
+    for (id, prototype_aim, prototype_speed) in PROTOTYPE_PINS {
         let row = rows
             .iter()
             .find(|r| r["id"] == id)
             .unwrap_or_else(|| panic!("{id} is not in physics-break.json"));
+        let Some((aim_deg, speed_mm_s)) = pin(row) else {
+            failures.push(format!(
+                "{id} carries no pin: physics-break.json has aim_deg/cue_speed_mm_s null, so the row \
+                 that §8 records as produced is not exercised"
+            ));
+            continue;
+        };
+        pinned += 1;
         let shot = run_pinned(row, aim_deg, speed_mm_s);
         let actual = produced(&shot);
         let expected = &row["target_facts"]["expected"];
         let diffs = differences(expected, &actual);
-        let divergence = DIVERGENCES.iter().find(|(row_id, _)| *row_id == id);
 
-        let _ = writeln!(report, "\n{id} at aim {aim_deg}°, {speed_mm_s} mm/s");
+        let re_aimed = if (aim_deg, speed_mm_s) == (prototype_aim, prototype_speed) {
+            String::new()
+        } else {
+            format!(" (re-aimed from §8's {prototype_aim:.3}°, {prototype_speed:.0} mm/s)")
+        };
+        let _ = writeln!(
+            report,
+            "\n{id} at aim {aim_deg:.3}°, {speed_mm_s:.0} mm/s{re_aimed}"
+        );
         if diffs.is_empty() {
-            report.push_str("  reproduces its target_facts\n");
+            let _ = writeln!(
+                report,
+                "  reproduces its target_facts: distinct {}, contacts {}, pocketed {}, off table \
+                 {}, cue ball pocketed {}",
+                actual["distinct_object_balls_to_rails"],
+                actual["rail_contacts_total"],
+                actual["pocketed"],
+                actual["off_table"],
+                actual["cue_ball_pocketed"]
+            );
         } else {
             for diff in &diffs {
                 let _ = writeln!(report, "  {diff}");
             }
+            failures.push(format!("{id}: {}", diffs.join("; ")));
         }
         let _ = writeln!(
             report,
             "  rules layer (reported, not asserted): legal {}, tree {}, rule {}",
             expected["legal"], expected["tree"], expected["rule"]
         );
-
-        match (divergence, diffs.is_empty()) {
-            (Some((_, note)), true) => failures.push(format!(
-                "{id} now reproduces its target_facts, but DIVERGENCES still lists it ({note}) — \
-                 delete the entry"
-            )),
-            (Some(_), false) | (None, true) => {}
-            (None, false) => failures.push(format!("{id} does not reproduce its target_facts")),
-        }
     }
 
+    assert_eq!(
+        pinned,
+        PROTOTYPE_PINS.len(),
+        "every row §8 records as produced must carry a pin in the corpus"
+    );
     println!("{report}");
-    assert!(failures.is_empty(), "{report}\n{}", failures.join("\n"));
+    assert!(
+        failures.is_empty(),
+        "the pinned rows do not reproduce their target_facts:{report}"
+    );
 }
 
 #[test]
@@ -339,15 +317,11 @@ fn unpinned_rows_report_their_recorded_disposition() {
             .iter()
             .find(|r| r["id"] == id)
             .unwrap_or_else(|| panic!("{id} is not in physics-break.json"));
-        // The corpus's null parameters are requirements, not gaps: a row that gains a pin belongs in
-        // PINS above, and this fails loudly rather than silently skipping it.
+        // The corpus' null parameters are requirements, not gaps: a row that gains a pin belongs in
+        // the pinned set above, and this fails loudly rather than silently skipping it.
         assert!(
-            row["shot"]["aim_deg"].is_null() && row["shot"]["cue_speed_mm_s"].is_null(),
-            "{id} now carries parameters; add it to PINS and run it"
-        );
-        assert!(
-            !PINS.iter().any(|(pinned, _, _)| *pinned == id),
-            "{id} is both pinned and unpinned"
+            pin(row).is_none(),
+            "{id} now carries a pin; it is exercised by the pinned set, not reported as unproduced"
         );
         println!("{id}: not exercised — {disposition}");
         reported += 1;
