@@ -327,7 +327,7 @@ deterministic-replay goldens ride in `cargo test` and CI (`architecture.md` §11
    drop, and a ball at rest in the rack that must not drop — the last two are the prototype's own two
    silent-pocket failures), the frozen-ball rail-contact case (pb-13), and the break hook's rest state.
    Each entry carries its declaration, its expected fact stream, and its expected rest-state hash. The
-   hashes are pinned by the implementation at M1 (`README.md` §6): the prototype's numbers are a first
+   hashes are pinned by the implementation at M1 (`README.md` §5): the prototype's numbers are a first
    measured instance, not the spec's values, because the prototype is a different implementation.
 2. **Property tests** (the invariants the prototype measured at 0.000 / 0.00000): no cushion
    penetration, minimum ball–ball gap ≥ 0, monotone energy dissipation between timeline segments (max

@@ -230,7 +230,7 @@ its *measured* / *derived* / *provisional* label with its provenance attached.
   selection share is the report that justifies `R` = 3.
 - **#14 (racks):** seeded racks feed the drills and the break drill, and AI training/evaluation seed
   ranges stay disjoint from the fixture seeds (`rules-break.md` §2.9).
-- **Build order (for `README.md` §6):** generator + scripted planner → serve path → env bridge →
+- **Build order (for `README.md` §5's M4):** generator + scripted planner → serve path → env bridge →
   imitation → drills → self-play.
 - **Out of scope:** the difficulty-selection menu and think-beat UX are polish-stub lines, not spec
   decisions.
