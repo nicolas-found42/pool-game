@@ -1,6 +1,10 @@
 # Crate architecture and determinism contract
 
-Status: draft spec section for wayfinder ticket #11; ticket #12 merges it into the assembled spec. Ticket #8 fills the golden-shot corpus named in §11; ticket #16 may revise the pipe payload fields of §7; ticket #10 owns the cue-input machine named in §10.
+Status: spec section, decided at #11 (2026-09-11), merged into the assembled spec by #12 (`README.md`
+indexes it and owns the cross-section rulings that touch §2, §6, §10 and §11). The sections it indexes:
+`physics.md` (the model this facade serves — #8's formulation findings are merged there),
+`rules.md`/`rules-break.md` (the machine and its corpora), `ux-cue.md` (the `input.rs` seam of §10),
+`ai.md`/`ai-constants.md` (the policy crate of §7 — #16's constants live in the appendix).
 
 ## Scope and sources
 
@@ -53,7 +57,13 @@ Conventions: `[workspace.dependencies]` carries every shared pin; `[workspace.li
 The crate graph is acyclic and one-way, with exactly the edges of §1's table. On top of that:
 
 - **`bevy` appears in no dependency tree except `pool-app`'s.** The simulation, rules, match, AI, and harness crates are plain Rust; the ECS never reaches below the shell.
-- **`ort` appears only in `pool-ai`, behind the non-default `ort` feature.** The app enables it; `pool-headless` and CI never do. `pool-ai`'s core — encoding, candidates, planner, micro — is ORT-free and tests without the runtime (#9 §8).
+- **`ort` appears only in `pool-ai`, behind the non-default `ort` feature.** The app enables it; the
+  default workspace build never does, and `pool-headless` never does. `pool-ai`'s core — encoding,
+  candidates, planner, micro — is ORT-free and tests without the runtime (#9 §8). **One exception,
+  ruled at #12 (R2 in `README.md` §3):** the artifact contract — ONNX load, the golden vectors, the
+  sha256 check — is machine-checked by a dedicated CI job running `cargo test -p pool-ai --features ort`.
+  That job is the only place CI enables the feature; the default `cargo test --workspace` and the purity
+  grep below still see an ORT-free graph.
 - **`rand` appears nowhere.** All randomness is `pool-rng` (§5); the simulator itself consumes none (#7 §1).
 - **`unsafe_code = "forbid"` workspace-wide** (`[workspace.lints.rust]`). ORT's FFI lives inside its dependency, not in this workspace.
 - **Lints:** `clippy = { all = "deny", pedantic = { level = "deny", priority = -1 } }` in `[workspace.lints.clippy]`, with an explicit, commented allow-list for the lints that fight the numeric discipline or the domain vocabulary (for example `cast_precision_loss` at the deliberate f64→f32 boundary of §3, `similar_names` for `mu_s`/`mu_r`). Every allow is a reviewable line in the manifest, never a blanket exception.
@@ -126,7 +136,7 @@ An input-log entry mirrors the rules machine's input vocabulary exactly — four
 |---|---|---|
 | `placement` | `domain` (`above_head_string` \| `anywhere`), `pos` | #6 §1's `AwaitingPlacement` |
 | `spot_request` | — | the 1.6 ¶2 request; legal only when every legal object ball is above the head string (#6 §9) |
-| `declaration` | `from_policy`, `call` (`{ball, pocket}` \| `safety` \| `break`), `aim` (unit 2-vector), `speed` (mm/s), `spin` (`a`, `b` in tip radii), `elevation` (rad) | one atomic declaration (#7 §4); the call carries the open-table 8-claim (#6 §2) |
+| `declaration` | `from_policy`, `call` (`{ball, pocket}` \| `safety` \| `break`), `aim` (unit 2-vector), `speed` (mm/s), `spin` (`a`, `b` as **fractions of the miscue envelope**, `|(a, b)| ≤ 1` — the input-log schema's contract, ruled at #10 and confirmed at #12's R1), `elevation` (rad) | one atomic declaration (#7 §4); the call carries the open-table 8-claim (#6 §2) |
 | `option` | `option_id` | one option of the current `AwaitingChoice` tree — break-foul, illegal-break, 8-on-break, stalemate offer/accept; ids are defined by the rules corpus |
 
 Header: `format_version`, `profile` id, `match_seed`, `noise_seed`, `difficulty` (`level` + `checkpoint` — inert when both seats are human), `race_target`. **No wall-clock value ever appears in the log** (#9); the AI's 1 s SLO is calibration, never content.
@@ -201,11 +211,11 @@ The shell consumes the simulation without leaking ECS into it: `bevy` types stop
 ## 11. Determinism checks and CI
 
 - **`state_hash()`** (`pool-sim`): FNV-1a 64 over the canonical byte stream of a position — per ball, in id order (cue, 1–15), `f64::to_bits()` of position, velocity, and angular velocity, plus motion mode and pocketed/off-table flags. Stable, dependency-free, and compares bits, never decimal text.
-- **`docs/spec/goldens.json`**: named entries of the form `{name, kind: rack | shot | replay, input, expected}`. Racks are #14's fixtures; shot entries pin a strike's rest `state_hash`; replay entries pin a recorded input log's final state hash and adjudication record. Prototype #8 and the dataset ticket #15 fill the shot and replay corpus; the mechanism ships now, the corpus grows with them.
+- **`docs/spec/goldens.json`**: named entries of the form `{name, kind: rack | shot | replay, input, expected}`. Racks are #14's fixtures; shot entries pin a strike's rest `state_hash`; replay entries pin a recorded input log's final state hash and adjudication record. This is the **determinism-golden corpus** — in-repo, running in `cargo test` and CI. The **fitting goldens** (`physics.md` §6/§9: the ladder's curve gates, the pooltool differential, the dataset replay, the break hook) are a different corpus: they run **locally/offline with committed results**, because their data lives outside the repository (`benchmark-data.md`). #8's prototype measured the physics numbers; its hashes are a first measured instance, not this spec's values — the implementation pins the shot entries' hashes at M1 (`README.md` §6), and the corpus grows from there.
 - **Tests recompute and compare**; on mismatch they fail and dump the actual state beside the golden for diffing. **No auto-update tooling ships** (the #14 discipline).
-- **CI** (the placeholder workflow of ADR 0001 becomes this when code lands): `rust-toolchain.toml`-pinned 1.95.0; `cargo fmt --check`; `cargo clippy --workspace --all-targets -- -D warnings`; `cargo test --workspace` (goldens, corpus, and replay fixtures included); the §2 purity grep; on **macOS arm64 and ubuntu x86-64**, both verifying the same committed goldens. Windows/Linux-arm64 identity is claimed by §3's arithmetic argument, not yet tested; adding the runners is a CI change, not a contract change.
+- **CI** (the placeholder workflow of ADR 0001 becomes this when code lands): `rust-toolchain.toml`-pinned 1.95.0; `cargo fmt --check`; `cargo clippy --workspace --all-targets -- -D warnings`; `cargo test --workspace` (goldens, corpus, and replay fixtures included); the §2 purity grep; on **macOS arm64 and ubuntu x86-64**, both verifying the same committed goldens. Windows/Linux-arm64 identity is claimed by §3's arithmetic argument, not yet tested; adding the runners is a CI change, not a contract change. **Plus the R2 job:** `cargo test -p pool-ai --features ort` — the ONNX load, the golden vectors, and the sha256 contract of `ai.md` §9.
 - **Policy numerics are outside this contract.** A fact-check for #11 found no CPU bit-identity guarantee in ONNX Runtime (arch-dispatched MLAS kernels, no documented determinism promise), so: replay determinism rests on the sim, the rules layer, and the logged inputs; per-machine reproducibility is best-effort under #9's pinned single-threaded ORT; cross-platform AI evaluations are not bit-comparable and the spec says so.
-- The physics *testing strategy* beyond these mechanisms (golden-shot corpus contents, property tests, whether fitting runs in CI) remains #8/#15's fog; the mechanism above is what they plug into.
+- The physics *testing strategy* is `physics.md` §9 — the golden-shot corpus' contents, the property invariants, and the local-not-CI rule for fitting; the mechanism above is what the determinism half plugs into.
 
 ## 12. Files, pins, and versioning
 
@@ -216,8 +226,8 @@ The shell consumes the simulation without leaking ECS into it: `bevy` types stop
 
 ## 13. Handoffs and fog
 
-- **#8 (physics prototype):** reports any formulation that needs a pinned `libm` function (§3); fills `goldens.json`'s shot corpus (§11).
-- **#10 (cue UX):** owns `input.rs`'s machine and the cue/strike-marker presentation (§10).
-- **#12 (spec assembly):** merges this section; `docs/spec/input-log.schema.json` ships beside it.
-- **#16 (AI prototype):** may revise the pipe payload fields (§7) and pins the σ/work-unit constants (§5).
-- **Fog updated:** "Physics testing strategy" stays open for corpus contents but its mechanism and CI home are now fixed here; "Spec document structure" remains #12's.
+- **#8 (physics prototype):** its findings are merged into `physics.md` (§8 pins the corpus rows' parameters and dispositions); the golden-shot corpus' first entries are named there (§9) and their hashes are pinned by M1's implementation.
+- **#12 (spec assembly):** done — this section is merged; the input-log schema ships beside it, and the §2/§6/§11 rulings it triggered are recorded in `README.md` §3.
+- **#16 (AI prototype):** its cost envelope is merged into `ai-constants.md` and `ai.md` (§9/§11 there); the σ and work-unit constants are pinned there.
+- **Fog closed at #12:** the "physics testing strategy" mechanism is fixed here and its corpus contents
+  in `physics.md` §9; "spec document structure" is `README.md`.

@@ -956,26 +956,26 @@
     },
     "spin": {
       "type": "object",
-      "description": "Cue-tip spin offsets in tip radii.",
+      "description": "Cue-tip contact offset in the plane perpendicular to the cue axis, as a fraction of the miscue envelope: 1.0 is the limit, so |(a, b)| <= 1 (offset_mm = rho_max * value, rho_max = R*mu/sqrt(1+mu^2)). Unit and sign convention pinned by #10; identical to the input-log schema's declaration.spin.",
       "additionalProperties": false,
       "required": [
-        "a_tip_radii",
-        "b_tip_radii"
+        "a",
+        "b"
       ],
       "properties": {
-        "a_tip_radii": {
+        "a": {
           "type": "number",
-          "description": "Horizontal spin offset in tip radii."
+          "description": "Right/left tip offset as a fraction of the miscue envelope: a > 0 is the shooter's right."
         },
-        "b_tip_radii": {
+        "b": {
           "type": "number",
-          "description": "Vertical spin offset in tip radii."
+          "description": "Above/below-centre tip offset as a fraction of the miscue envelope: b > 0 is above centre (the follow side at zero elevation)."
         }
       }
     },
     "shot": {
       "type": "object",
-      "description": "Shot parameters; values are null until pinned by #8.",
+      "description": "Shot parameters; values stay null here: the prototype's gate (#8) found the parameters that produce each row's pattern, and those pins are recorded in docs/spec/physics.md §8. The pattern is the requirement, the parameters are the pin — a re-aim that reproduces the pattern is acceptable.",
       "additionalProperties": false,
       "required": [
         "cue_ball",
