@@ -1,0 +1,2143 @@
+{
+  "command": "cargo run -p pool-sim --release --example ladder -- --curves data/curves --out data/fitting/ladder-results.json",
+  "curves": "data/curves",
+  "gates": {
+    "stage1": "gate met",
+    "stage2": "gate met",
+    "stage3": "gate met",
+    "stage4": "gate met"
+  },
+  "harness": "pool-sim/examples/ladder",
+  "notes": [
+    "every cushion number here runs on the core with `solve_wall`'s rounding window made two-sided: the one-sided reading (`d0 <= slop`) treated any ball behind a wall face's plane as touching it, and a jaw face's plane runs across the table's interior, so a ball rebounding off a long rail beside a side mouth took a spurious jaw impulse. Before the fix the rolling square-hit retention measured 0.6374 at e_n 0.78 (spec 0.6992); after it, 0.6992.",
+    "no corpus or spec number was edited to make a stage pass; where a produced value differs from `physics.md` §6's stated number, the check's note names the mechanism and the gate is left as the spec states it."
+  ],
+  "profile": {
+    "e_b": 0.95,
+    "e_n": 0.78,
+    "e_slate": 0.6,
+    "id": "default",
+    "mu_b": {
+      "a": 0.009951,
+      "b": 0.108,
+      "c": 1.088
+    },
+    "mu_c": 0.2,
+    "mu_r": 0.01,
+    "mu_s": 0.2,
+    "pivot_mm": 350.0,
+    "spin_decay_rad_s2": 10.0
+  },
+  "spec": "docs/spec/physics.md §6 (the fitting ladder, stages 1–4, amended at #8)",
+  "stages": [
+    {
+      "checks": [
+        {
+          "label": "gate",
+          "name": "pure-spin branch vs TP B-8",
+          "note": "the relation is exact for the cloth model; the gate is the spec's recorded instance as a ceiling",
+          "produced": {
+            "max_rel_err_pct": 3.3983170370637304e-14
+          },
+          "spec": "exact, 0.012 % (the prototype's instance)",
+          "verdict": "met"
+        },
+        {
+          "label": "measured",
+          "name": "TP B-5 rolling direct-hit ratio — draw-follow file block (e_b 1.0, mu_b 0.06)",
+          "note": "the file's ratio is derived (mu_b 0.06, e_b 0.94) and speed-independent; the model's is neither",
+          "produced": {
+            "mean_over_all_rows": 6.6767854693527084,
+            "mean_over_prototype_speeds": 7.781150106013507
+          },
+          "spec": {
+            "file": 7.559,
+            "model": 7.781
+          }
+        },
+        {
+          "label": "measured",
+          "name": "TP B-5 rolling direct-hit ratio — TP B-5 constants (e_b 0.94, mu_b 0.06)",
+          "note": "the file's ratio is derived (mu_b 0.06, e_b 0.94) and speed-independent; the model's is neither",
+          "produced": {
+            "mean_over_all_rows": 5.2446749645939645,
+            "mean_over_prototype_speeds": 6.111769233274676
+          },
+          "spec": {
+            "file": 7.559,
+            "model": 7.781
+          }
+        },
+        {
+          "label": "measured",
+          "name": "TP B-5 rolling direct-hit ratio — shipped default profile (e_b 0.95, mu_b table)",
+          "note": "the file's ratio is derived (mu_b 0.06, e_b 0.94) and speed-independent; the model's is neither",
+          "produced": {
+            "mean_over_all_rows": 5.6494799881023345,
+            "mean_over_prototype_speeds": 5.9371321337817475
+          },
+          "spec": {
+            "file": 7.559,
+            "model": 7.781
+          }
+        },
+        {
+          "label": "gate",
+          "name": "TP B-5 rolling direct-hit ratio",
+          "note": "the gate is the spec's recorded instance within the curves' own 2 % band",
+          "produced": {
+            "at": "the draw-follow file's parameter block",
+            "produced": 7.781150106013507,
+            "variants": [
+              {
+                "mean_over_prototype_speeds": 7.781150106013507,
+                "parameters": "draw-follow file block (e_b 1.0, mu_b 0.06)"
+              },
+              {
+                "mean_over_prototype_speeds": 6.111769233274676,
+                "parameters": "TP B-5 constants (e_b 0.94, mu_b 0.06)"
+              },
+              {
+                "mean_over_prototype_speeds": 5.9371321337817475,
+                "parameters": "shipped default profile (e_b 0.95, mu_b table)"
+              }
+            ]
+          },
+          "spec": {
+            "at": "the draw-follow file's parameter block",
+            "file": 7.559,
+            "model": 7.781
+          },
+          "tolerance": 0.15562,
+          "verdict": "met"
+        },
+        {
+          "label": "residual",
+          "name": "TP B-8 full-row comparison (in-domain rows)",
+          "note": "reported, not gated: the relation is a free-space spin-only upper bound and 85 of the 120 digitized rows sit outside its domain",
+          "produced": {
+            "in_domain_rows": 35,
+            "mean_abs_err_mm": 462.2066235828782,
+            "mean_rel_err_pct": 51.16610212985404,
+            "mechanism_probe": {
+              "mean_over_in_domain_rows": {
+                "forward_residual_pct": 2.001024050017282e-15,
+                "spin_damped_pct": 35.39947463318453
+              },
+              "probes": [
+                {
+                  "cue_speed_after_mm_s": 0.0,
+                  "cue_speed_before_mm_s": 5319.96110346627,
+                  "cue_spin_after_rad_s": -10.12254108359227,
+                  "cue_spin_before_rad_s": -15.763334511484736,
+                  "forward_residual_pct": 0.0,
+                  "parameters": "draw-follow file block (e_b 1.0, mu_b 0.06)",
+                  "spin_damped_pct": 35.78426521230479,
+                  "t_contact_s": 0.04616001872898976
+                },
+                {
+                  "cue_speed_after_mm_s": 132.9941242616569,
+                  "cue_speed_before_mm_s": 5319.96110346627,
+                  "cue_spin_after_rad_s": -10.12254108359227,
+                  "cue_spin_before_rad_s": -15.763334511484736,
+                  "forward_residual_pct": 2.499907831562967,
+                  "parameters": "shipped default profile (e_b 0.95, mu_b table)",
+                  "spin_damped_pct": 35.78426521230479
+                }
+              ],
+              "room": "slow / short ft / b/R 0.05"
+            },
+            "rows_outside_domain": 85,
+            "worst_abs_err_mm": 1233.1921144376736,
+            "worst_rel_err_pct": 57.81491394456979
+          },
+          "spec": "~50 % mean error, structural (−26 % spin damping + ~2.5 % forward residual)"
+        }
+      ],
+      "gate": null,
+      "gate_met": true,
+      "method": "TP B-8's free-space closed form d = 2R²/(49g)(1/μs + 1/μr)ω² for the pure-spin branch; TP B-5's rolling direct hit as a 600 mm pair in free space, the cue ball launched rolling at the file's speed with the pre-impact roll loss corrected; TP B-8's 120 survey rows with the cue ball launched at the row's pre-impact speed and spin, the object ball its `drag` ahead",
+      "name": "long straight stop / draw / follow",
+      "notes": [
+        "the B-5 rows beyond the prototype's three speeds are detail only: a free-space ball still lands somewhere, and past ~12 mph the ball-ball contact's vertical impulse carries the object ball's landing outside the 2.54 m × 1.27 m bounds, where the model ends it as off-table — the ratio is meaningless there, and the gate runs the three speeds the spec's instance ran"
+      ],
+      "observable": "draw–follow distances, tangent-line persistence",
+      "rows": [
+        {
+          "case": "pure-spin",
+          "produced_mm": 892.1030536130366,
+          "rel_err_pct": 0.0,
+          "relation_mm": 892.1030536130366,
+          "spin_rad_s": -50.0,
+          "t_rest_s": 4.370758617876644
+        },
+        {
+          "case": "pure-spin",
+          "produced_mm": 3568.4122144521466,
+          "rel_err_pct": 0.0,
+          "relation_mm": 3568.4122144521466,
+          "spin_rad_s": -100.0,
+          "t_rest_s": 8.741517235753289
+        },
+        {
+          "case": "pure-spin",
+          "produced_mm": 8028.927482517327,
+          "rel_err_pct": 3.3983170370637304e-14,
+          "relation_mm": 8028.92748251733,
+          "spin_rad_s": -150.0,
+          "t_rest_s": 13.112275853629933
+        },
+        {
+          "case": "pure-spin",
+          "produced_mm": 14273.648857808586,
+          "rel_err_pct": 0.0,
+          "relation_mm": 14273.648857808586,
+          "spin_rad_s": -200.0,
+          "t_rest_s": 17.483034471506578
+        },
+        {
+          "case": "rolling-direct-hit",
+          "cue_ended_out_of_play": false,
+          "file_cue_travel_m": 0.1697,
+          "file_object_travel_m": 1.2826,
+          "file_ratio": 7.559,
+          "object_ended_out_of_play": false,
+          "parameters": "draw-follow file block (e_b 1.0, mu_b 0.06)",
+          "produced_cue_travel_m": 0.14197624232071582,
+          "produced_object_travel_m": 1.1047384529032611,
+          "produced_ratio": 7.781150105436113,
+          "speed_mph": 1.5
+        },
+        {
+          "case": "rolling-direct-hit",
+          "cue_ended_out_of_play": false,
+          "file_cue_travel_m": 0.6787,
+          "file_object_travel_m": 5.1304,
+          "file_ratio": 7.559,
+          "object_ended_out_of_play": false,
+          "parameters": "draw-follow file block (e_b 1.0, mu_b 0.06)",
+          "produced_cue_travel_m": 0.5679049692827975,
+          "produced_object_travel_m": 4.418953811990884,
+          "produced_ratio": 7.781150106102338,
+          "speed_mph": 3.0
+        },
+        {
+          "case": "rolling-direct-hit",
+          "cue_ended_out_of_play": false,
+          "file_cue_travel_m": 1.8853,
+          "file_object_travel_m": 14.2512,
+          "file_ratio": 7.559,
+          "object_ended_out_of_play": false,
+          "parameters": "draw-follow file block (e_b 1.0, mu_b 0.06)",
+          "produced_cue_travel_m": 1.5775138035633252,
+          "produced_object_travel_m": 12.274871700605253,
+          "produced_ratio": 7.7811501065020705,
+          "speed_mph": 5.0
+        },
+        {
+          "case": "rolling-direct-hit",
+          "cue_ended_out_of_play": false,
+          "file_cue_travel_m": 3.6951,
+          "file_object_travel_m": 27.9324,
+          "file_ratio": 7.559,
+          "object_ended_out_of_play": false,
+          "parameters": "draw-follow file block (e_b 1.0, mu_b 0.06)",
+          "produced_cue_travel_m": 3.0919270549841205,
+          "produced_object_travel_m": 24.058748533927844,
+          "produced_ratio": 7.7811501067418956,
+          "speed_mph": 7.0
+        },
+        {
+          "case": "rolling-direct-hit",
+          "cue_ended_out_of_play": false,
+          "file_cue_travel_m": 4.8263,
+          "file_object_travel_m": 36.4831,
+          "file_ratio": 7.559,
+          "object_ended_out_of_play": false,
+          "parameters": "draw-follow file block (e_b 1.0, mu_b 0.06)",
+          "produced_cue_travel_m": 4.038435337122113,
+          "produced_object_travel_m": 31.423671554518002,
+          "produced_ratio": 7.7811501067419035,
+          "speed_mph": 8.0
+        },
+        {
+          "case": "rolling-direct-hit",
+          "cue_ended_out_of_play": false,
+          "file_cue_travel_m": 10.8591,
+          "file_object_travel_m": 82.087,
+          "file_ratio": 7.559,
+          "object_ended_out_of_play": false,
+          "parameters": "draw-follow file block (e_b 1.0, mu_b 0.06)",
+          "produced_cue_travel_m": 9.086479508524754,
+          "produced_object_travel_m": 70.70326099897315,
+          "produced_ratio": 7.781150106885814,
+          "speed_mph": 12.0
+        },
+        {
+          "case": "rolling-direct-hit",
+          "cue_ended_out_of_play": false,
+          "file_cue_travel_m": 30.1641,
+          "file_object_travel_m": 228.0195,
+          "file_ratio": 7.559,
+          "object_ended_out_of_play": true,
+          "parameters": "draw-follow file block (e_b 1.0, mu_b 0.06)",
+          "produced_cue_travel_m": 25.240220857013224,
+          "produced_object_travel_m": 1.2770957866099104,
+          "produced_ratio": 0.05059764705882349,
+          "speed_mph": 20.0
+        },
+        {
+          "case": "rolling-direct-hit",
+          "cue_ended_out_of_play": false,
+          "file_cue_travel_m": 0.1697,
+          "file_object_travel_m": 1.2826,
+          "file_ratio": 7.559,
+          "object_ended_out_of_play": false,
+          "parameters": "TP B-5 constants (e_b 0.94, mu_b 0.06)",
+          "produced_cue_travel_m": 0.17007324241564903,
+          "produced_object_travel_m": 1.0394484103366788,
+          "produced_ratio": 6.11176923290689,
+          "speed_mph": 1.5
+        },
+        {
+          "case": "rolling-direct-hit",
+          "cue_ended_out_of_play": false,
+          "file_cue_travel_m": 0.6787,
+          "file_object_travel_m": 5.1304,
+          "file_ratio": 7.559,
+          "object_ended_out_of_play": false,
+          "parameters": "TP B-5 constants (e_b 0.94, mu_b 0.06)",
+          "produced_cue_travel_m": 0.6802929696735277,
+          "produced_object_travel_m": 4.157793641702224,
+          "produced_ratio": 6.111769233331262,
+          "speed_mph": 3.0
+        },
+        {
+          "case": "rolling-direct-hit",
+          "cue_ended_out_of_play": false,
+          "file_cue_travel_m": 1.8853,
+          "file_object_travel_m": 14.2512,
+          "file_ratio": 7.559,
+          "object_ended_out_of_play": false,
+          "parameters": "TP B-5 constants (e_b 0.94, mu_b 0.06)",
+          "produced_cue_travel_m": 1.889702693555929,
+          "produced_object_travel_m": 11.549426783099488,
+          "produced_ratio": 6.111769233585878,
+          "speed_mph": 5.0
+        },
+        {
+          "case": "rolling-direct-hit",
+          "cue_ended_out_of_play": false,
+          "file_cue_travel_m": 3.6951,
+          "file_object_travel_m": 27.9324,
+          "file_ratio": 7.559,
+          "object_ended_out_of_play": false,
+          "parameters": "TP B-5 constants (e_b 0.94, mu_b 0.06)",
+          "produced_cue_travel_m": 3.7038172793912003,
+          "produced_object_travel_m": 22.636876495572732,
+          "produced_ratio": 6.11176923373865,
+          "speed_mph": 7.0
+        },
+        {
+          "case": "rolling-direct-hit",
+          "cue_ended_out_of_play": false,
+          "file_cue_travel_m": 4.8263,
+          "file_object_travel_m": 36.4831,
+          "file_ratio": 7.559,
+          "object_ended_out_of_play": false,
+          "parameters": "TP B-5 constants (e_b 0.94, mu_b 0.06)",
+          "produced_cue_travel_m": 4.83763889553136,
+          "produced_object_travel_m": 29.566532565646014,
+          "produced_ratio": 6.111769233738655,
+          "speed_mph": 8.0
+        },
+        {
+          "case": "rolling-direct-hit",
+          "cue_ended_out_of_play": false,
+          "file_cue_travel_m": 10.8591,
+          "file_object_travel_m": 82.087,
+          "file_ratio": 7.559,
+          "object_ended_out_of_play": false,
+          "parameters": "TP B-5 constants (e_b 0.94, mu_b 0.06)",
+          "produced_cue_travel_m": 10.884687514983616,
+          "produced_object_travel_m": 66.5246982739338,
+          "produced_ratio": 6.111769233830314,
+          "speed_mph": 12.0
+        },
+        {
+          "case": "rolling-direct-hit",
+          "cue_ended_out_of_play": false,
+          "file_cue_travel_m": 30.1641,
+          "file_object_travel_m": 228.0195,
+          "file_ratio": 7.559,
+          "object_ended_out_of_play": true,
+          "parameters": "TP B-5 constants (e_b 0.94, mu_b 0.06)",
+          "produced_cue_travel_m": 30.235243097240133,
+          "produced_object_travel_m": 1.2731864649413553,
+          "produced_ratio": 0.04210935102610673,
+          "speed_mph": 20.0
+        },
+        {
+          "case": "rolling-direct-hit",
+          "cue_ended_out_of_play": false,
+          "file_cue_travel_m": 0.1697,
+          "file_object_travel_m": 1.2826,
+          "file_ratio": 7.559,
+          "object_ended_out_of_play": false,
+          "parameters": "shipped default profile (e_b 0.95, mu_b table)",
+          "produced_cue_travel_m": 0.16347487426816254,
+          "produced_object_travel_m": 1.0464444238502024,
+          "produced_ratio": 6.401255413315844,
+          "speed_mph": 1.5
+        },
+        {
+          "case": "rolling-direct-hit",
+          "cue_ended_out_of_play": false,
+          "file_cue_travel_m": 0.6787,
+          "file_object_travel_m": 5.1304,
+          "file_ratio": 7.559,
+          "object_ended_out_of_play": false,
+          "parameters": "shipped default profile (e_b 0.95, mu_b table)",
+          "produced_cue_travel_m": 0.750860542814465,
+          "produced_object_travel_m": 4.388493946987908,
+          "produced_ratio": 5.844619202573133,
+          "speed_mph": 3.0
+        },
+        {
+          "case": "rolling-direct-hit",
+          "cue_ended_out_of_play": false,
+          "file_cue_travel_m": 1.8853,
+          "file_object_travel_m": 14.2512,
+          "file_ratio": 7.559,
+          "object_ended_out_of_play": false,
+          "parameters": "shipped default profile (e_b 0.95, mu_b table)",
+          "produced_cue_travel_m": 2.2503051053015093,
+          "produced_object_travel_m": 12.524122087479004,
+          "produced_ratio": 5.565521785456265,
+          "speed_mph": 5.0
+        },
+        {
+          "case": "rolling-direct-hit",
+          "cue_ended_out_of_play": false,
+          "file_cue_travel_m": 3.6951,
+          "file_object_travel_m": 27.9324,
+          "file_ratio": 7.559,
+          "object_ended_out_of_play": false,
+          "parameters": "shipped default profile (e_b 0.95, mu_b table)",
+          "produced_cue_travel_m": 4.535778676448201,
+          "produced_object_travel_m": 24.79758483923975,
+          "produced_ratio": 5.46710644591191,
+          "speed_mph": 7.0
+        },
+        {
+          "case": "rolling-direct-hit",
+          "cue_ended_out_of_play": false,
+          "file_cue_travel_m": 4.8263,
+          "file_object_travel_m": 36.4831,
+          "file_ratio": 7.559,
+          "object_ended_out_of_play": false,
+          "parameters": "shipped default profile (e_b 0.95, mu_b table)",
+          "produced_cue_travel_m": 5.962892376002416,
+          "produced_object_travel_m": 32.46551906035872,
+          "produced_ratio": 5.444592491894669,
+          "speed_mph": 8.0
+        },
+        {
+          "case": "rolling-direct-hit",
+          "cue_ended_out_of_play": false,
+          "file_cue_travel_m": 10.8591,
+          "file_object_travel_m": 82.087,
+          "file_ratio": 7.559,
+          "object_ended_out_of_play": false,
+          "parameters": "shipped default profile (e_b 0.95, mu_b table)",
+          "produced_cue_travel_m": 13.535820481982157,
+          "produced_object_travel_m": 73.28435718046939,
+          "produced_ratio": 5.414105282943127,
+          "speed_mph": 12.0
+        },
+        {
+          "case": "rolling-direct-hit",
+          "cue_ended_out_of_play": false,
+          "file_cue_travel_m": 30.1641,
+          "file_object_travel_m": 228.0195,
+          "file_ratio": 7.559,
+          "object_ended_out_of_play": false,
+          "parameters": "shipped default profile (e_b 0.95, mu_b table)",
+          "produced_cue_travel_m": 37.653780782295,
+          "produced_object_travel_m": 203.67529829618755,
+          "produced_ratio": 5.409159294621397,
+          "speed_mph": 20.0
+        },
+        {
+          "b_over_R": 0.05,
+          "case": "survey",
+          "drag_distance": "short",
+          "err_mm": -32.33596521559304,
+          "in_domain": true,
+          "produced_mm": 36.564034784406964,
+          "rel_err_pct": -46.93173471058496,
+          "speed_label": "slow",
+          "speed_m_s": 5.4103,
+          "want_mm": 68.9
+        },
+        {
+          "b_over_R": 0.1,
+          "case": "survey",
+          "drag_distance": "short",
+          "err_mm": -262.1560619644027,
+          "in_domain": true,
+          "produced_mm": 220.14393803559733,
+          "rel_err_pct": -54.35539331627673,
+          "speed_label": "slow",
+          "speed_m_s": 5.3346,
+          "want_mm": 482.3
+        },
+        {
+          "b_over_R": 0.15,
+          "case": "survey",
+          "drag_distance": "short",
+          "err_mm": -677.2728793458405,
+          "in_domain": true,
+          "produced_mm": 534.2271206541595,
+          "rel_err_pct": -55.90366317340821,
+          "speed_label": "slow",
+          "speed_m_s": 5.2131,
+          "want_mm": 1211.5
+        },
+        {
+          "b_over_R": 0.2,
+          "case": "survey",
+          "drag_distance": "short",
+          "err_mm": -1130.1426025681521,
+          "in_domain": true,
+          "produced_mm": 1036.5573974318481,
+          "rel_err_pct": -52.159625355063085,
+          "speed_label": "slow",
+          "speed_m_s": 5.0521,
+          "want_mm": 2166.7000000000003
+        },
+        {
+          "b_over_R": 0.25,
+          "case": "survey",
+          "drag_distance": "short",
+          "in_domain": false,
+          "speed_label": "slow",
+          "speed_m_s": 4.859,
+          "want_mm": 3245.8999999999996
+        },
+        {
+          "b_over_R": 0.3,
+          "case": "survey",
+          "drag_distance": "short",
+          "in_domain": false,
+          "speed_label": "slow",
+          "speed_m_s": 4.6422,
+          "want_mm": 4350.4
+        },
+        {
+          "b_over_R": 0.35,
+          "case": "survey",
+          "drag_distance": "short",
+          "in_domain": false,
+          "speed_label": "slow",
+          "speed_m_s": 4.4097,
+          "want_mm": 5396.9
+        },
+        {
+          "b_over_R": 0.4,
+          "case": "survey",
+          "drag_distance": "short",
+          "in_domain": false,
+          "speed_label": "slow",
+          "speed_m_s": 4.1687,
+          "want_mm": 6323.299999999999
+        },
+        {
+          "b_over_R": 0.45,
+          "case": "survey",
+          "drag_distance": "short",
+          "in_domain": false,
+          "speed_label": "slow",
+          "speed_m_s": 3.9256,
+          "want_mm": 7090.3
+        },
+        {
+          "b_over_R": 0.5,
+          "case": "survey",
+          "drag_distance": "short",
+          "in_domain": false,
+          "speed_label": "slow",
+          "speed_m_s": 3.6854,
+          "want_mm": 7679.400000000001
+        },
+        {
+          "b_over_R": 0.05,
+          "case": "survey",
+          "drag_distance": "medium",
+          "in_domain": false,
+          "speed_label": "slow",
+          "speed_m_s": 5.4103,
+          "want_mm": 99.8
+        },
+        {
+          "b_over_R": 0.1,
+          "case": "survey",
+          "drag_distance": "medium",
+          "err_mm": -2.740786518987557,
+          "in_domain": true,
+          "produced_mm": 8.659213481012443,
+          "rel_err_pct": -24.04198700866278,
+          "speed_label": "slow",
+          "speed_m_s": 5.3346,
+          "want_mm": 11.4
+        },
+        {
+          "b_over_R": 0.15,
+          "case": "survey",
+          "drag_distance": "medium",
+          "err_mm": -128.57777958143228,
+          "in_domain": true,
+          "produced_mm": 119.02222041856771,
+          "rel_err_pct": -51.92963634145084,
+          "speed_label": "slow",
+          "speed_m_s": 5.2131,
+          "want_mm": 247.6
+        },
+        {
+          "b_over_R": 0.2,
+          "case": "survey",
+          "drag_distance": "medium",
+          "err_mm": -391.9603226521856,
+          "in_domain": true,
+          "produced_mm": 325.6396773478144,
+          "rel_err_pct": -54.62100371407268,
+          "speed_label": "slow",
+          "speed_m_s": 5.0521,
+          "want_mm": 717.6
+        },
+        {
+          "b_over_R": 0.25,
+          "case": "survey",
+          "drag_distance": "medium",
+          "err_mm": -732.5355143083209,
+          "in_domain": true,
+          "produced_mm": 586.064485691679,
+          "rel_err_pct": -55.55403566724715,
+          "speed_label": "slow",
+          "speed_m_s": 4.859,
+          "want_mm": 1318.6
+        },
+        {
+          "b_over_R": 0.3,
+          "case": "survey",
+          "drag_distance": "medium",
+          "err_mm": -883.7805216490701,
+          "in_domain": true,
+          "produced_mm": 1067.7194783509299,
+          "rel_err_pct": -45.2872416935214,
+          "speed_label": "slow",
+          "speed_m_s": 4.6422,
+          "want_mm": 1951.5
+        },
+        {
+          "b_over_R": 0.35,
+          "case": "survey",
+          "drag_distance": "medium",
+          "in_domain": false,
+          "speed_label": "slow",
+          "speed_m_s": 4.4097,
+          "want_mm": 2532.5
+        },
+        {
+          "b_over_R": 0.4,
+          "case": "survey",
+          "drag_distance": "medium",
+          "in_domain": false,
+          "speed_label": "slow",
+          "speed_m_s": 4.1687,
+          "want_mm": 2998.8
+        },
+        {
+          "b_over_R": 0.45,
+          "case": "survey",
+          "drag_distance": "medium",
+          "in_domain": false,
+          "speed_label": "slow",
+          "speed_m_s": 3.9256,
+          "want_mm": 3310.8
+        },
+        {
+          "b_over_R": 0.5,
+          "case": "survey",
+          "drag_distance": "medium",
+          "in_domain": false,
+          "speed_label": "slow",
+          "speed_m_s": 3.6854,
+          "want_mm": 3449.2
+        },
+        {
+          "b_over_R": 0.05,
+          "case": "survey",
+          "drag_distance": "long",
+          "in_domain": false,
+          "speed_label": "slow",
+          "speed_m_s": 5.4103,
+          "want_mm": 1340.7
+        },
+        {
+          "b_over_R": 0.1,
+          "case": "survey",
+          "drag_distance": "long",
+          "in_domain": false,
+          "speed_label": "slow",
+          "speed_m_s": 5.3346,
+          "want_mm": 564.3000000000001
+        },
+        {
+          "b_over_R": 0.15,
+          "case": "survey",
+          "drag_distance": "long",
+          "in_domain": false,
+          "speed_label": "slow",
+          "speed_m_s": 5.2131,
+          "want_mm": 150.2
+        },
+        {
+          "b_over_R": 0.2,
+          "case": "survey",
+          "drag_distance": "long",
+          "in_domain": false,
+          "speed_label": "slow",
+          "speed_m_s": 5.0521,
+          "want_mm": 6.0
+        },
+        {
+          "b_over_R": 0.25,
+          "case": "survey",
+          "drag_distance": "long",
+          "err_mm": -9.141564887476715,
+          "in_domain": true,
+          "produced_mm": 20.058435112523284,
+          "rel_err_pct": -31.306729066701077,
+          "speed_label": "slow",
+          "speed_m_s": 4.859,
+          "want_mm": 29.2
+        },
+        {
+          "b_over_R": 0.3,
+          "case": "survey",
+          "drag_distance": "long",
+          "err_mm": -55.54077713923739,
+          "in_domain": true,
+          "produced_mm": 67.65922286076261,
+          "rel_err_pct": -45.081799626004376,
+          "speed_label": "slow",
+          "speed_m_s": 4.6422,
+          "want_mm": 123.2
+        },
+        {
+          "b_over_R": 0.35,
+          "case": "survey",
+          "drag_distance": "long",
+          "err_mm": -99.02790521109318,
+          "in_domain": true,
+          "produced_mm": 110.47209478890682,
+          "rel_err_pct": -47.268689838230635,
+          "speed_label": "slow",
+          "speed_m_s": 4.4097,
+          "want_mm": 209.5
+        },
+        {
+          "b_over_R": 0.4,
+          "case": "survey",
+          "drag_distance": "long",
+          "err_mm": -109.78906767895009,
+          "in_domain": true,
+          "produced_mm": 126.3109323210499,
+          "rel_err_pct": -46.50108753873363,
+          "speed_label": "slow",
+          "speed_m_s": 4.1687,
+          "want_mm": 236.1
+        },
+        {
+          "b_over_R": 0.45,
+          "case": "survey",
+          "drag_distance": "long",
+          "err_mm": -77.0071211594281,
+          "in_domain": true,
+          "produced_mm": 105.6928788405719,
+          "rel_err_pct": -42.149491603408926,
+          "speed_label": "slow",
+          "speed_m_s": 3.9256,
+          "want_mm": 182.7
+        },
+        {
+          "b_over_R": 0.5,
+          "case": "survey",
+          "drag_distance": "long",
+          "err_mm": -16.80368532229845,
+          "in_domain": true,
+          "produced_mm": 54.49631467770155,
+          "rel_err_pct": -23.56758109719278,
+          "speed_label": "slow",
+          "speed_m_s": 3.6854,
+          "want_mm": 71.3
+        },
+        {
+          "b_over_R": 0.05,
+          "case": "survey",
+          "drag_distance": "short",
+          "err_mm": -89.76893530741332,
+          "in_domain": true,
+          "produced_mm": 79.83106469258668,
+          "rel_err_pct": -52.92979676144653,
+          "speed_label": "medium",
+          "speed_m_s": 6.7629,
+          "want_mm": 169.6
+        },
+        {
+          "b_over_R": 0.1,
+          "case": "survey",
+          "drag_distance": "short",
+          "err_mm": -510.28236288110816,
+          "in_domain": true,
+          "produced_mm": 397.71763711889184,
+          "rel_err_pct": -56.198498114659486,
+          "speed_label": "medium",
+          "speed_m_s": 6.6683,
+          "want_mm": 908.0
+        },
+        {
+          "b_over_R": 0.15,
+          "case": "survey",
+          "drag_distance": "short",
+          "err_mm": -1220.2184827069013,
+          "in_domain": true,
+          "produced_mm": 919.3815172930989,
+          "rel_err_pct": -57.030215119971075,
+          "speed_label": "medium",
+          "speed_m_s": 6.5164,
+          "want_mm": 2139.6000000000004
+        },
+        {
+          "b_over_R": 0.2,
+          "case": "survey",
+          "drag_distance": "short",
+          "in_domain": false,
+          "speed_label": "medium",
+          "speed_m_s": 6.3151,
+          "want_mm": 3723.8
+        },
+        {
+          "b_over_R": 0.25,
+          "case": "survey",
+          "drag_distance": "short",
+          "in_domain": false,
+          "speed_label": "medium",
+          "speed_m_s": 6.0738,
+          "want_mm": 5501.400000000001
+        },
+        {
+          "b_over_R": 0.3,
+          "case": "survey",
+          "drag_distance": "short",
+          "in_domain": false,
+          "speed_label": "medium",
+          "speed_m_s": 5.8027,
+          "want_mm": 7318.3
+        },
+        {
+          "b_over_R": 0.35,
+          "case": "survey",
+          "drag_distance": "short",
+          "in_domain": false,
+          "speed_label": "medium",
+          "speed_m_s": 5.5121,
+          "want_mm": 9044.3
+        },
+        {
+          "b_over_R": 0.4,
+          "case": "survey",
+          "drag_distance": "short",
+          "in_domain": false,
+          "speed_label": "medium",
+          "speed_m_s": 5.2109,
+          "want_mm": 10582.4
+        },
+        {
+          "b_over_R": 0.45,
+          "case": "survey",
+          "drag_distance": "short",
+          "in_domain": false,
+          "speed_label": "medium",
+          "speed_m_s": 4.907,
+          "want_mm": 11871.5
+        },
+        {
+          "b_over_R": 0.5,
+          "case": "survey",
+          "drag_distance": "short",
+          "in_domain": false,
+          "speed_label": "medium",
+          "speed_m_s": 4.6068,
+          "want_mm": 12882.5
+        },
+        {
+          "b_over_R": 0.05,
+          "case": "survey",
+          "drag_distance": "medium",
+          "in_domain": false,
+          "speed_label": "medium",
+          "speed_m_s": 6.7629,
+          "want_mm": 1.7
+        },
+        {
+          "b_over_R": 0.1,
+          "case": "survey",
+          "drag_distance": "medium",
+          "err_mm": -130.02945267106844,
+          "in_domain": true,
+          "produced_mm": 112.57054732893158,
+          "rel_err_pct": -53.598290466227716,
+          "speed_label": "medium",
+          "speed_m_s": 6.6683,
+          "want_mm": 242.60000000000002
+        },
+        {
+          "b_over_R": 0.15,
+          "case": "survey",
+          "drag_distance": "medium",
+          "err_mm": -551.004203475132,
+          "in_domain": true,
+          "produced_mm": 430.79579652486785,
+          "rel_err_pct": -56.12183779538929,
+          "speed_label": "medium",
+          "speed_m_s": 6.5164,
+          "want_mm": 981.8
+        },
+        {
+          "b_over_R": 0.2,
+          "case": "survey",
+          "drag_distance": "medium",
+          "err_mm": -1181.756630250673,
+          "in_domain": true,
+          "produced_mm": 896.4433697493268,
+          "rel_err_pct": -56.86443221300516,
+          "speed_label": "medium",
+          "speed_m_s": 6.3151,
+          "want_mm": 2078.2
+        },
+        {
+          "b_over_R": 0.25,
+          "case": "survey",
+          "drag_distance": "medium",
+          "in_domain": false,
+          "speed_label": "medium",
+          "speed_m_s": 6.0738,
+          "want_mm": 3371.9
+        },
+        {
+          "b_over_R": 0.3,
+          "case": "survey",
+          "drag_distance": "medium",
+          "in_domain": false,
+          "speed_label": "medium",
+          "speed_m_s": 5.8027,
+          "want_mm": 4708.5
+        },
+        {
+          "b_over_R": 0.35,
+          "case": "survey",
+          "drag_distance": "medium",
+          "in_domain": false,
+          "speed_label": "medium",
+          "speed_m_s": 5.5121,
+          "want_mm": 5957.3
+        },
+        {
+          "b_over_R": 0.4,
+          "case": "survey",
+          "drag_distance": "medium",
+          "in_domain": false,
+          "speed_label": "medium",
+          "speed_m_s": 5.2109,
+          "want_mm": 7020.8
+        },
+        {
+          "b_over_R": 0.45,
+          "case": "survey",
+          "drag_distance": "medium",
+          "in_domain": false,
+          "speed_label": "medium",
+          "speed_m_s": 4.907,
+          "want_mm": 7837.2
+        },
+        {
+          "b_over_R": 0.5,
+          "case": "survey",
+          "drag_distance": "medium",
+          "in_domain": false,
+          "speed_label": "medium",
+          "speed_m_s": 4.6068,
+          "want_mm": 8376.6
+        },
+        {
+          "b_over_R": 0.05,
+          "case": "survey",
+          "drag_distance": "long",
+          "in_domain": false,
+          "speed_label": "medium",
+          "speed_m_s": 6.7629,
+          "want_mm": 460.2
+        },
+        {
+          "b_over_R": 0.1,
+          "case": "survey",
+          "drag_distance": "long",
+          "in_domain": false,
+          "speed_label": "medium",
+          "speed_m_s": 6.6683,
+          "want_mm": 24.0
+        },
+        {
+          "b_over_R": 0.15,
+          "case": "survey",
+          "drag_distance": "long",
+          "err_mm": -52.99492001797313,
+          "in_domain": true,
+          "produced_mm": 52.80507998202688,
+          "rel_err_pct": -50.08971646311259,
+          "speed_label": "medium",
+          "speed_m_s": 6.5164,
+          "want_mm": 105.80000000000001
+        },
+        {
+          "b_over_R": 0.2,
+          "case": "survey",
+          "drag_distance": "long",
+          "err_mm": -308.7883681236142,
+          "in_domain": true,
+          "produced_mm": 253.81163187638583,
+          "rel_err_pct": -54.88595238599612,
+          "speed_label": "medium",
+          "speed_m_s": 6.3151,
+          "want_mm": 562.6
+        },
+        {
+          "b_over_R": 0.25,
+          "case": "survey",
+          "drag_distance": "long",
+          "err_mm": -690.8564285609021,
+          "in_domain": true,
+          "produced_mm": 542.8435714390979,
+          "rel_err_pct": -55.99873782612484,
+          "speed_label": "medium",
+          "speed_m_s": 6.0738,
+          "want_mm": 1233.7
+        },
+        {
+          "b_over_R": 0.3,
+          "case": "survey",
+          "drag_distance": "long",
+          "err_mm": -1061.5504603440718,
+          "in_domain": true,
+          "produced_mm": 902.3495396559282,
+          "rel_err_pct": -54.05318296980863,
+          "speed_label": "medium",
+          "speed_m_s": 5.8027,
+          "want_mm": 1963.9
+        },
+        {
+          "b_over_R": 0.35,
+          "case": "survey",
+          "drag_distance": "long",
+          "in_domain": false,
+          "speed_label": "medium",
+          "speed_m_s": 5.5121,
+          "want_mm": 2622.3
+        },
+        {
+          "b_over_R": 0.4,
+          "case": "survey",
+          "drag_distance": "long",
+          "in_domain": false,
+          "speed_label": "medium",
+          "speed_m_s": 5.2109,
+          "want_mm": 3111.5
+        },
+        {
+          "b_over_R": 0.45,
+          "case": "survey",
+          "drag_distance": "long",
+          "in_domain": false,
+          "speed_label": "medium",
+          "speed_m_s": 4.907,
+          "want_mm": 3370.5
+        },
+        {
+          "b_over_R": 0.5,
+          "case": "survey",
+          "drag_distance": "long",
+          "in_domain": false,
+          "speed_label": "medium",
+          "speed_m_s": 4.6068,
+          "want_mm": 3370.8999999999996
+        },
+        {
+          "b_over_R": 0.05,
+          "case": "survey",
+          "drag_distance": "short",
+          "err_mm": -258.3242097940673,
+          "in_domain": true,
+          "produced_mm": 200.9757902059327,
+          "rel_err_pct": -56.24302412237477,
+          "speed_label": "fast",
+          "speed_m_s": 9.468,
+          "want_mm": 459.3
+        },
+        {
+          "b_over_R": 0.1,
+          "case": "survey",
+          "drag_distance": "short",
+          "err_mm": -1187.1984187893022,
+          "in_domain": true,
+          "produced_mm": 876.9015812106977,
+          "rel_err_pct": -57.516516582980586,
+          "speed_label": "fast",
+          "speed_m_s": 9.3356,
+          "want_mm": 2064.1
+        },
+        {
+          "b_over_R": 0.15,
+          "case": "survey",
+          "drag_distance": "short",
+          "in_domain": false,
+          "speed_label": "fast",
+          "speed_m_s": 9.123,
+          "want_mm": 4635.1
+        },
+        {
+          "b_over_R": 0.2,
+          "case": "survey",
+          "drag_distance": "short",
+          "in_domain": false,
+          "speed_label": "fast",
+          "speed_m_s": 8.8411,
+          "want_mm": 7896.8
+        },
+        {
+          "b_over_R": 0.25,
+          "case": "survey",
+          "drag_distance": "short",
+          "in_domain": false,
+          "speed_label": "fast",
+          "speed_m_s": 8.5033,
+          "want_mm": 11537.1
+        },
+        {
+          "b_over_R": 0.3,
+          "case": "survey",
+          "drag_distance": "short",
+          "in_domain": false,
+          "speed_label": "fast",
+          "speed_m_s": 8.1238,
+          "want_mm": 15254.300000000001
+        },
+        {
+          "b_over_R": 0.35,
+          "case": "survey",
+          "drag_distance": "short",
+          "in_domain": false,
+          "speed_label": "fast",
+          "speed_m_s": 7.7169,
+          "want_mm": 18793.1
+        },
+        {
+          "b_over_R": 0.4,
+          "case": "survey",
+          "drag_distance": "short",
+          "in_domain": false,
+          "speed_label": "fast",
+          "speed_m_s": 7.2953,
+          "want_mm": 21963.4
+        },
+        {
+          "b_over_R": 0.45,
+          "case": "survey",
+          "drag_distance": "short",
+          "in_domain": false,
+          "speed_label": "fast",
+          "speed_m_s": 6.8698,
+          "want_mm": 24645.600000000002
+        },
+        {
+          "b_over_R": 0.5,
+          "case": "survey",
+          "drag_distance": "short",
+          "in_domain": false,
+          "speed_label": "fast",
+          "speed_m_s": 6.4495,
+          "want_mm": 26782.699999999997
+        },
+        {
+          "b_over_R": 0.05,
+          "case": "survey",
+          "drag_distance": "medium",
+          "err_mm": -69.62949581593361,
+          "in_domain": true,
+          "produced_mm": 59.470504184066385,
+          "rel_err_pct": -53.93454362194702,
+          "speed_label": "fast",
+          "speed_m_s": 9.468,
+          "want_mm": 129.1
+        },
+        {
+          "b_over_R": 0.1,
+          "case": "survey",
+          "drag_distance": "medium",
+          "err_mm": -708.6613473425625,
+          "in_domain": true,
+          "produced_mm": 531.4386526574374,
+          "rel_err_pct": -57.145500148581775,
+          "speed_label": "fast",
+          "speed_m_s": 9.3356,
+          "want_mm": 1240.1
+        },
+        {
+          "b_over_R": 0.15,
+          "case": "survey",
+          "drag_distance": "medium",
+          "in_domain": false,
+          "speed_label": "fast",
+          "speed_m_s": 9.123,
+          "want_mm": 3319.7999999999997
+        },
+        {
+          "b_over_R": 0.2,
+          "case": "survey",
+          "drag_distance": "medium",
+          "in_domain": false,
+          "speed_label": "fast",
+          "speed_m_s": 8.8411,
+          "want_mm": 6092.3
+        },
+        {
+          "b_over_R": 0.25,
+          "case": "survey",
+          "drag_distance": "medium",
+          "in_domain": false,
+          "speed_label": "fast",
+          "speed_m_s": 8.5033,
+          "want_mm": 9245.2
+        },
+        {
+          "b_over_R": 0.3,
+          "case": "survey",
+          "drag_distance": "medium",
+          "in_domain": false,
+          "speed_label": "fast",
+          "speed_m_s": 8.1238,
+          "want_mm": 12476.699999999999
+        },
+        {
+          "b_over_R": 0.35,
+          "case": "survey",
+          "drag_distance": "medium",
+          "in_domain": false,
+          "speed_label": "fast",
+          "speed_m_s": 7.7169,
+          "want_mm": 15531.0
+        },
+        {
+          "b_over_R": 0.4,
+          "case": "survey",
+          "drag_distance": "medium",
+          "in_domain": false,
+          "speed_label": "fast",
+          "speed_m_s": 7.2953,
+          "want_mm": 18217.9
+        },
+        {
+          "b_over_R": 0.45,
+          "case": "survey",
+          "drag_distance": "medium",
+          "in_domain": false,
+          "speed_label": "fast",
+          "speed_m_s": 6.8698,
+          "want_mm": 20417.2
+        },
+        {
+          "b_over_R": 0.5,
+          "case": "survey",
+          "drag_distance": "medium",
+          "in_domain": false,
+          "speed_label": "fast",
+          "speed_m_s": 6.4495,
+          "want_mm": 22071.6
+        },
+        {
+          "b_over_R": 0.05,
+          "case": "survey",
+          "drag_distance": "long",
+          "in_domain": false,
+          "speed_label": "fast",
+          "speed_m_s": 9.468,
+          "want_mm": 5.8
+        },
+        {
+          "b_over_R": 0.1,
+          "case": "survey",
+          "drag_distance": "long",
+          "err_mm": -252.82255701444535,
+          "in_domain": true,
+          "produced_mm": 198.27744298555467,
+          "rel_err_pct": -56.045789628562474,
+          "speed_label": "fast",
+          "speed_m_s": 9.3356,
+          "want_mm": 451.1
+        },
+        {
+          "b_over_R": 0.15,
+          "case": "survey",
+          "drag_distance": "long",
+          "err_mm": -1074.708328919259,
+          "in_domain": true,
+          "produced_mm": 798.8916710807409,
+          "rel_err_pct": -57.3606067954344,
+          "speed_label": "fast",
+          "speed_m_s": 9.123,
+          "want_mm": 1873.6
+        },
+        {
+          "b_over_R": 0.2,
+          "case": "survey",
+          "drag_distance": "long",
+          "in_domain": false,
+          "speed_label": "fast",
+          "speed_m_s": 8.8411,
+          "want_mm": 3996.6
+        },
+        {
+          "b_over_R": 0.25,
+          "case": "survey",
+          "drag_distance": "long",
+          "in_domain": false,
+          "speed_label": "fast",
+          "speed_m_s": 8.5033,
+          "want_mm": 6506.700000000001
+        },
+        {
+          "b_over_R": 0.3,
+          "case": "survey",
+          "drag_distance": "long",
+          "in_domain": false,
+          "speed_label": "fast",
+          "speed_m_s": 8.1238,
+          "want_mm": 9101.4
+        },
+        {
+          "b_over_R": 0.35,
+          "case": "survey",
+          "drag_distance": "long",
+          "in_domain": false,
+          "speed_label": "fast",
+          "speed_m_s": 7.7169,
+          "want_mm": 11524.2
+        },
+        {
+          "b_over_R": 0.4,
+          "case": "survey",
+          "drag_distance": "long",
+          "in_domain": false,
+          "speed_label": "fast",
+          "speed_m_s": 7.2953,
+          "want_mm": 13584.0
+        },
+        {
+          "b_over_R": 0.45,
+          "case": "survey",
+          "drag_distance": "long",
+          "in_domain": false,
+          "speed_label": "fast",
+          "speed_m_s": 6.8698,
+          "want_mm": 15159.800000000001
+        },
+        {
+          "b_over_R": 0.5,
+          "case": "survey",
+          "drag_distance": "long",
+          "in_domain": false,
+          "speed_label": "fast",
+          "speed_m_s": 6.4495,
+          "want_mm": 16192.900000000001
+        },
+        {
+          "b_over_R": 0.05,
+          "case": "survey",
+          "drag_distance": "short",
+          "err_mm": -557.165778737083,
+          "in_domain": true,
+          "produced_mm": 412.6342212629169,
+          "rel_err_pct": -57.45161669798752,
+          "speed_label": "power",
+          "speed_m_s": 12.8495,
+          "want_mm": 969.8
+        },
+        {
+          "b_over_R": 0.1,
+          "case": "survey",
+          "drag_distance": "short",
+          "in_domain": false,
+          "speed_label": "power",
+          "speed_m_s": 12.6698,
+          "want_mm": 4063.3999999999996
+        },
+        {
+          "b_over_R": 0.15,
+          "case": "survey",
+          "drag_distance": "short",
+          "in_domain": false,
+          "speed_label": "power",
+          "speed_m_s": 12.3812,
+          "want_mm": 8936.5
+        },
+        {
+          "b_over_R": 0.2,
+          "case": "survey",
+          "drag_distance": "short",
+          "in_domain": false,
+          "speed_label": "power",
+          "speed_m_s": 11.9986,
+          "want_mm": 15081.5
+        },
+        {
+          "b_over_R": 0.25,
+          "case": "survey",
+          "drag_distance": "short",
+          "in_domain": false,
+          "speed_label": "power",
+          "speed_m_s": 11.5401,
+          "want_mm": 21923.5
+        },
+        {
+          "b_over_R": 0.3,
+          "case": "survey",
+          "drag_distance": "short",
+          "in_domain": false,
+          "speed_label": "power",
+          "speed_m_s": 11.0252,
+          "want_mm": 28907.2
+        },
+        {
+          "b_over_R": 0.35,
+          "case": "survey",
+          "drag_distance": "short",
+          "in_domain": false,
+          "speed_label": "power",
+          "speed_m_s": 10.4729,
+          "want_mm": 35561.9
+        },
+        {
+          "b_over_R": 0.4,
+          "case": "survey",
+          "drag_distance": "short",
+          "in_domain": false,
+          "speed_label": "power",
+          "speed_m_s": 9.9007,
+          "want_mm": 41538.3
+        },
+        {
+          "b_over_R": 0.45,
+          "case": "survey",
+          "drag_distance": "short",
+          "in_domain": false,
+          "speed_label": "power",
+          "speed_m_s": 9.3234,
+          "want_mm": 46615.299999999996
+        },
+        {
+          "b_over_R": 0.5,
+          "case": "survey",
+          "drag_distance": "short",
+          "in_domain": false,
+          "speed_label": "power",
+          "speed_m_s": 8.7529,
+          "want_mm": 50688.5
+        },
+        {
+          "b_over_R": 0.05,
+          "case": "survey",
+          "drag_distance": "medium",
+          "err_mm": -322.63014414934247,
+          "in_domain": true,
+          "produced_mm": 242.86985585065753,
+          "rel_err_pct": -57.05219171517993,
+          "speed_label": "power",
+          "speed_m_s": 12.8495,
+          "want_mm": 565.5
+        },
+        {
+          "b_over_R": 0.1,
+          "case": "survey",
+          "drag_distance": "medium",
+          "in_domain": false,
+          "speed_label": "power",
+          "speed_m_s": 12.6698,
+          "want_mm": 3167.1
+        },
+        {
+          "b_over_R": 0.15,
+          "case": "survey",
+          "drag_distance": "medium",
+          "in_domain": false,
+          "speed_label": "power",
+          "speed_m_s": 12.3812,
+          "want_mm": 7549.400000000001
+        },
+        {
+          "b_over_R": 0.2,
+          "case": "survey",
+          "drag_distance": "medium",
+          "in_domain": false,
+          "speed_label": "power",
+          "speed_m_s": 11.9986,
+          "want_mm": 13204.800000000001
+        },
+        {
+          "b_over_R": 0.25,
+          "case": "survey",
+          "drag_distance": "medium",
+          "in_domain": false,
+          "speed_label": "power",
+          "speed_m_s": 11.5401,
+          "want_mm": 19558.3
+        },
+        {
+          "b_over_R": 0.3,
+          "case": "survey",
+          "drag_distance": "medium",
+          "in_domain": false,
+          "speed_label": "power",
+          "speed_m_s": 11.0252,
+          "want_mm": 26054.1
+        },
+        {
+          "b_over_R": 0.35,
+          "case": "survey",
+          "drag_distance": "medium",
+          "in_domain": false,
+          "speed_label": "power",
+          "speed_m_s": 10.4729,
+          "want_mm": 32221.800000000003
+        },
+        {
+          "b_over_R": 0.4,
+          "case": "survey",
+          "drag_distance": "medium",
+          "in_domain": false,
+          "speed_label": "power",
+          "speed_m_s": 9.9007,
+          "want_mm": 37711.399999999994
+        },
+        {
+          "b_over_R": 0.45,
+          "case": "survey",
+          "drag_distance": "medium",
+          "in_domain": false,
+          "speed_label": "power",
+          "speed_m_s": 9.3234,
+          "want_mm": 42302.0
+        },
+        {
+          "b_over_R": 0.5,
+          "case": "survey",
+          "drag_distance": "medium",
+          "in_domain": false,
+          "speed_label": "power",
+          "speed_m_s": 8.7529,
+          "want_mm": 45888.7
+        },
+        {
+          "b_over_R": 0.05,
+          "case": "survey",
+          "drag_distance": "long",
+          "err_mm": -106.83663085974115,
+          "in_domain": true,
+          "produced_mm": 84.56336914025883,
+          "rel_err_pct": -55.81851142097239,
+          "speed_label": "power",
+          "speed_m_s": 12.8495,
+          "want_mm": 191.39999999999998
+        },
+        {
+          "b_over_R": 0.1,
+          "case": "survey",
+          "drag_distance": "long",
+          "err_mm": -1233.1921144376736,
+          "in_domain": true,
+          "produced_mm": 899.8078855623264,
+          "rel_err_pct": -57.81491394456979,
+          "speed_label": "power",
+          "speed_m_s": 12.6698,
+          "want_mm": 2133.0
+        },
+        {
+          "b_over_R": 0.15,
+          "case": "survey",
+          "drag_distance": "long",
+          "in_domain": false,
+          "speed_label": "power",
+          "speed_m_s": 12.3812,
+          "want_mm": 5859.7
+        },
+        {
+          "b_over_R": 0.2,
+          "case": "survey",
+          "drag_distance": "long",
+          "in_domain": false,
+          "speed_label": "power",
+          "speed_m_s": 11.9986,
+          "want_mm": 10863.2
+        },
+        {
+          "b_over_R": 0.25,
+          "case": "survey",
+          "drag_distance": "long",
+          "in_domain": false,
+          "speed_label": "power",
+          "speed_m_s": 11.5401,
+          "want_mm": 16568.0
+        },
+        {
+          "b_over_R": 0.3,
+          "case": "survey",
+          "drag_distance": "long",
+          "in_domain": false,
+          "speed_label": "power",
+          "speed_m_s": 11.0252,
+          "want_mm": 22418.199999999997
+        },
+        {
+          "b_over_R": 0.35,
+          "case": "survey",
+          "drag_distance": "long",
+          "in_domain": false,
+          "speed_label": "power",
+          "speed_m_s": 10.4729,
+          "want_mm": 27942.399999999998
+        },
+        {
+          "b_over_R": 0.4,
+          "case": "survey",
+          "drag_distance": "long",
+          "in_domain": false,
+          "speed_label": "power",
+          "speed_m_s": 9.9007,
+          "want_mm": 32790.5
+        },
+        {
+          "b_over_R": 0.45,
+          "case": "survey",
+          "drag_distance": "long",
+          "in_domain": false,
+          "speed_label": "power",
+          "speed_m_s": 9.3234,
+          "want_mm": 36740.7
+        },
+        {
+          "b_over_R": 0.5,
+          "case": "survey",
+          "drag_distance": "long",
+          "in_domain": false,
+          "speed_label": "power",
+          "speed_m_s": 8.7529,
+          "want_mm": 39687.399999999994
+        }
+      ],
+      "stage": 1,
+      "verdict": "pure-spin max rel err 0.0000 % (spec 0.012 %); B-5 ratio 7.781 at the draw-follow block (spec 7.781, file 7.559); full-row comparison reported (35 in-domain rows, mean |err| 462.2 mm / 51.2 %)"
+    },
+    {
+      "checks": [
+        {
+          "label": "gate",
+          "name": "throw sign convention (§3.2)",
+          "note": "the object ball departs toward the cue ball's incoming line, away from the tangent line",
+          "produced": {
+            "all_six_negative": true
+          },
+          "spec": "a no-english cut gives a negative throw_deg",
+          "verdict": "met"
+        },
+        {
+          "label": "residual",
+          "name": "the shipped μb table's six-point residual",
+          "note": "the structural offset the stick/slip re-pin is expected to remove — reported, not the gate",
+          "produced": {
+            "mean_abs_err_deg": 3.5618602403526656,
+            "mu_b": {
+              "a": 0.009951,
+              "b": 0.108,
+              "c": 1.088
+            },
+            "per_point_deg": [
+              -3.703375287807774,
+              -5.659092601118228,
+              -3.1395269262616314,
+              -3.074967191823648,
+              -3.1848317278101472,
+              -2.609367707294566
+            ]
+          },
+          "spec": 4.167
+        },
+        {
+          "label": "gate",
+          "name": "μb refit residual",
+          "note": "the gate is only the refit, and a lower residual passes it; the shipped table's residual is the expected offset (§6)",
+          "produced": {
+            "mean_abs_err_deg": 0.7423646648081176,
+            "mu_b": {
+              "a": 0.03611328125,
+              "b": 0.23984374999999997,
+              "c": 0.9749999999999999
+            },
+            "mu_b_at_1_m_s": 0.12658050979991342
+          },
+          "spec": {
+            "mean_abs_err_deg": 0.908,
+            "refit": {
+              "a": 0.001,
+              "b": 0.2732,
+              "c": 0.62
+            }
+          },
+          "verdict": "met"
+        }
+      ],
+      "gate": null,
+      "gate_met": true,
+      "method": "TP B-3's six measured points, compared as |throw_deg| (§3.2's sign convention is checked on the produced values); each shot is a free-space cut with the impact parameter b = 2R sin φ, the cue ball arriving at the row's speed (stun, no english) through the declaration path's own tip offsets; μb refitted by multi-start pattern search over the mean |err|",
+      "name": "cuts at known angles",
+      "notes": [
+        "the refit's landscape is flat enough that the coefficients are not the observable: the search lands on a/b/c = 0.0361/0.2398/0.975 (mu_b(1 m/s) = 0.1266) with a residual below the spec's 0.908°, while the spec's own refit (0.0010/0.2732/0.620, mu_b(1 m/s) = 0.148) is also a solution — the six-point residual is what the gate reads, and both sit far outside the provisional 0.03–0.08 band (§3.2's not-portable marking)"
+      ],
+      "observable": "throw vs cut angle and speed",
+      "rows": [
+        {
+          "cut_deg": 30.0,
+          "err_deg": -3.703375287807774,
+          "line_of_centres_deg": -29.999999999999996,
+          "measured_deg": 7.5946,
+          "object_departure_speed_mm_s": 940.3526152353775,
+          "produced_deg": 3.891224712192226,
+          "produced_signed_deg": -3.891224712192226,
+          "speed_m_s": 1.1111
+        },
+        {
+          "cut_deg": 45.0,
+          "err_deg": -5.659092601118228,
+          "line_of_centres_deg": -45.0,
+          "measured_deg": 8.8418,
+          "object_departure_speed_mm_s": 766.2648890979092,
+          "produced_deg": 3.1827073988817713,
+          "produced_signed_deg": -3.1827073988817713,
+          "speed_m_s": 1.1111
+        },
+        {
+          "cut_deg": 30.0,
+          "err_deg": -3.1395269262616314,
+          "line_of_centres_deg": -29.999999999999996,
+          "measured_deg": 5.553,
+          "object_departure_speed_mm_s": 1876.719227325952,
+          "produced_deg": 2.4134730737383685,
+          "produced_signed_deg": -2.4134730737383685,
+          "speed_m_s": 2.2222
+        },
+        {
+          "cut_deg": 45.0,
+          "err_deg": -3.074967191823648,
+          "line_of_centres_deg": -44.99999999999999,
+          "measured_deg": 4.7636,
+          "object_departure_speed_mm_s": 1530.3090358473478,
+          "produced_deg": 1.6886328081763522,
+          "produced_signed_deg": -1.6886328081763522,
+          "speed_m_s": 2.2222
+        },
+        {
+          "cut_deg": 30.0,
+          "err_deg": -3.1848317278101472,
+          "line_of_centres_deg": -29.999999999999996,
+          "measured_deg": 4.7636,
+          "object_departure_speed_mm_s": 2813.3915362525854,
+          "produced_deg": 1.5787682721898533,
+          "produced_signed_deg": -1.5787682721898533,
+          "speed_m_s": 3.3333
+        },
+        {
+          "cut_deg": 45.0,
+          "err_deg": -2.609367707294566,
+          "line_of_centres_deg": -44.999999999999986,
+          "measured_deg": 3.6556,
+          "object_departure_speed_mm_s": 2295.7371026115034,
+          "produced_deg": 1.0462322927054342,
+          "produced_signed_deg": -1.0462322927054342,
+          "speed_m_s": 3.3333
+        }
+      ],
+      "stage": 2,
+      "verdict": "refit residual 0.742° (gate 0.908°, spec's refit a/b/c = 0.0010/0.2732/0.620); produced fit a/b/c = 0.0361/0.2398/0.975; shipped-table residual 3.562° (spec 4.167°)"
+    },
+    {
+      "checks": [
+        {
+          "label": "gate",
+          "name": "single square-hit retention",
+          "note": "TP B-6's measured e_c = 0.70 ± the source's scatter; the spec's e_n fit is 0.75 → 0.6714, 0.80 → 0.7178",
+          "produced": {
+            "e_n": 0.78,
+            "probe": "natural roll",
+            "retention": 0.699218215187173,
+            "tip_b": 0.77746025264604
+          },
+          "spec": {
+            "closed_form_e_n_0.75": 0.6224,
+            "measured_e_c": 0.7,
+            "scatter": 0.02,
+            "spec_at_0.75": 0.6714,
+            "spec_at_0.78": 0.6992,
+            "spec_at_0.80": 0.7178
+          },
+          "tolerance": 0.02,
+          "verdict": "met"
+        },
+        {
+          "label": "derived",
+          "name": "the e_n that reproduces the measured retention",
+          "note": "the default's provenance: TP B-6's measured retention e_c = 0.70 (§3.3/§5)",
+          "produced": {
+            "e_n": 0.7808432649783299,
+            "probe": "natural roll"
+          },
+          "spec": {
+            "e_n": 0.78,
+            "range": [
+              0.75,
+              0.85
+            ]
+          }
+        },
+        {
+          "label": "gate",
+          "name": "e_n fit inside the measured range",
+          "note": "the bisected e_n lands on the default's neighbourhood",
+          "produced": {
+            "fitted_e_n": 0.7808432649783299
+          },
+          "spec": {
+            "default": 0.78,
+            "range": [
+              0.75,
+              0.85
+            ]
+          },
+          "verdict": "met"
+        },
+        {
+          "label": "derived",
+          "name": "horizontal COR from the normal channel alone",
+          "note": "the whole retention share above this is the tangential and vertical channels (§3.3)",
+          "produced": {
+            "at_default_e_n": 0.6502380000000001,
+            "at_e_n_0.75": 0.622425,
+            "e_n": 0.78,
+            "nose_normal_horizontal": 0.9628603221651623
+          },
+          "spec": {
+            "at_e_n_0.75": 0.6224
+          }
+        },
+        {
+          "label": "residual",
+          "name": "TP B-6 travel anchors",
+          "note": "reported, not gated: the shortfall is structural — e_n trades retention for travel and μc is flat under the ruled 3D channel; the spec's instance concentrates it at the three slow anchors",
+          "produced": {
+            "anchors": 5,
+            "e_n_trade_at_4_m_s": [
+              {
+                "e_n": 0.75,
+                "stroke_4_m_s_table_lengths": 2.144812330236497
+              },
+              {
+                "e_n": 0.85,
+                "stroke_4_m_s_table_lengths": 2.919184756568601
+              }
+            ],
+            "mean_abs_err_table_lengths": 0.3386250240377932
+          },
+          "spec": {
+            "mean_abs_err_table_lengths": 0.337,
+            "plus_2_pct_of_printed": "the source's own band"
+          }
+        }
+      ],
+      "gate": null,
+      "gate_met": true,
+      "method": "The retention probe is the spec's pinned one — the table reduced to its four rails, a stun ball square into the long cushion's flat face from the x = −300 mm lane, the speeds sampled either side of the contact — with a natural-roll variant reported beside it; the travel anchors run the head spot's rolling ball into the short rails with the path length sampled from the exact timeline; e_n is fitted by bisection on the mean retention",
+      "name": "cushion retention and rail travel",
+      "notes": [
+        "the WPA 4–4.5-table-length acceptance test is dropped by the amended gate and is not implemented: at the measured coefficients it needs ≈9 m/s",
+        "the retention gate runs the natural roll probe: the spec's 0.6714 / 0.6992 / 0.7178 are a rolling ball's, and a stun ball is still skidding when it reaches the cushion at the fast end (its slide-to-roll distance grows as v², 262 mm at 1.5 m/s but 1.05 m at 3 m/s), which is what drags the stun probe's mean down"
+      ],
+      "observable": "retention and rail travel",
+      "rows": [
+        {
+          "case": "retention-probe",
+          "combined_abs_err": 0.0000635797496264523,
+          "per_speed_at_e_n_0.78": [
+            0.6992142150855735,
+            0.6992190171180366,
+            0.699221413357909
+          ],
+          "probe": "natural roll",
+          "retention_e_n_0.75": 0.6714054339246452,
+          "retention_e_n_0.78": 0.699218215187173,
+          "retention_e_n_0.80": 0.7177600693621917,
+          "spec_at_0.75": 0.6714,
+          "spec_at_0.78": 0.6992,
+          "spec_at_0.80": 0.7178,
+          "speeds_mm_s": [
+            800.0,
+            1500.0,
+            3000.0
+          ],
+          "tip_b": 0.77746025264604
+        },
+        {
+          "case": "retention-probe",
+          "combined_abs_err": 0.022648308362070768,
+          "per_speed_at_e_n_0.78": [
+            0.6992092025842029,
+            0.6992171287091743,
+            0.676596031567197
+          ],
+          "probe": "stun declaration, still skidding at the fast end",
+          "retention_e_n_0.75": 0.6638621072855893,
+          "retention_e_n_0.78": 0.6916741209535248,
+          "retention_e_n_0.80": 0.7102154633988152,
+          "spec_at_0.75": 0.6714,
+          "spec_at_0.78": 0.6992,
+          "spec_at_0.80": 0.7178,
+          "speeds_mm_s": [
+            800.0,
+            1500.0,
+            3000.0
+          ],
+          "tip_b": 0.0
+        },
+        {
+          "case": "retention",
+          "e_n": 0.75,
+          "mean": 0.6714054339246452,
+          "per_speed": [
+            0.6714015929349629,
+            0.6714062039571294,
+            0.6714085048818432
+          ],
+          "probe": "natural roll",
+          "speeds_mm_s": [
+            800.0,
+            1500.0,
+            3000.0
+          ]
+        },
+        {
+          "case": "retention",
+          "e_n": 0.78,
+          "mean": 0.699218215187173,
+          "per_speed": [
+            0.6992142150855735,
+            0.6992190171180366,
+            0.699221413357909
+          ],
+          "probe": "natural roll",
+          "speeds_mm_s": [
+            800.0,
+            1500.0,
+            3000.0
+          ]
+        },
+        {
+          "case": "retention",
+          "e_n": 0.8,
+          "mean": 0.7177600693621917,
+          "per_speed": [
+            0.7177559631859806,
+            0.7177608925586412,
+            0.7177633523419534
+          ],
+          "probe": "natural roll",
+          "speeds_mm_s": [
+            800.0,
+            1500.0,
+            3000.0
+          ]
+        },
+        {
+          "case": "retention",
+          "e_n": 0.85,
+          "mean": 0.764114704799738,
+          "per_speed": [
+            0.7641103334369985,
+            0.7641155811601524,
+            0.7641181998020633
+          ],
+          "probe": "natural roll",
+          "speeds_mm_s": [
+            800.0,
+            1500.0,
+            3000.0
+          ]
+        },
+        {
+          "case": "travel-anchor",
+          "computed_table_lengths": 0.9026,
+          "delta_table_lengths": -0.1399225507681433,
+          "ended_off_table_or_pocketed": false,
+          "printed_table_lengths": 0.903,
+          "produced_table_lengths": 0.7630774492318567,
+          "speed_mph": 1.5
+        },
+        {
+          "case": "travel-anchor",
+          "computed_table_lengths": 1.6839,
+          "delta_table_lengths": -0.5186961060703581,
+          "ended_off_table_or_pocketed": false,
+          "printed_table_lengths": 1.684,
+          "produced_table_lengths": 1.1653038939296418,
+          "speed_mph": 3.0
+        },
+        {
+          "case": "travel-anchor",
+          "computed_table_lengths": 2.96,
+          "delta_table_lengths": -1.0156032125619872,
+          "ended_off_table_or_pocketed": false,
+          "printed_table_lengths": 3.005,
+          "produced_table_lengths": 1.9893967874380127,
+          "speed_mph": 7.0
+        },
+        {
+          "case": "travel-anchor",
+          "computed_table_lengths": 3.602,
+          "delta_table_lengths": 0.005346590537654183,
+          "ended_off_table_or_pocketed": false,
+          "printed_table_lengths": 3.69,
+          "produced_table_lengths": 3.695346590537654,
+          "speed_mph": 12.0
+        },
+        {
+          "case": "travel-anchor",
+          "computed_table_lengths": 4.6245,
+          "delta_table_lengths": 0.01355666025082325,
+          "ended_off_table_or_pocketed": false,
+          "printed_table_lengths": 4.715,
+          "produced_table_lengths": 4.728556660250823,
+          "speed_mph": 20.0
+        }
+      ],
+      "stage": 3,
+      "verdict": "retention 0.6992 at e_n 0.78 with the natural roll probe (measured 0.70 ± 0.02); fitted e_n 0.7808 (spec 0.78); travel anchors mean |err| 0.339 lengths (spec 0.337, reported not gated)"
+    },
+    {
+      "checks": [
+        {
+          "label": "derived",
+          "name": "reference tip offset implied by tan α = a/L",
+          "note": "the only offset at which Platinum's 46 shafts are self-consistent (§3.6)",
+          "produced": {
+            "a_mm": 8.065707201079965,
+            "a_over_R": 0.2822644689791764,
+            "range_mm": [
+              7.797495227235772,
+              8.34747537206038
+            ],
+            "sd_mm": 0.10240920116045593,
+            "shafts": 46
+          },
+          "spec": {
+            "a_mm": 8.07,
+            "a_over_R": 0.282,
+            "sd_mm": 0.1
+          }
+        },
+        {
+          "label": "gate",
+          "name": "squirt band at the reference tip offset",
+          "note": "the model's band at the pinned offset reproduces the spec's instance; the published bands do not agree with each other (Shepard 0.5–2.3 vs Platinum 1.3–2.3)",
+          "produced": {
+            "band_deg": [
+              1.2901459603326764,
+              2.3925732279934184
+            ],
+            "per_pivot": [
+              {
+                "pivot_in": 7.6,
+                "pivot_mm": 193.04,
+                "squirt_deg": 2.3925732279934184
+              },
+              {
+                "pivot_in": 14.1,
+                "pivot_mm": 358.14,
+                "squirt_deg": 1.2901459603326764
+              }
+            ]
+          },
+          "spec": {
+            "a_mm": 8.07,
+            "band_deg": [
+              1.29,
+              2.39
+            ],
+            "platinum_published": [
+              1.3,
+              2.3
+            ]
+          },
+          "tolerance": 0.01,
+          "verdict": "met"
+        },
+        {
+          "label": "gate",
+          "name": "squirt band's upper end",
+          "note": "the short-pivot bookend, where the model sits above Platinum's quoted 2.3°",
+          "produced": 2.3925732279934184,
+          "spec": 2.39,
+          "verdict": "met"
+        },
+        {
+          "label": "derived",
+          "name": "the void 0.5 R comparison",
+          "note": "reported so it is not re-attempted: 0.5 R offsets put the model above every published band",
+          "produced": {
+            "deg_at_7.6_in": 4.232923589835348
+          },
+          "spec": {
+            "a_mm": 14.2875,
+            "deg_at_7.6_in": 4.23
+          }
+        }
+      ],
+      "gate": null,
+      "gate_met": true,
+      "method": "Platinum's 46-shaft table: the reference tip offset implied by tan α = a/L per shaft, then the model's squirt angle at that offset through the declaration path (aim +x, `spin[0]` = a/ρ_max, `sin α = a/√(a² + L²)`), evaluated at the pivot bookends",
+      "name": "pivot-length test per cue",
+      "notes": [
+        "the table's own angle column runs 1.3352–2.3131°, so the produced band (1.29–2.39) is the pinned offset's algebra, not the source's own column"
+      ],
+      "observable": "squirt angle",
+      "rows": [],
+      "stage": 4,
+      "verdict": "band 1.29–2.39° at a = 8.07 mm (0.282 R, sd 0.10 mm); spec 1.29–2.39°, Platinum published 1.3–2.3°, the 0.5 R comparison void at 4.23°"
+    }
+  ]
+}

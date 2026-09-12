@@ -286,6 +286,10 @@ struct Ball {
     law_t: f64,
     pocketed: bool,
     off_table: bool,
+    /// Is this ball part of the shot? [`Sim::new`] launches every ball of its arrangement; the
+    /// analysis seam of [`Sim::cleared`] holds the rest out, so the fitting ladder's isolated shots
+    /// (`physics.md` §6) are not polluted by fifteen racked balls.
+    in_play: bool,
     /// The wall indices this ball was in contact with at shot start, with the `left_since_shot_start`
     /// flag of `rules.md` §10.2.
     frozen_walls: Vec<(usize, bool)>,
@@ -302,12 +306,13 @@ impl Ball {
             law_t: 0.0,
             pocketed: false,
             off_table: false,
+            in_play: true,
             frozen_walls: Vec::new(),
         }
     }
 
     fn active(&self) -> bool {
-        !self.pocketed && !self.off_table
+        self.in_play && !self.pocketed && !self.off_table
     }
 }
 
@@ -400,9 +405,43 @@ impl Sim {
         }
     }
 
+    /// A table cleared of every ball — the analysis seam of `physics.md` §6.
+    ///
+    /// The fitting ladder's stages isolate one parameter group each, which takes isolated shots: a
+    /// single ball against one cushion, a pair in free space. The rack of [`Sim::new`] is the table's
+    /// only legal start for a game (`rules-break.md` §2.5), so this path exists for the ladder and
+    /// the differential stage, which place their own balls with [`Sim::place_ball`] and give one of
+    /// them a pre-state with [`Sim::launch`]. The cleared balls keep their rack positions and are
+    /// simply out of play: they raise no fact, and the rest block does not report them.
+    #[must_use]
+    pub fn cleared(table: Table) -> Self {
+        let mut slots = [0_u8; 15];
+        for (index, slot) in slots.iter_mut().enumerate() {
+            *slot = index as u8 + 1;
+        }
+        let mut sim = Self::new(table, Arrangement { slots });
+        for ball in &mut sim.balls {
+            ball.in_play = false;
+        }
+        sim
+    }
+
     /// Place the cue ball (ball-in-hand, `architecture.md` §9): its centre must sit on the playing
     /// surface, clear of every other ball by at least one diameter.
     pub fn place_cue(&mut self, pos_mm: [f64; 2]) -> Result<(), PlacementError> {
+        self.place_ball(0, pos_mm)
+    }
+
+    /// Place a ball at rest by hand: `0` is the cue ball, `1..=15` an object ball. Same domain as
+    /// [`Sim::place_cue`] — centre on the surface, one diameter clear of every other ball in play —
+    /// and the ball joins the shot (the counterpart of [`Sim::cleared`] for the ladder's pre-states,
+    /// `physics.md` §6/§8).
+    pub fn place_ball(&mut self, ball: u8, pos_mm: [f64; 2]) -> Result<(), PlacementError> {
+        assert!(
+            usize::from(ball) < self.balls.len(),
+            "ball id out of range: {ball}"
+        );
+        let index = usize::from(ball);
         let [x, y] = pos_mm;
         if !x.is_finite() || !y.is_finite() {
             return Err(PlacementError::NotFinite);
@@ -411,29 +450,35 @@ impl Sim {
             return Err(PlacementError::OutsideSurface { pos_mm });
         }
         let p = v3(x, y, BALL_RADIUS_MM);
-        for ball in 1..self.balls.len() {
-            let other = &self.balls[ball];
-            if !other.active() {
+        for (other_index, other) in self.balls.iter().enumerate() {
+            if other_index == index || !other.active() {
                 continue;
             }
             let gap = (p - other.p).len() - BALL_DIAMETER_MM;
             if gap < 0.0 {
                 return Err(PlacementError::Overlaps {
-                    ball: ball as u8,
+                    ball: other_index as u8,
                     gap_mm: gap,
                 });
             }
         }
-        self.balls[0] = Ball::at_rest(p);
+        self.balls[index] = Ball::at_rest(p);
         Ok(())
     }
 
-    /// Compute the shot to rest and hand back its `Shot` (`architecture.md` §4).
-    ///
-    /// The sim keeps the final state, so a caller may place the cue again and strike the next shot;
-    /// the facts and the timeline move into the returned `Shot`.
-    pub fn strike(&mut self, decl: StrikeDecl) -> Result<Shot, StrikeError> {
-        let resolved = decl.resolve(self.table.profile.pivot_mm)?;
+    /// Launch a ball with an explicit pre-state: the fitting ladder's free-space checks state the
+    /// ball's `(v, ω)` rather than a stick's — `physics.md` §6's pure-spin branch is a ball with spin
+    /// and no translation, which no declaration can express. [`Sim::strike`] is the declaration path
+    /// and calls this for the cue ball.
+    pub fn launch(&mut self, ball: u8, v_mm_s: V3, w_rad_s: V3) -> Shot {
+        assert!(
+            usize::from(ball) < self.balls.len(),
+            "ball id out of range: {ball}"
+        );
+        assert!(
+            v_mm_s.is_finite() && w_rad_s.is_finite(),
+            "a launch state must be finite"
+        );
         self.annotate_frozen();
         self.t = 0.0;
         self.group = 0;
@@ -443,24 +488,33 @@ impl Sim {
         self.facts.clear();
         self.timeline.clear();
 
-        let cue = &mut self.balls[0];
-        cue.v = resolved.v_mm_s;
-        cue.w = resolved.w_rad_s;
-        cue.mode = motion_mode(cue.p, cue.v, cue.w);
+        let launched = &mut self.balls[usize::from(ball)];
+        launched.v = v_mm_s;
+        launched.w = w_rad_s;
+        launched.mode = motion_mode(launched.p, launched.v, launched.w);
         self.install_all();
         self.snapshot();
 
         let outcome = self.run_to_rest();
         self.assert_finite();
         let rest = self.measure_rest();
-        Ok(Shot {
+        Shot {
             timeline: std::mem::take(&mut self.timeline),
             facts: std::mem::take(&mut self.facts),
             rest,
             outcome,
             pocketed_at_s: self.pocketed_at_s,
             off_table_at_s: self.off_table_at_s,
-        })
+        }
+    }
+
+    /// Compute the shot to rest and hand back its `Shot` (`architecture.md` §4).
+    ///
+    /// The sim keeps the final state, so a caller may place the cue again and strike the next shot;
+    /// the facts and the timeline move into the returned `Shot`.
+    pub fn strike(&mut self, decl: StrikeDecl) -> Result<Shot, StrikeError> {
+        let resolved = decl.resolve(self.table.profile.pivot_mm)?;
+        Ok(self.launch(0, resolved.v_mm_s, resolved.w_rad_s))
     }
 
     // ---------------------------------------------------------------- shot start
@@ -1483,8 +1537,14 @@ fn solve_wall(p: V3, v: V3, acc: V3, wall: &Wall) -> Option<f64> {
     if d1 >= 0.0 {
         return None;
     }
-    let t = if d0 <= CONTACT_SLOP_MM {
-        0.0 // at the face within rounding, and approaching: the contact is now
+    let t = if d0.abs() <= CONTACT_SLOP_MM {
+        // At the face within rounding, and approaching: the contact is now. The window is
+        // two-sided, and it has to be: a jaw face's plane runs across the table's interior, so a
+        // ball *behind* such a plane by hundreds of mm is nowhere near the face. The one-sided
+        // reading (`d0 <= slop`) fired a spurious jaw contact on any ball that approached a jaw's
+        // plane from behind — a rebound off a long rail beside a side mouth, say — and applied the
+        // jaw's impulse to it.
+        0.0
     } else {
         let d2 = 0.5 * acc.dot(wall.n);
         let root = smallest_positive_root(d2, d1, d0)?;
