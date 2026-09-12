@@ -137,7 +137,9 @@ fn spawn_hud(mut commands: Commands) {
         Static::Hints,
         "CONTROLS  aim the mouse · press on the cloth and drag back, release commits (Enter commits, Escape abandons)\n\
          SPIN  drag inside the card, or A/D = a, W/S = b, C = centre · ELEVATION  wheel or UP/DOWN (Shift = fine)\n\
-         CALL  Tab cycles the suggested call · T toggles the tangent line · 1-9 pick a menu option",
+         CALL  Tab cycles the suggested call · T toggles the tangent line · 1-9 pick a menu option
+\
+         STALEMATE  Y proposes the agreement of 1.13/4.11 (a re-rack, if the offer is taken)",
         72.0,
         INK_DIM,
     ));
@@ -195,7 +197,10 @@ fn turn_line(game: &Game) -> String {
             } else {
                 target_text(target, shooter, game)
             };
-            format!("{} to shoot — {group} — {race}", session::seat_name(shooter))
+            format!(
+                "{} to shoot — {group} — {race}",
+                session::seat_name(shooter)
+            )
         }
         Awaiting::Placement { shooter, domain } => format!(
             "{} has ball in hand {} — {race}",
@@ -217,33 +222,28 @@ fn target_text(target: Target, shooter: pool_rules::Player, game: &Game) -> Stri
     match target {
         Target::Open => "open table".to_string(),
         Target::OnTheEight => "on the 8".to_string(),
-        Target::Group => game
-            .view()
-            .assignment
-            .map_or_else(|| "its group".to_string(), |groups| {
-                session::group_name(groups[shooter.index()]).to_string()
-            }),
+        Target::Group => game.view().assignment.map_or_else(
+            || "its group".to_string(),
+            |groups| session::group_name(groups[shooter.index()]).to_string(),
+        ),
     }
 }
 
-/// §8's line 2: the declaration being authored, at the player's level of detail.
-fn declaration_line(game: &Game, cue: &Cue) -> String {
-    let view = game.view();
-    let speed_scale = format!("{:.1} m/s", f64::from(input::speed_from_pull(cue.pull_mm)) / 1000.0);
-    let authored = format!(
-        "call {}  |  aim {:.0}°  |  {}  |  spin (a {:+.2}, b {:+.2})  |  elevation {:.0}°",
+/// §8's line 2: the declaration being authored, at the player's level of detail — the call, the aim,
+/// the speed in m/s, the offset, and the elevation; the envelope arithmetic and the guide geometry
+/// are the dev panel's (§8).
+fn declaration_line(cue: &Cue) -> String {
+    format!(
+        "call {}  |  aim {:.0}°  |  {:.1} m/s  |  spin (a {:+.2}, b {:+.2})  |  elevation {:.0}°",
         cue.call_text(),
-        f64::from(cue.aim[1]).atan2(f64::from(cue.aim[0])).to_degrees(),
-        speed_scale,
+        f64::from(cue.aim[1])
+            .atan2(f64::from(cue.aim[0]))
+            .to_degrees(),
+        f64::from(input::speed_from_pull(cue.pull_mm)) / 1000.0,
         cue.spin[0],
         cue.spin[1],
         cue.elevation_rad.to_degrees(),
-    );
-    if let Some(shot) = view.shot_count.checked_sub(1) {
-        format!("{authored}  |  shot {shot} of rack {}", view.rack_index + 1)
-    } else {
-        authored
-    }
+    )
 }
 
 /// §8's line 3: one line of validity, and nothing else.
@@ -310,7 +310,11 @@ fn prompt_text(game: &Game, cue: &Cue) -> String {
     let Awaiting::Placement { shooter, domain } = game.awaiting() else {
         return String::new();
     };
-    let fault = match cue.placement.as_ref().and_then(|proposal| proposal.fault.as_ref()) {
+    let fault = match cue
+        .placement
+        .as_ref()
+        .and_then(|proposal| proposal.fault.as_ref())
+    {
         None => "click to place the cue ball".to_string(),
         Some(fault) => format!("cannot place here: {fault:?}"),
     };
@@ -351,16 +355,23 @@ fn dev_text(game: &Game, cue: &Cue, playback: &Playback) -> String {
             cut_deg,
         } => format!(
             "ball {ball} at ({:+.1},{:+.1}) | ghost ({:+.1},{:+.1}) | cut {cut_deg:.1}° | object line {:+.0}° | tangent {:+.0}°{}",
-            target.x, target.y, ghost.x, ghost.y,
+            target.x,
+            target.y,
+            ghost.x,
+            ghost.y,
             f64::from(travel.y).atan2(f64::from(travel.x)).to_degrees(),
-            f64::from(tangent.y).atan2(f64::from(tangent.x)).to_degrees(),
+            f64::from(tangent.y)
+                .atan2(f64::from(tangent.x))
+                .to_degrees(),
             if cue.tangent { " (on)" } else { " (off)" },
         ),
         input::Guide::Cushion { hit, reflect } => format!(
             "no ball on the line | cushion ({:+.1},{:+.1}) | reflection {:+.0}°",
             hit.x,
             hit.y,
-            f64::from(reflect.y).atan2(f64::from(reflect.x)).to_degrees(),
+            f64::from(reflect.y)
+                .atan2(f64::from(reflect.x))
+                .to_degrees(),
         ),
     };
     let presentation = playback.t_rest_s().map_or_else(
@@ -419,7 +430,7 @@ fn update_panels(
     for (panel, mut text, mut color) in &mut panels {
         let (wanted, ink) = match panel {
             Panel::Turn => (turn_line(&game), INK),
-            Panel::Declaration => (declaration_line(&game, &cue), INK),
+            Panel::Declaration => (declaration_line(&cue), INK),
             Panel::Validity => (validity.clone(), validity_ink),
             Panel::Message => (message.clone(), message_ink),
             Panel::Prompt => (prompt_text(&game, &cue), INK_WARN),
@@ -440,8 +451,8 @@ fn update_visibility(
     cue: Res<Cue>,
     playback: Res<Playback>,
     args: Res<crate::Args>,
-    mut panels: Query<(&Panel, &mut Visibility)>,
-    mut statics: Query<(&Static, &mut Visibility)>,
+    mut panels: Query<(&Panel, &mut Visibility), Without<Static>>,
+    mut statics: Query<(&Static, &mut Visibility), Without<Panel>>,
 ) {
     let awaiting = game.awaiting();
     for (panel, mut visibility) in &mut panels {

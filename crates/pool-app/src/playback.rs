@@ -87,6 +87,5 @@ fn advance(
 
 /// The playback systems (`architecture.md` §10: `Update`, never `FixedUpdate`).
 pub fn systems(app: &mut App) {
-    app.init_resource::<Playback>()
-        .add_systems(Update, advance);
+    app.init_resource::<Playback>().add_systems(Update, advance);
 }

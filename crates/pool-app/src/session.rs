@@ -228,6 +228,22 @@ impl Game {
         self.session.positions()
     }
 
+    /// The last declaration the log holds: what the shell's tests read back to check the committed
+    /// input is the authored one.
+    #[cfg(test)]
+    #[must_use]
+    pub fn last_declaration(&self) -> Option<&pool_match::Declaration> {
+        self.session
+            .log()
+            .entries
+            .iter()
+            .rev()
+            .find_map(|entry| match entry {
+                pool_match::Entry::Declaration(declaration) => Some(declaration),
+                _ => None,
+            })
+    }
+
     /// The last computed shot, for `playback.rs`.
     #[must_use]
     pub fn last_shot(&self) -> Option<&pool_sim::Shot> {
@@ -249,9 +265,8 @@ pub const fn difficulty_name(level: DifficultyLevel) -> &'static str {
 /// The seat at the table, from the state.
 fn shooter_of(state: &RulesState) -> Option<Player> {
     match state {
-        RulesState::AwaitingShot { shooter, .. } | RulesState::AwaitingPlacement { shooter, .. } => {
-            Some(*shooter)
-        }
+        RulesState::AwaitingShot { shooter, .. }
+        | RulesState::AwaitingPlacement { shooter, .. } => Some(*shooter),
         _ => None,
     }
 }
@@ -272,11 +287,7 @@ fn seat_of(role: Chooser, breaker: Player) -> Player {
 fn describe(record: &Adjudication, before: &RulesState, view: &SessionView) -> Line {
     let shooter = shooter_of(before);
     let seat = shooter.map_or("the shooter", seat_name);
-    let fouls: Vec<&str> = record
-        .fouls
-        .iter()
-        .map(|foul| foul.rule.id())
-        .collect();
+    let fouls: Vec<&str> = record.fouls.iter().map(|foul| foul.rule.id()).collect();
     let penalty = match record.apply.action {
         Action::CueBallInHandAnywhere => format!(
             "{} takes ball in hand anywhere",
@@ -296,9 +307,12 @@ fn describe(record: &Adjudication, before: &RulesState, view: &SessionView) -> L
         Action::SpotBall => "ball spotted".to_string(),
         Action::RackOver => "the rack is over".to_string(),
     };
-    let chosen = record.chosen_option.as_ref().map_or_else(String::new, |chosen| {
-        format!(" — {}", chosen.option.description())
-    });
+    let chosen = record
+        .chosen_option
+        .as_ref()
+        .map_or_else(String::new, |chosen| {
+            format!(" — {}", chosen.option.description())
+        });
 
     let (mut text, mut tone) = match record.verdict {
         Verdict::Foul => (
@@ -317,17 +331,20 @@ fn describe(record: &Adjudication, before: &RulesState, view: &SessionView) -> L
             format!("illegal break (4.3(d)){chosen}: {penalty}"),
             Tone::Bad,
         ),
-        Verdict::EightOnBreak => (format!("the 8 left the table on the break{chosen}: {penalty}"), Tone::Bad),
-        Verdict::Legal => (format!("legal shot — {penalty}"), Tone::Good),
-        Verdict::NoShot => (
-            format!("{}{chosen}", record.legality),
-            Tone::Neutral,
+        Verdict::EightOnBreak => (
+            format!("the 8 left the table on the break{chosen}: {penalty}"),
+            Tone::Bad,
         ),
+        Verdict::Legal => (format!("legal shot — {penalty}"), Tone::Good),
+        Verdict::NoShot => (format!("{}{chosen}", no_shot_text(record)), Tone::Neutral),
         Verdict::Win => (
             format!("{seat} wins the rack ({}–{})", view.race[0], view.race[1]),
             Tone::Good,
         ),
-        Verdict::Loss => (format!("{seat} loses the rack ({})", record.legality), Tone::Bad),
+        Verdict::Loss => (
+            format!("{seat} loses the rack ({})", record.legality),
+            Tone::Bad,
+        ),
     };
 
     // The match layer re-racks inside the same request (`pool-match`'s `advance_match`), so a rack
@@ -349,6 +366,15 @@ fn describe(record: &Adjudication, before: &RulesState, view: &SessionView) -> L
         );
     }
     Line { text, tone }
+}
+
+/// A non-shot record's line: the machine's classification, in the shell's words.
+fn no_shot_text(record: &Adjudication) -> String {
+    match pool_rules::record::token_of(&record.legality) {
+        "stalemate_declaration" => "stalemate proposed and agreed (1.13/4.11)".to_string(),
+        "cue_ball_placed" => "cue ball placed".to_string(),
+        token => token.to_string(),
+    }
 }
 
 /// The next rack's breaker, when the record ended a rack and the match continues.

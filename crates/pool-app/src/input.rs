@@ -300,7 +300,10 @@ pub fn speed_from_pull(pull_mm: f32) -> f32 {
 /// The pull a speed is authored at: the map's inverse, for the read-out and the test.
 #[must_use]
 pub fn pull_for_speed(speed_mm_s: f32) -> f32 {
-    MAX_PULL_MM * (speed_mm_s / MAX_SPEED_MM_S).max(0.0).powf(1.0 / POWER_EXPONENT)
+    MAX_PULL_MM
+        * (speed_mm_s / MAX_SPEED_MM_S)
+            .max(0.0)
+            .powf(1.0 / POWER_EXPONENT)
 }
 
 /// A call, as the HUD words it.
@@ -323,7 +326,7 @@ pub fn systems(app: &mut App) {
         .add_systems(Startup, (spawn_cues, spawn_card))
         .add_systems(
             Update,
-            (choose_option, propose_placement, author)
+            (choose_option, propose_stalemate, propose_placement, author)
                 .chain()
                 .in_set(crate::ShellSet::Input),
         )
@@ -333,6 +336,22 @@ pub fn systems(app: &mut App) {
                 .chain()
                 .in_set(crate::ShellSet::Draw),
         );
+}
+
+/// The stalemate agreement (`rules.md` §7): either player may propose, and on mutual agreement the
+/// rack is re-racked by the tree's single option. The agreement is the machine's fifth input and the
+/// input log's own entry kind, so it is one key here — at a hot-seat keyboard the two players share
+/// the machine, and the menu that follows is where the re-rack option is confirmed.
+fn propose_stalemate(gestures: Gestures, mut game: ResMut<Game>, mut cue: ResMut<Cue>) {
+    if !gestures.keys.just_pressed(KeyCode::KeyY)
+        || !matches!(game.awaiting(), Awaiting::Shot { .. })
+    {
+        return;
+    }
+    if game.request(Request::Stalemate).is_ok() {
+        cue.phase = Phase::AimIdle;
+        cue.pull_mm = 0.0;
+    }
 }
 
 /// The choice menus' keys (`rules-break.md` §3's trees). `ui.rs` presents the options; the digit
@@ -425,15 +444,13 @@ fn propose_placement(
         return;
     };
     let balls = pre_balls(game.positions());
-    let proposal = cue
-        .placement
-        .get_or_insert_with(|| Proposal {
-            pos: RulesVec2 {
-                x: game.positions()[0].pos_mm[0],
-                y: game.positions()[0].pos_mm[1],
-            },
-            fault: None,
-        });
+    let proposal = cue.placement.get_or_insert_with(|| Proposal {
+        pos: RulesVec2 {
+            x: game.positions()[0].pos_mm[0],
+            y: game.positions()[0].pos_mm[1],
+        },
+        fault: None,
+    });
     if let Some(cursor) = gestures.cursor_world() {
         proposal.pos = clamp_to_domain(
             domain,
@@ -465,8 +482,12 @@ fn propose_placement(
 fn clamp_to_domain(domain: PlacementDomain, pos: RulesVec2) -> RulesVec2 {
     let margin = c::BALL_RADIUS_MM;
     let mut clamped = RulesVec2 {
-        x: pos.x.clamp(-c::HALF_LEN_MM + margin, c::HALF_LEN_MM - margin),
-        y: pos.y.clamp(-c::HALF_WIDTH_MM + margin, c::HALF_WIDTH_MM - margin),
+        x: pos
+            .x
+            .clamp(-c::HALF_LEN_MM + margin, c::HALF_LEN_MM - margin),
+        y: pos
+            .y
+            .clamp(-c::HALF_WIDTH_MM + margin, c::HALF_WIDTH_MM - margin),
     };
     if domain == PlacementDomain::AboveHeadString {
         clamped.x = clamped.x.min(c::HEAD_STRING_X_MM - 1.0);
@@ -572,7 +593,11 @@ fn author_spin(gestures: &mut Gestures, cue: &mut Cue, card_local: Option<Vec2>)
     if cue.spin_drag && gestures.buttons.just_released(MouseButton::Left) {
         cue.spin_drag = false;
     }
-    let step = if gestures.fine() { SPIN_STEP / 5.0 } else { SPIN_STEP };
+    let step = if gestures.fine() {
+        SPIN_STEP / 5.0
+    } else {
+        SPIN_STEP
+    };
     let (mut across, mut up) = (0.0, 0.0);
     if gestures.keys.just_pressed(KeyCode::KeyD) {
         across += step;
@@ -640,7 +665,11 @@ fn author_power(gestures: &Gestures, cue: &mut Cue, cue_ball: Vec2) -> bool {
 /// §5's guides and `rules.md` §11's suggested call: the call follows the aim's first contact and the
 /// pocket it lines up with, and `Tab` cycles the suggestions (a safety is always one of them).
 fn author_guide(gestures: &mut Gestures, cue: &mut Cue, game: &Game, is_break: bool) {
-    cue.guide = aim_guide(&game.positions()[1..], cue_ball_of(game), path_direction(cue));
+    cue.guide = aim_guide(
+        &game.positions()[1..],
+        cue_ball_of(game),
+        path_direction(cue),
+    );
     refresh_call(cue, is_break);
     if gestures.keys.just_pressed(KeyCode::Tab) {
         cue.call_index = (cue.call_index + 1) % cue.call_options.len();
@@ -793,7 +822,10 @@ pub fn aim_guide(objects: &[BallState], cue: Vec2, dir: Vec2) -> Guide {
     }
     let mut best_t = f32::INFINITY;
     let mut normal = Vec2::X;
-    for (axis, limit) in [(0usize, c::HALF_LEN_MM as f32), (1usize, c::HALF_WIDTH_MM as f32)] {
+    for (axis, limit) in [
+        (0usize, c::HALF_LEN_MM as f32),
+        (1usize, c::HALF_WIDTH_MM as f32),
+    ] {
         for sign in [1.0f32, -1.0] {
             let component = if axis == 0 { dir.x } else { dir.y } * sign;
             if component <= 1e-6 {
@@ -1035,7 +1067,11 @@ fn sync_stick(
     for (part, mut transform, mut visibility) in &mut sticks {
         *visibility = Visibility::Inherited;
         let (center, length, width) = match part {
-            Stick::Body => (tip - table.aim * (STICK_LEN_MM * cos_e * 0.5), STICK_LEN_MM * cos_e, 16.0),
+            Stick::Body => (
+                tip - table.aim * (STICK_LEN_MM * cos_e * 0.5),
+                STICK_LEN_MM * cos_e,
+                16.0,
+            ),
             Stick::Tip => (tip - table.aim * (9.0 * cos_e), 18.0 * cos_e, 12.0),
             Stick::Butt => (
                 tip - table.aim * (STICK_LEN_MM * cos_e - 30.0 * cos_e),
@@ -1106,12 +1142,7 @@ fn sync_labels(
 
 /// The guides, the gauge's ink, and the placement's ring: everything `ux-cue.md` §5 draws on the
 /// cloth. The legend that must stay on whenever guides are drawn is the HUD's (`ui.rs`).
-fn draw_table(
-    mut gizmos: Gizmos,
-    game: Res<Game>,
-    cue: Res<Cue>,
-    playback: Res<Playback>,
-) {
+fn draw_table(mut gizmos: Gizmos, game: Res<Game>, cue: Res<Cue>, playback: Res<Playback>) {
     if let Awaiting::Placement { .. } = game.awaiting() {
         let cue_ball = Vec2::new(
             game.positions()[0].pos_mm[0] as f32,
@@ -1122,7 +1153,11 @@ fn draw_table(
         } else {
             C_GHOST
         };
-        gizmos.circle_2d(Isometry2d::from_translation(cue_ball), 2.0 * c::BALL_RADIUS_MM as f32, ink);
+        gizmos.circle_2d(
+            Isometry2d::from_translation(cue_ball),
+            2.0 * c::BALL_RADIUS_MM as f32,
+            ink,
+        );
         return;
     }
     let Some(table) = table_cue(&game, &cue, &playback) else {
@@ -1138,7 +1173,11 @@ fn draw_table(
             ..
         } => {
             gizmos.line_2d(table.cue_ball, ghost, C_AIM);
-            gizmos.circle_2d(Isometry2d::from_translation(ghost), 2.0 * c::BALL_RADIUS_MM as f32, C_GHOST);
+            gizmos.circle_2d(
+                Isometry2d::from_translation(ghost),
+                2.0 * c::BALL_RADIUS_MM as f32,
+                C_GHOST,
+            );
             gizmos.arrow_2d(target, target + travel * 320.0, C_OBJECT);
             if cue.tangent {
                 gizmos.arrow_2d(ghost, ghost + tangent * 300.0, C_TANGENT);
@@ -1286,7 +1325,10 @@ fn card_axis() -> impl Bundle {
             3.0,
         ),
         BackgroundColor(ink),
-        children![card_head(-5.0, ink), card_head(CARD_AXIS_PX * 2.0 - 5.0, ink)],
+        children![
+            card_head(-5.0, ink),
+            card_head(CARD_AXIS_PX * 2.0 - 5.0, ink)
+        ],
     )
 }
 
@@ -1367,8 +1409,9 @@ fn spawn_card(mut commands: Commands) {
             card_cross(true),
             card_cross(false),
             card_axis(),
-            card_dot(),
+            // The halo first, the dot over it: the marker must read on the white ball face.
             card_halo(),
+            card_dot(),
             card_glyph("R", CARD_PX - 20.0, CARD_CENTRE_PX - 10.0),
             card_glyph("L", 8.0, CARD_CENTRE_PX - 10.0),
             card_glyph("T", CARD_CENTRE_PX - 5.0, 6.0),
@@ -1397,7 +1440,11 @@ fn sync_card(
     let (a, b) = (cue.spin[0], cue.spin[1]);
     let x = CARD_CENTRE_PX + a * CARD_RING_PX;
     let y = CARD_CENTRE_PX - b * CARD_RING_PX;
-    let ink = if cue.legal() { Color::srgb(0.05, 0.05, 0.06) } else { C_REFUSED };
+    let ink = if cue.legal() {
+        Color::srgb(0.05, 0.05, 0.06)
+    } else {
+        C_REFUSED
+    };
     for mut node in &mut dots {
         node.left = px(x - CARD_DOT_R);
         node.top = px(y - CARD_DOT_R);
@@ -1412,7 +1459,11 @@ fn sync_card(
     let spin = spin_axis(&cue);
     let visible = (a * a + b * b).sqrt() > 0.02;
     for (mut transform, mut visibility) in &mut axes {
-        *visibility = if visible { Visibility::Inherited } else { Visibility::Hidden };
+        *visibility = if visible {
+            Visibility::Inherited
+        } else {
+            Visibility::Hidden
+        };
         // The card's screen y runs down: the axis' `b` component is negated for the rotation.
         transform.rotation = Rot2::radians((-spin.y).atan2(spin.x));
     }
@@ -1510,7 +1561,13 @@ mod tests {
         states[1] = BallState::at_rest([500.0, 0.0, c::BALL_RADIUS_MM]);
         states[2] = BallState::at_rest([900.0, 0.0, c::BALL_RADIUS_MM]);
         let guide = aim_guide(&states[1..], Vec2::ZERO, Vec2::X);
-        let Guide::Ball { ball, ghost, travel, .. } = guide else {
+        let Guide::Ball {
+            ball,
+            ghost,
+            travel,
+            ..
+        } = guide
+        else {
             panic!("the path meets ball 1");
         };
         assert_eq!(ball, 1);
@@ -1538,5 +1595,408 @@ mod tests {
             }
             other => panic!("the first suggestion is a ball call, not {other:?}"),
         }
+    }
+}
+
+// ---------------------------------------------------------------------------
+// The gesture chain, driven through the real systems
+
+/// The shell's input wiring under test: the systems run as they do in `main.rs`, with a hand-made
+/// window, camera, and card where the interactive app has a real one. This is the closest thing to a
+/// hand on the keyboard that runs without a human: it drives the pointer and the keys through the
+/// same `ButtonInput` resources the windowing layer feeds and asserts what the session received.
+#[cfg(test)]
+mod shell_tests {
+    use super::*;
+    use crate::bridge::BallStates;
+    use bevy::camera::{CameraProjection, ComputedCameraValues, RenderTargetInfo, ScalingMode};
+    use bevy::window::WindowResolution;
+    use pool_match::{Difficulty, DifficultyLevel, MatchConfig};
+    use pool_sim::Profile;
+
+    /// The camera's vertical viewport the harness uses (the shell's own framing constant).
+    const VIEW_MM: f32 = 1522.0;
+    /// The harness window's logical size.
+    const WIN: Vec2 = Vec2::new(1920.0, 1080.0);
+    /// The card's centre on screen, where `spawn_card` puts it (bottom-right, 16 px of margin).
+    const CARD_CENTRE: Vec2 = Vec2::new(WIN.x - 16.0 - CARD_PX * 0.5, WIN.y - 16.0 - CARD_PX * 0.5);
+
+    /// One match's configuration, as `main.rs` builds it.
+    fn config() -> MatchConfig {
+        MatchConfig {
+            profile: Profile::default_profile(),
+            match_seed: 0,
+            noise_seed: 0,
+            difficulty: Difficulty {
+                level: DifficultyLevel::Pro,
+                checkpoint: "test".to_string(),
+            },
+            race_target: 1,
+        }
+    }
+
+    /// The harness camera's projection, with the clip matrix the render plugins would compute: the
+    /// cursor mapping reads `Camera::computed`, which nothing else fills in a bare `App`.
+    fn projection() -> OrthographicProjection {
+        let mut projection = OrthographicProjection {
+            scaling_mode: ScalingMode::FixedVertical {
+                viewport_height: VIEW_MM,
+            },
+            ..OrthographicProjection::default_2d()
+        };
+        projection.update(WIN.x, WIN.y);
+        projection
+    }
+
+    /// A shell whose pointer and keys the test owns.
+    fn shell() -> App {
+        shell_around(Game::new(config()))
+    }
+
+    /// A shell around a session already in play: the break has been taken, so the next state is an
+    /// ordinary shot and the call is the player's (a break's call is `Break`, `rules.md` §1).
+    fn shell_after_the_break() -> App {
+        let mut game = Game::new(config());
+        let parked = game.positions()[0].pos_mm;
+        game.request(Request::Placement {
+            domain: PlacementDomain::AboveHeadString,
+            pos: RulesVec2 {
+                x: parked[0],
+                y: parked[1],
+            },
+        })
+        .expect("the rack's parked position is a legal placement");
+        game.request(Request::Declaration(Declaration {
+            from_policy: false,
+            call: Call::Break,
+            aim: RulesVec2 { x: 1.0, y: 0.0 },
+            speed: 3_000.0,
+            spin: Spin { a: 0.0, b: 0.0 },
+            elevation: 0.0,
+        }))
+        .expect("the break is a legal shot");
+        shell_around(game)
+    }
+
+    /// The harness around a prepared session.
+    fn shell_around(game: Game) -> App {
+        let mut app = App::new();
+        app.insert_resource(BallStates(*game.positions()));
+        app.insert_resource(game);
+        app.init_resource::<Cue>();
+        app.init_resource::<Playback>();
+        app.init_resource::<ButtonInput<KeyCode>>();
+        app.init_resource::<ButtonInput<MouseButton>>();
+        app.add_message::<MouseWheel>();
+        app.add_systems(
+            Update,
+            (choose_option, propose_stalemate, propose_placement, author).chain(),
+        );
+        app.world_mut().spawn(Window {
+            resolution: WindowResolution::new(1920, 1080).with_scale_factor_override(1.0),
+            ..default()
+        });
+        app.world_mut().spawn((
+            Camera2d,
+            // The window's own computed values, which the windowing layer would fill in: without
+            // them the camera has no viewport to map a cursor through.
+            Camera {
+                computed: ComputedCameraValues {
+                    clip_from_view: projection().get_clip_from_view(),
+                    target_info: Some(RenderTargetInfo {
+                        physical_size: UVec2::new(1920, 1080),
+                        scale_factor: 1.0,
+                    }),
+                    ..ComputedCameraValues::default()
+                },
+                ..Camera::default()
+            },
+            Projection::Orthographic(projection()),
+            GlobalTransform::default(),
+        ));
+        app.world_mut().spawn((
+            StrikeCard,
+            ComputedNode {
+                size: Vec2::splat(CARD_PX),
+                ..ComputedNode::default()
+            },
+            UiGlobalTransform::from_translation(CARD_CENTRE),
+        ));
+        app
+    }
+
+    /// The cursor pixel a point on the cloth sits at, through the harness camera.
+    fn cursor_at(world: Vec2) -> Vec2 {
+        let scale = VIEW_MM / WIN.y;
+        Vec2::new(WIN.x * 0.5 + world.x / scale, WIN.y * 0.5 - world.y / scale)
+    }
+
+    /// Put the cursor down at a world point.
+    fn point_at(app: &mut App, world: Vec2) {
+        set_cursor(app, cursor_at(world));
+    }
+
+    /// Put the cursor down at a pixel.
+    fn set_cursor(app: &mut App, cursor: Vec2) {
+        let mut query = app.world_mut().query::<&mut Window>();
+        let mut window = query
+            .single_mut(app.world_mut())
+            .expect("the harness has one window");
+        window.set_cursor_position(Some(cursor));
+    }
+
+    /// One frame, with the input resources cleared the way the input plugin clears them.
+    fn frame(app: &mut App) {
+        app.update();
+        app.world_mut()
+            .resource_mut::<ButtonInput<KeyCode>>()
+            .clear();
+        app.world_mut()
+            .resource_mut::<ButtonInput<MouseButton>>()
+            .clear();
+    }
+
+    /// Press or release the pointer.
+    fn pointer(app: &mut App, press: bool) {
+        let mut buttons = app.world_mut().resource_mut::<ButtonInput<MouseButton>>();
+        if press {
+            buttons.press(MouseButton::Left);
+        } else {
+            buttons.release(MouseButton::Left);
+        }
+    }
+
+    /// Tap a key: press, run one frame, release — what the input plugin sees for a keystroke.
+    fn tap(app: &mut App, code: KeyCode) {
+        app.world_mut()
+            .resource_mut::<ButtonInput<KeyCode>>()
+            .press(code);
+        frame(app);
+        app.world_mut()
+            .resource_mut::<ButtonInput<KeyCode>>()
+            .release(code);
+        app.world_mut()
+            .resource_mut::<ButtonInput<KeyCode>>()
+            .clear();
+    }
+
+    /// The cue ball's centre.
+    fn cue_ball(app: &App) -> Vec2 {
+        let states = app.world().resource::<BallStates>();
+        Vec2::new(states.0[0].pos_mm[0] as f32, states.0[0].pos_mm[1] as f32)
+    }
+
+    /// A shell whose rack is placed: the point before the first shot is authored.
+    fn placed_shell() -> App {
+        let mut app = shell();
+        let parked = cue_ball(&app);
+        point_at(&mut app, parked);
+        pointer(&mut app, true);
+        frame(&mut app);
+        pointer(&mut app, false);
+        frame(&mut app);
+        let game = app.world().resource::<Game>();
+        assert!(
+            matches!(game.awaiting(), Awaiting::Shot { .. }),
+            "the click places the cue ball and the state awaits a shot"
+        );
+        app
+    }
+
+    #[test]
+    fn a_click_places_the_cue_ball_and_a_drag_commits_a_shot() {
+        let mut app = placed_shell();
+        let ball = cue_ball(&app);
+
+        // Aim: the pointer always aims (§2), so a pointer right of the cue ball aims +x.
+        point_at(&mut app, ball + Vec2::new(600.0, 0.0));
+        frame(&mut app);
+        assert!(
+            app.world().resource::<Cue>().aim[0] > 0.99,
+            "the pointer aims, no button needed"
+        );
+
+        // Power: press, drag 200 mm back, release (§2).
+        pointer(&mut app, true);
+        frame(&mut app);
+        point_at(&mut app, ball - Vec2::new(200.0, 0.0));
+        frame(&mut app);
+        let pull = app.world().resource::<Cue>().pull_mm;
+        assert!(
+            (pull - 200.0).abs() < 1.0,
+            "the drag back sets the pull: {pull} mm"
+        );
+        pointer(&mut app, false);
+        frame(&mut app);
+
+        let game = app.world().resource::<Game>();
+        assert_eq!(game.view().shot_count, 1, "the release committed one shot");
+        assert!(
+            !app.world().resource::<Playback>().at_rest(),
+            "the committed shot is being presented"
+        );
+        // The committed declaration is the authored one: the mapped speed, the +x aim, a centre
+        // strike — and it is what the log carries, so the shot replays.
+        let declaration = game
+            .last_declaration()
+            .expect("the declaration is logged")
+            .clone();
+        assert!(
+            (declaration.speed - f64::from(speed_from_pull(200.0))).abs() < 1e-6,
+            "the logged speed is the convex map's: {}",
+            declaration.speed
+        );
+        assert!(declaration.aim.x > 0.99, "the logged aim is the pointer's");
+        assert_eq!(declaration.spin.a, 0.0);
+        assert_eq!(declaration.call, pool_rules::Call::Break);
+        assert!(
+            !declaration.from_policy,
+            "a human seat logs from_policy false"
+        );
+    }
+
+    #[test]
+    fn escape_abandons_a_drag_without_committing() {
+        let mut app = placed_shell();
+        let ball = cue_ball(&app);
+        point_at(&mut app, ball + Vec2::new(600.0, 0.0));
+        frame(&mut app);
+        pointer(&mut app, true);
+        frame(&mut app);
+        point_at(&mut app, ball - Vec2::new(180.0, 0.0));
+        frame(&mut app);
+        assert_eq!(app.world().resource::<Cue>().phase, Phase::PowerDrag);
+
+        tap(&mut app, KeyCode::Escape);
+        let cue = app.world().resource::<Cue>();
+        assert_eq!(cue.phase, Phase::AimIdle, "Escape abandons the drag");
+        assert_eq!(cue.pull_mm, 0.0, "the pull is dropped");
+        assert!(
+            app.world().resource::<Playback>().at_rest(),
+            "nothing was committed"
+        );
+        assert_eq!(app.world().resource::<Game>().view().shot_count, 0);
+    }
+
+    #[test]
+    fn a_past_envelope_declaration_is_refused_and_a_legal_one_commits() {
+        let mut app = placed_shell();
+        let ball = cue_ball(&app);
+        point_at(&mut app, ball + Vec2::new(600.0, 0.0));
+        frame(&mut app);
+        // Author a legal-looking shot by hand, then push the offset past the envelope.
+        app.world_mut().resource_mut::<Cue>().set_pull(200.0);
+        app.world_mut().resource_mut::<Cue>().set_spin([0.90, 0.60]);
+        assert!(
+            !app.world().resource::<Cue>().legal(),
+            "1.082 envelope fractions is past the limit"
+        );
+
+        tap(&mut app, KeyCode::Enter);
+        assert!(
+            app.world().resource::<Cue>().refusal.is_some(),
+            "the refused commit names the overage"
+        );
+        assert!(
+            app.world().resource::<Playback>().at_rest(),
+            "a refused commit cannot land"
+        );
+        assert_eq!(app.world().resource::<Game>().view().shot_count, 0);
+
+        // With a legal offset the same commit lands.
+        app.world_mut()
+            .resource_mut::<Cue>()
+            .set_spin([0.50, -0.42]);
+        tap(&mut app, KeyCode::Enter);
+        assert_eq!(
+            app.world().resource::<Game>().view().shot_count,
+            1,
+            "the legal commit lands"
+        );
+        assert!(!app.world().resource::<Playback>().at_rest());
+    }
+
+    #[test]
+    fn the_card_drag_authors_the_offset_and_does_not_steal_the_power_gesture() {
+        let mut app = placed_shell();
+        // A drag inside the card: 60 px right and 36 px up of its centre.
+        set_cursor(&mut app, CARD_CENTRE + Vec2::new(60.0, -36.0));
+        pointer(&mut app, true);
+        frame(&mut app);
+        let cue = app.world().resource::<Cue>();
+        assert!(
+            (cue.spin[0] - 0.5).abs() < 0.02 && (cue.spin[1] - 0.3).abs() < 0.02,
+            "the card's drag authors (a, b) = ({}, {})",
+            cue.spin[0],
+            cue.spin[1]
+        );
+        assert_eq!(
+            cue.phase,
+            Phase::AimIdle,
+            "a press on the card never starts the power drag"
+        );
+        pointer(&mut app, false);
+        frame(&mut app);
+    }
+
+    #[test]
+    fn the_call_cycles_with_tab_and_the_stalemate_agreement_re_racks() {
+        let mut app = shell_after_the_break();
+        let ball = cue_ball(&app);
+        let target = nearest_object(&app, ball);
+        // Aim at the ball: the suggested call becomes that ball's, so there is more than one option.
+        point_at(&mut app, target + (target - ball).normalize() * 100.0);
+        frame(&mut app);
+        let first = app.world().resource::<Cue>().call.clone();
+        assert!(
+            matches!(first, Call::Ball { .. }),
+            "the suggestion is the first ball on the path, not {first:?}"
+        );
+        tap(&mut app, KeyCode::Tab);
+        assert_ne!(
+            app.world().resource::<Cue>().call,
+            first,
+            "Tab cycles the suggested call"
+        );
+
+        // `rules.md` §7: the agreement re-racks, and the tree's single option is taken with a digit.
+        tap(&mut app, KeyCode::KeyY);
+        let game = app.world().resource::<Game>();
+        let Awaiting::Choice { offers, .. } = game.awaiting() else {
+            panic!("the stalemate agreement presents its tree");
+        };
+        assert_eq!(
+            offers.first().map(|offer| offer.tree),
+            Some(pool_rules::Tree::Stalemate)
+        );
+        tap(&mut app, KeyCode::Digit1);
+        let game = app.world().resource::<Game>();
+        assert!(
+            matches!(
+                game.awaiting(),
+                Awaiting::Placement {
+                    domain: PlacementDomain::AboveHeadString,
+                    ..
+                }
+            ),
+            "the re-rack leaves the original breaker in hand above the head string"
+        );
+    }
+
+    /// The in-play object ball nearest the cue ball: a target the aim can be pointed at.
+    fn nearest_object(app: &App, ball: Vec2) -> Vec2 {
+        let states = app.world().resource::<BallStates>();
+        states
+            .0
+            .iter()
+            .skip(1)
+            .filter(|state| state.in_play())
+            .map(|state| Vec2::new(state.pos_mm[0] as f32, state.pos_mm[1] as f32))
+            .min_by(|a, b| {
+                (*a - ball)
+                    .length_squared()
+                    .total_cmp(&(*b - ball).length_squared())
+            })
+            .expect("the rack has balls in play")
     }
 }

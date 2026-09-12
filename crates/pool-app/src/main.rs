@@ -58,7 +58,10 @@ pub enum ShellSet {
 
 /// The shell's CLI.
 #[derive(Debug, Parser, Resource)]
-#[command(name = "pool", about = "The playable pool shell of architecture.md §10")]
+#[command(
+    name = "pool",
+    about = "The playable pool shell of architecture.md §10"
+)]
 struct Args {
     /// The profile record the match runs under (`config/profiles/<name>.json`, §12).
     #[arg(long, value_name = "name", default_value = "default")]
@@ -111,19 +114,22 @@ enum Screen {
     Refused,
     /// A shot being presented: `state_at(t)` mid-flight (`architecture.md` §10's `playback.rs`).
     InFlight,
+    /// A break that fouled: the incoming player's choice tree on screen (`rules-break.md` §3).
+    FoulChoice,
     /// Every state, in list order.
     All,
 }
 
 impl Screen {
     /// The walk's states, in list order: the rack's start first, the shot last.
-    const LIST: [Self; 6] = [
+    const LIST: [Self; 7] = [
         Self::BallInHand,
         Self::Play,
         Self::Spin,
         Self::Elevation,
         Self::Refused,
         Self::InFlight,
+        Self::FoulChoice,
     ];
 
     /// The state's name, as the flag and the PNG file read.
@@ -135,6 +141,7 @@ impl Screen {
             Self::Elevation => "elevation",
             Self::Refused => "refused",
             Self::InFlight => "in-flight",
+            Self::FoulChoice => "foul-choice",
             Self::All => "all",
         }
     }
@@ -149,6 +156,9 @@ impl Screen {
 
     /// Parse `--state`.
     fn parse(value: &str) -> Result<Self, String> {
+        if value == "all" {
+            return Ok(Self::All);
+        }
         let states = [
             Self::BallInHand,
             Self::Play,
@@ -156,16 +166,14 @@ impl Screen {
             Self::Elevation,
             Self::Refused,
             Self::InFlight,
+            Self::FoulChoice,
         ];
         states
             .into_iter()
             .find(|state| state.name() == value)
             .ok_or_else(|| {
                 let known: Vec<&str> = states.iter().map(|state| state.name()).collect();
-                format!(
-                    "unknown state {value:?}; known: {}, all",
-                    known.join(", ")
-                )
+                format!("unknown state {value:?}; known: {}, all", known.join(", "))
             })
     }
 }
@@ -197,6 +205,8 @@ struct Capture {
     frames: u32,
     /// The countdown to the next capture.
     settle: u32,
+    /// Whether the first state has been driven into the session.
+    applied: bool,
     /// Where the PNGs go: `<dir>/<state>.png`.
     dir: PathBuf,
     /// True while a capture is on its way to disk.
@@ -223,7 +233,9 @@ struct Walk<'w> {
 fn main() {
     let args = Args::parse();
     if args.screenshot.is_none() && args.state == Screen::All {
-        eprintln!("[pool] --state all is the screenshot walk; pass --screenshot <dir>, or name one state");
+        eprintln!(
+            "[pool] --state all is the screenshot walk; pass --screenshot <dir>, or name one state"
+        );
         std::process::exit(2);
     }
     let profile = match load_profile(&args.profile) {
@@ -263,7 +275,8 @@ fn main() {
             screens,
             pos: 0,
             frames: args.frames,
-            settle: args.frames,
+            settle: 0,
+            applied: false,
             dir: dir.clone(),
             waiting: false,
         }
@@ -293,7 +306,10 @@ fn main() {
         )
             .chain(),
     );
-    app.add_systems(Startup, (report_pending_flags, install_profile, setup).chain());
+    app.add_systems(
+        Startup,
+        (report_pending_flags, install_profile, setup).chain(),
+    );
     app.add_systems(Update, bridge::sync_ball_transforms.in_set(ShellSet::Draw));
     playback::systems(&mut app);
     input::systems(&mut app);
@@ -378,6 +394,18 @@ fn capture_driver(
     mut walk: Walk,
     mut exit: MessageWriter<AppExit>,
 ) {
+    if !capture.applied {
+        capture.applied = true;
+        apply_screen(
+            capture.screens[capture.pos],
+            &mut walk.game,
+            &mut walk.cue,
+            &mut walk.playback,
+            &mut walk.states,
+        );
+        capture.settle = capture.frames;
+        return;
+    }
     if capture.waiting {
         if !captured.0 {
             return; // the file is still on its way
@@ -420,9 +448,10 @@ fn capture_driver(
 
 /// Drive the session into a presentation state.
 ///
-/// Every state after the rack's start first places the cue ball through a real `Request::Placement`
-/// — the same logged input a human's click produces — and the shot states author a declaration the
-/// same way. Nothing here reaches past the session: the states are what the input machine can author.
+/// Every state after the rack's start begins from a fresh session, so the walk is order-independent:
+/// the cue ball is placed through a real `Request::Placement` and the shot states author a
+/// declaration the same way — the inputs a human's clicks produce, and the only route into the
+/// session there is. Nothing here reaches past the loop.
 fn apply_screen(
     screen: Screen,
     game: &mut Game,
@@ -433,6 +462,11 @@ fn apply_screen(
     if screen == Screen::BallInHand || screen == Screen::All {
         return;
     }
+    let config = game.config().clone();
+    *game = Game::new(config);
+    *playback = Playback::default();
+    cue.placement = None;
+
     if let Awaiting::Placement { domain, .. } = game.awaiting() {
         let parked = game.positions()[0].pos_mm;
         let _ = game.request(Request::Placement {
@@ -447,6 +481,8 @@ fn apply_screen(
         x: game.positions()[0].pos_mm[0],
         y: game.positions()[0].pos_mm[1],
     };
+    // The rack's apex: the object ball nearest the head side (`rules-break.md` §2's apex sits on the
+    // foot spot and the rows stand behind it).
     let apex = game
         .positions()
         .iter()
@@ -456,32 +492,43 @@ fn apply_screen(
             x: state.pos_mm[0],
             y: state.pos_mm[1],
         })
-        .reduce(|a, b| if a.x >= b.x { a } else { b })
+        .reduce(|a, b| if a.x <= b.x { a } else { b })
         .unwrap_or(Vec2 { x: 0.0, y: 0.0 });
     cue.set_aim_towards(cue_ball, apex);
-    cue.set_pull(match screen {
-        Screen::InFlight => 320.0,
-        _ => 240.0,
-    });
+    cue.set_pull(240.0);
     cue.set_spin([0.0, 0.0]);
     cue.set_elevation(0.0);
+    // Every scripted state starts from rack 0, so its shot is the break (`rules.md` §1).
+    cue.call = pool_rules::Call::Break;
     match screen {
         Screen::Spin => cue.set_spin([0.50, -0.42]),
         Screen::Elevation => cue.set_elevation(45.0_f32.to_radians()),
         // Past the envelope: 1.082 envelope fractions is 1.082 · 14.70 mm, an 8 % overage.
         Screen::Refused => cue.set_spin([0.90, 0.60]),
-        Screen::Play => {}
-        Screen::InFlight => {
-            let declaration = cue.declaration();
-            if game.request(Request::Declaration(declaration)).is_ok()
-                && let Some(shot) = game.last_shot()
-            {
-                playback.hold(shot.clone(), 0.45);
-                states.0 = *game.positions();
-            }
-            return;
+        // A break struck away from the rack and into the head corner: nothing is pocketed and no
+        // object ball reaches a rail, so the break is illegal and the incoming player's tree is up.
+        Screen::FoulChoice => {
+            cue.set_pull(320.0);
+            cue.set_aim_towards(
+                cue_ball,
+                Vec2 {
+                    x: -pool_sim::constants::HALF_LEN_MM,
+                    y: pool_sim::constants::HALF_WIDTH_MM,
+                },
+            );
         }
+        Screen::Play => {}
+        Screen::InFlight => cue.set_pull(320.0),
         Screen::BallInHand | Screen::All => return,
+    }
+    let strike = matches!(screen, Screen::InFlight | Screen::FoulChoice);
+    if strike {
+        let declaration = cue.declaration();
+        if game.request(Request::Declaration(declaration)).is_ok()
+            && let Some(shot) = game.last_shot()
+        {
+            playback.hold(shot.clone(), 0.45);
+        }
     }
     states.0 = *game.positions();
 }
