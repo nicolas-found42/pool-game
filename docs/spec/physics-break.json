@@ -4,7 +4,7 @@
   "generator": {
     "prng": "none - this tier generates no parameters and no arrangements",
     "shuffle": "none - arrangements are inline literals; the seeded rack generator and its fixture list belong to the rack layer and are pinned by rack-fixtures.json",
-    "derivation": "source of parameters: pinned by #8 (physics prototype); null parameters are requirements, not gaps"
+    "derivation": "source of parameters: pinned by #8 (physics prototype) and recorded row by row in docs/spec/physics.md §8; null parameters are requirements, not gaps"
   },
   "rack_fixture_list": "rack-fixtures.json",
   "entries": [

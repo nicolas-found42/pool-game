@@ -122,7 +122,7 @@ Two `u64` seeds live in the input-log header (§6):
 | `match_seed` | rack construction: rack *i*'s seed is the SplitMix64 stream seeded with `match_seed` after *i+1* steps (#14); re-racks restore the stored snapshot and never re-derive |
 | `noise_seed` | the execution-noise stream: a σ draw is consumed for every **policy** declaration, in log order |
 
-- **Execution noise applies only to policy declarations.** Each logged declaration carries `from_policy`; the `Session` perturbs those (never a human's) with the σ spec for the match's difficulty and the corresponding checkpoint (#9 §7). The σ magnitudes, correlation structure, and checkpoint identities are pinned by prototype #16.
+- **Execution noise applies only to policy declarations.** Each logged declaration carries `from_policy`; the `Session` perturbs those (never a human's) with the σ spec for the match's difficulty and the corresponding checkpoint (#9 §7). The aim σ curve and the level assignment are measured and merged (`ai.md` §7); the speed/spin/elevation σ set is an assumption with a named re-pin, the correlation structure is unmeasured by construction, and the checkpoint identities are per-run artifacts — `difficulty.checkpoint` carries the artifact's sha256 (`ai.md` §9, `ai-constants.md` §5).
 - The log stores the **intent plus `from_policy`**, not the perturbed strike: replay re-derives the same perturbation from the same stream, so what is recorded stays readable ("what the player/policy meant") and what is simulated stays exactly reproducible.
 - The simulator itself holds no RNG; nothing in `pool-sim` or `pool-rules` may call `pool-rng`.
 
