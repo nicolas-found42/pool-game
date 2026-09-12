@@ -10,6 +10,9 @@ publish.workspace = true
 pool-sim.workspace = true
 pool-rules.workspace = true
 pool-rng.workspace = true
+# The execution-noise perturbation's aim rotation is the pinned `libm` escape hatch of
+# `architecture.md` §3 — a declaration conversion, never part of the evolution.
+libm.workspace = true
 serde = { workspace = true }
 serde_json.workspace = true
 
