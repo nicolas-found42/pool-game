@@ -180,7 +180,7 @@ fn legend_entry(text: &'static str, color: Color) -> impl Bundle {
 fn turn_line(game: &Game) -> String {
     let view = game.view();
     let race = format!(
-        "rack {} (race {}–{}, first to {})",
+        "rack {} (race {}-{}, first to {})",
         view.rack_index + 1,
         view.race[0],
         view.race[1],
@@ -198,21 +198,21 @@ fn turn_line(game: &Game) -> String {
                 target_text(target, shooter, game)
             };
             format!(
-                "{} to shoot — {group} — {race}",
+                "{} to shoot - {group} - {race}",
                 session::seat_name(shooter)
             )
         }
         Awaiting::Placement { shooter, domain } => format!(
-            "{} has ball in hand {} — {race}",
+            "{} has ball in hand {} - {race}",
             session::seat_name(shooter),
             session::domain_name(domain)
         ),
         Awaiting::Choice { chooser, .. } => {
-            format!("{} chooses — {race}", session::seat_name(chooser))
+            format!("{} chooses - {race}", session::seat_name(chooser))
         }
-        Awaiting::RackOver { winner: _ } => format!("rack over — {race}"),
+        Awaiting::RackOver { winner: _ } => format!("rack over - {race}"),
         Awaiting::MatchOver { winner } => {
-            format!("{} wins the match — {race}", session::seat_name(winner))
+            format!("{} wins the match - {race}", session::seat_name(winner))
         }
     }
 }
@@ -249,12 +249,12 @@ fn declaration_line(cue: &Cue) -> String {
 /// §8's line 3: one line of validity, and nothing else.
 fn validity_line(game: &Game, cue: &Cue, playback: &Playback) -> (String, Color) {
     if let Some(refusal) = &cue.refusal {
-        return (format!("rejected — {refusal}"), INK_BAD);
+        return (format!("rejected - {refusal}"), INK_BAD);
     }
     if !cue.legal() {
         return (
             format!(
-                "rejected — offset {:.1} mm is {:.1} mm past the miscue envelope; the declaration cannot be committed",
+                "rejected - offset {:.1} mm is {:.1} mm past the miscue envelope; the declaration cannot be committed",
                 cue.offset_mm(),
                 cue.overage_mm()
             ),
@@ -276,14 +276,14 @@ fn validity_line(game: &Game, cue: &Cue, playback: &Playback) -> (String, Color)
             } else if cue.phase == input::Phase::PowerDrag {
                 (
                     format!(
-                        "pulling back {:.0} mm — release to commit, Escape abandons",
+                        "pulling back {:.0} mm - release to commit, Escape abandons",
                         cue.pull_mm
                     ),
                     INK_WARN,
                 )
             } else if input::speed_from_pull(cue.pull_mm) > 0.0 {
                 (
-                    "legal — release or Enter to commit, Escape abandons a drag".to_string(),
+                    "legal - release or Enter to commit, Escape abandons a drag".to_string(),
                     INK_GOOD,
                 )
             } else {
@@ -319,7 +319,7 @@ fn prompt_text(game: &Game, cue: &Cue) -> String {
         Some(fault) => format!("cannot place here: {fault:?}"),
     };
     format!(
-        "BALL IN HAND — {} places {}: {fault}",
+        "BALL IN HAND - {} places {}: {fault}",
         session::seat_name(shooter),
         session::domain_name(domain)
     )
@@ -330,7 +330,7 @@ fn menu_text(offers: &[pool_rules::Offer]) -> String {
     let mut lines = Vec::new();
     let mut index = 1;
     for offer in offers {
-        lines.push(format!("CHOOSE — {}", offer.tree.name().replace('_', " ")));
+        lines.push(format!("CHOOSE - {}", offer.tree.name().replace('_', " ")));
         for option in &offer.options {
             lines.push(format!("  [{index}] {}", option.description));
             index += 1;

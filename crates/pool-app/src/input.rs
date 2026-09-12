@@ -313,7 +313,7 @@ pub fn pull_for_speed(speed_mm_s: f32) -> f32 {
 #[must_use]
 pub fn call_text(call: &Call) -> String {
     match call {
-        Call::Ball { ball, pocket } => format!("ball {} → {}", ball.0, pocket),
+        Call::Ball { ball, pocket } => format!("ball {} -> {}", ball.0, pocket),
         Call::Safety => "safety".to_string(),
         Call::Break => "break".to_string(),
     }

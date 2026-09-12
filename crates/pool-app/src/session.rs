@@ -150,7 +150,7 @@ impl Game {
     fn opening(&self) -> Line {
         match (&self.view.state, self.view.rack_index) {
             (RulesState::AwaitingPlacement { shooter, domain }, _) => Line::neutral(format!(
-                "rack {}: {} breaks — cue ball in hand {}",
+                "rack {}: {} breaks - cue ball in hand {}",
                 self.view.rack_index + 1,
                 seat_name(*shooter),
                 domain_name(*domain)
@@ -311,7 +311,7 @@ fn describe(record: &Adjudication, before: &RulesState, view: &SessionView) -> L
         .chosen_option
         .as_ref()
         .map_or_else(String::new, |chosen| {
-            format!(" — {}", chosen.option.description())
+            format!(" - {}", chosen.option.description())
         });
 
     let (mut text, mut tone) = match record.verdict {
@@ -335,10 +335,10 @@ fn describe(record: &Adjudication, before: &RulesState, view: &SessionView) -> L
             format!("the 8 left the table on the break{chosen}: {penalty}"),
             Tone::Bad,
         ),
-        Verdict::Legal => (format!("legal shot — {penalty}"), Tone::Good),
+        Verdict::Legal => (format!("legal shot - {penalty}"), Tone::Good),
         Verdict::NoShot => (format!("{}{chosen}", no_shot_text(record)), Tone::Neutral),
         Verdict::Win => (
-            format!("{seat} wins the rack ({}–{})", view.race[0], view.race[1]),
+            format!("{seat} wins the rack ({}-{})", view.race[0], view.race[1]),
             Tone::Good,
         ),
         Verdict::Loss => (
@@ -360,7 +360,7 @@ fn describe(record: &Adjudication, before: &RulesState, view: &SessionView) -> L
         tone = Tone::Good;
     } else if let Some(next) = next_rack(before, view) {
         text = format!(
-            "{text} — rack {}: {} breaks",
+            "{text} - rack {}: {} breaks",
             view.rack_index + 1,
             seat_name(next)
         );
