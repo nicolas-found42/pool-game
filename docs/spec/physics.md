@@ -265,7 +265,11 @@ ran at** — its rail counts, event count and pocketed set move with it — and 
 break does not off-table a ball at the default. The prototype's instance: 5.556 s to rest, 2,154 events
 in 2,125 simultaneity groups, KE 3.27 J → 0 J at rest, the largest relative energy rise between
 consecutive timeline segments 0.000 %, maximum cushion penetration 0.000 mm, minimum ball–ball gap
-12.72 mm, 12 distinct object balls reaching rails, and a bit-identical rerun.
+12.72 mm, 12 distinct object balls reaching rails, and a bit-identical rerun. **M1's instance**
+(fixture seed 1, cue (−800, 0), 6200 mm/s level, the committed profile): 7.472 s to rest, 1,372 events
+in 1,333 groups, penetration 0.000000000 mm, max hop 5.08 mm, 16 rail contacts over **11 distinct object
+balls**, nothing pocketed, no off-table ball, and a bit-identical rerun — the numbers move with the
+profile and the rack, which is why every rail result reports the `e_slate` it ran at.
 
 ## 7. The fact stream
 
