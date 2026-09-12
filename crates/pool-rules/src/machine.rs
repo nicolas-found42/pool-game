@@ -130,125 +130,165 @@ impl Rack {
         shot_rules::target_of(shooter, self.assignment, &self.table.on_table())
     }
 
-    /// The pure transition: `(state, input) → (adjudication record, state')`.
+    /// The pure transition: `(state, input) → (adjudication record, state')` (`rules.md` §1).
+    ///
+    /// # Errors
+    ///
+    /// Returns [`InputError::NotAwaited`] when the input is not the one the state awaits;
+    /// [`InputError::DomainMismatch`] when a placement claims a domain other than the awaited one;
+    /// [`InputError::Placement`] when the placement fails 3.10's validation;
+    /// [`InputError::SpotRequestUnavailable`] when the 1.6 ¶2 request's precondition does not hold;
+    /// [`InputError::NotTheBreak`] when a shot's call disagrees with the rack's break parity; and
+    /// [`InputError::UnknownOption`] when the chosen option is in none of the offered trees.
     pub fn adjudicate(&self, input: Input) -> Result<(Adjudication, Rack), InputError> {
         match (self.state.clone(), input) {
             (
                 RulesState::AwaitingPlacement { shooter, domain },
                 Input::Placement { domain: given, pos },
-            ) => {
-                if given != domain {
-                    return Err(InputError::DomainMismatch {
-                        awaited: domain,
-                        given,
-                    });
-                }
-                placement::validate(given, pos, &self.table.balls)
-                    .map_err(InputError::Placement)?;
-                let mut next = self.clone();
-                place_cue(&mut next.table, pos, given);
-                next.state = RulesState::AwaitingShot {
-                    shooter,
-                    target: self.target_of(shooter),
-                };
-                let apply = next.apply(Action::PlaceCue, Vec::new());
-                Ok((
-                    record(
-                        Verdict::NoShot,
-                        &Classification::Placement,
-                        Vec::new(),
-                        Vec::new(),
-                        None,
-                        apply,
-                    ),
-                    next,
-                ))
-            }
+            ) => self.place(shooter, domain, given, pos),
             (
                 RulesState::AwaitingPlacement {
                     shooter,
                     domain: PlacementDomain::AboveHeadString,
                 },
                 Input::SpotRequest,
-            ) => {
-                let legal = shot_rules::legal_balls(
-                    self.target_of(shooter),
-                    self.assignment.map(|groups| groups[shooter.index()]),
-                );
-                let ball = self
-                    .requestable_spot(&legal)
-                    .ok_or(InputError::SpotRequestUnavailable)?;
-                let mut next = self.clone();
-                next.spot(ball);
-                let apply = next.apply(Action::SpotBall, vec![ball]);
-                Ok((
-                    record(
-                        Verdict::NoShot,
-                        &Classification::SpotRequest { ball },
-                        Vec::new(),
-                        Vec::new(),
-                        None,
-                        apply,
-                    ),
-                    next,
-                ))
-            }
+            ) => self.request_spot(shooter),
             (
                 RulesState::AwaitingShot { shooter, .. },
                 Input::Shot {
                     declaration,
                     observation,
                 },
-            ) => {
-                let is_break = matches!(declaration.call, Call::Break);
-                if is_break != (self.shot_count == 0) {
-                    return Err(InputError::NotTheBreak);
-                }
-                Ok(if is_break {
-                    self.adjudicate_break(shooter, &observation)
-                } else {
-                    self.adjudicate_shot(shooter, &declaration.call, &observation)
-                })
-            }
-            (RulesState::AwaitingShot { .. }, Input::Stalemate) => {
-                let offers = vec![Tree::Stalemate.offer()];
-                let chosen =
-                    ChosenOption::of(Tree::Stalemate, OptionId::ReRackAndOriginalBreakerBreaks);
-                let next = Rack {
-                    state: RulesState::AwaitingChoice {
-                        chooser: Chooser::Other,
-                        offers: offers.clone(),
-                    },
-                    ..self.clone()
-                };
-                let apply = next.apply(Action::OfferChoice, Vec::new());
-                Ok((
-                    record(
-                        Verdict::NoShot,
-                        &Classification::StalemateDeclaration,
-                        Vec::new(),
-                        offers,
-                        Some(chosen),
-                        apply,
-                    ),
-                    next,
-                ))
-            }
+            ) => self.shoot(shooter, &declaration, &observation),
+            (RulesState::AwaitingShot { .. }, Input::Stalemate) => Ok(self.stalemate()),
             (RulesState::AwaitingChoice { offers, .. }, Input::Option(option)) => {
-                let Some(tree) = offers
-                    .iter()
-                    .find(|offer| offer.options.iter().any(|item| item.option == option))
-                    .map(|offer| offer.tree)
-                else {
-                    return Err(InputError::UnknownOption(option));
-                };
-                Ok(self.apply_option(tree, option, offers))
+                self.choose(offers, option)
             }
             (state, input) => Err(InputError::NotAwaited {
                 awaited: state.kind(),
                 input: input.kind(),
             }),
         }
+    }
+
+    /// A placement input: 3.11's domain check, 3.10's validation, and the move.
+    fn place(
+        &self,
+        shooter: Player,
+        domain: PlacementDomain,
+        given: PlacementDomain,
+        pos: Vec2,
+    ) -> Result<(Adjudication, Rack), InputError> {
+        if given != domain {
+            return Err(InputError::DomainMismatch {
+                awaited: domain,
+                given,
+            });
+        }
+        placement::validate(given, pos, &self.table.balls).map_err(InputError::Placement)?;
+        let mut next = self.clone();
+        place_cue(&mut next.table, pos, given);
+        next.state = RulesState::AwaitingShot {
+            shooter,
+            target: self.target_of(shooter),
+        };
+        let apply = next.apply(Action::PlaceCue, Vec::new());
+        Ok((
+            record(
+                Verdict::NoShot,
+                &Classification::Placement,
+                Vec::new(),
+                Vec::new(),
+                None,
+                apply,
+            ),
+            next,
+        ))
+    }
+
+    /// A spot request input: the legal ball 1.6 ¶2 spots, if the request is available.
+    fn request_spot(&self, shooter: Player) -> Result<(Adjudication, Rack), InputError> {
+        let legal = shot_rules::legal_balls(
+            self.target_of(shooter),
+            self.assignment.map(|groups| groups[shooter.index()]),
+        );
+        let ball = self
+            .requestable_spot(&legal)
+            .ok_or(InputError::SpotRequestUnavailable)?;
+        let mut next = self.clone();
+        next.spot(ball);
+        let apply = next.apply(Action::SpotBall, vec![ball]);
+        Ok((
+            record(
+                Verdict::NoShot,
+                &Classification::SpotRequest { ball },
+                Vec::new(),
+                Vec::new(),
+                None,
+                apply,
+            ),
+            next,
+        ))
+    }
+
+    /// A shot input: the declaration's call decides between the break's and an ordinary shot's
+    /// transition.
+    fn shoot(
+        &self,
+        shooter: Player,
+        declaration: &ShotDeclaration,
+        observation: &Observation,
+    ) -> Result<(Adjudication, Rack), InputError> {
+        let is_break = matches!(declaration.call, Call::Break);
+        if is_break != (self.shot_count == 0) {
+            return Err(InputError::NotTheBreak);
+        }
+        Ok(if is_break {
+            self.adjudicate_break(shooter, observation)
+        } else {
+            self.adjudicate_shot(shooter, &declaration.call, observation)
+        })
+    }
+
+    /// A stalemate input: 1.13/4.11's offer to the other player (`rules.md` §7).
+    fn stalemate(&self) -> (Adjudication, Rack) {
+        let offers = vec![Tree::Stalemate.offer()];
+        let chosen = ChosenOption::of(Tree::Stalemate, OptionId::ReRackAndOriginalBreakerBreaks);
+        let next = Rack {
+            state: RulesState::AwaitingChoice {
+                chooser: Chooser::Other,
+                offers: offers.clone(),
+            },
+            ..self.clone()
+        };
+        let apply = next.apply(Action::OfferChoice, Vec::new());
+        (
+            record(
+                Verdict::NoShot,
+                &Classification::StalemateDeclaration,
+                Vec::new(),
+                offers,
+                Some(chosen),
+                apply,
+            ),
+            next,
+        )
+    }
+
+    /// An option input: find the option's tree, then take it (`rules.md` §7).
+    fn choose(
+        &self,
+        offers: Vec<Offer>,
+        option: OptionId,
+    ) -> Result<(Adjudication, Rack), InputError> {
+        let Some(tree) = offers
+            .iter()
+            .find(|offer| offer.options.iter().any(|item| item.option == option))
+            .map(|offer| offer.tree)
+        else {
+            return Err(InputError::UnknownOption(option));
+        };
+        Ok(self.apply_option(tree, option, offers))
     }
 
     /// The legal ball the 1.6 ¶2 request would spot, if every legal object ball is above the head

@@ -228,6 +228,11 @@ pub struct ChosenOption {
 
 impl ChosenOption {
     /// The option `option` of `tree`, as chosen.
+    ///
+    /// # Panics
+    ///
+    /// Panics when `option` is not one of `tree`'s options: the tree an option came from is an
+    /// invariant of the choice state, never an input-boundary question (`architecture.md` §4).
     #[must_use]
     pub fn of(tree: Tree, option: OptionId) -> Self {
         Self {
