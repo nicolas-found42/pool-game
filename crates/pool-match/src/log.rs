@@ -3,7 +3,7 @@
 //! **Principle: the input log is the free-choice sequence; everything else is derived.** Racks, seeds'
 //! expansions, adjudications, event logs, race scores, and re-rack snapshots are recomputed on replay.
 //!
-//! The types here mirror `docs/spec/input-log.schema.json` exactly — four entry kinds, the header, and
+//! The types here mirror `docs/spec/input-log.schema.json` exactly — five entry kinds, the header, and
 //! the strike declaration — with the schema's `additionalProperties: false` and its ranges enforced at
 //! the parse boundary. The machine's own vocabulary (`Call`, `Spin`, `Vec2`, `PlacementDomain`) lives in
 //! `pool-rules`; the log reuses it and adds only `from_policy`. No wall-clock value appears in the log.
@@ -59,7 +59,7 @@ pub enum DifficultyLevel {
     Pro,
 }
 
-/// One free choice: the four kinds of `architecture.md` §6's table.
+/// One free choice: the five kinds of `architecture.md` §6's table.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum Entry {
@@ -79,6 +79,9 @@ pub enum Entry {
         /// The option id, defined by the rules corpus.
         option_id: String,
     },
+    /// The stalemate agreement (`rules.md` §7): both players agree the rack is abandoned. The
+    /// agreement is the input, not a shot; the re-rack option that follows is an `option` entry.
+    Stalemate,
 }
 
 /// The logged declaration: the machine's `ShotDeclaration` plus the one field the log adds —

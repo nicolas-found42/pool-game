@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/nicolas-found42/pool-game/docs/spec/input-log.schema.json",
   "title": "Input log",
-  "description": "The free-choice sequence of one match (or a stand-alone rack): placements, declarations, spot requests, and option picks, in order. Everything else — racks, event logs, adjudications, race scores, re-rack snapshots — is derived on replay. No wall-clock value appears anywhere in the log; array order is the sequence. Entry fields mirror the rules machine's input vocabulary (#6); frame, units, and the strike declaration follow #7 §2 and §4.",
+  "description": "The free-choice sequence of one match (or a stand-alone rack): placements, declarations, spot requests, stalemate agreements, and option picks, in order. Everything else \u2014 racks, event logs, adjudications, race scores, re-rack snapshots \u2014 is derived on replay. No wall-clock value appears anywhere in the log; array order is the sequence. Entry fields mirror the rules machine's input vocabulary (#6); frame, units, and the strike declaration follow #7 \u00a72 and \u00a74.",
   "type": "object",
   "required": [
     "format_version",
@@ -95,7 +95,7 @@
       }
     },
     "call": {
-      "description": "The declaration's call: a ball plus pocket, a safety, or — on the break only — nothing.",
+      "description": "The declaration's call: a ball plus pocket, a safety, or \u2014 on the break only \u2014 nothing.",
       "oneOf": [
         {
           "type": "object",
@@ -274,8 +274,24 @@
         },
         {
           "$ref": "#/$defs/option"
+        },
+        {
+          "$ref": "#/$defs/stalemate"
         }
       ]
+    },
+    "stalemate": {
+      "type": "object",
+      "description": "The stalemate agreement of rules.md \u00a77 / WPA 1.13's by-agreement path: both players agree the rack is abandoned. The agreement is the input, not a shot; the re-rack option that follows is an `option` entry.",
+      "required": [
+        "kind"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "stalemate"
+        }
+      }
     }
   }
 }
