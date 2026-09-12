@@ -10,7 +10,7 @@
 //! declaration being authored, so they arrive with the input slice.
 
 use bevy::prelude::*;
-use pool_sim::{BallState, constants as c, rack};
+use pool_sim::constants as c;
 
 // ---------------------------------------------------------------------------
 // The frame (`physics.md` §2/§5), converted once into the shell's f32 world.
@@ -253,15 +253,4 @@ fn ball_color(ball: u8) -> Color {
         8 => Color::srgb(0.06, 0.06, 0.07),      // black
         _ => WHITE,                              // the cue ball (0)
     }
-}
-
-// ---------------------------------------------------------------------------
-// The rack
-
-/// The rack at rest for a seed: the cue ball parked above the head string, the fifteen object balls
-/// in their slots. `rules-break.md` §2.6's generator is the arrangement and
-/// `Arrangement::rest_states` is its `Slot::position_mm` map, so the sim owns every position drawn.
-#[must_use]
-pub fn rack_states(seed: u64) -> [BallState; 16] {
-    rack::generate(seed).rest_states()
 }

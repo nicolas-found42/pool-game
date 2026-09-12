@@ -50,22 +50,10 @@ cast_sign_loss = { level = "allow", priority = 2 }
 # `fmul`/`fadd` for bit-identical results (architecture.md §3).
 suboptimal_flops = { level = "allow", priority = 2 }
 # Domain vocabulary is deliberately terse and repeated (`mu_s`/`mu_r`, `e_n`/`e_b`, `a`/`b`).
-similar_names = { level = "allow", priority = 2 }
-many_single_char_names = { level = "allow", priority = 2 }
 # Names carry their unit and their frame (`x_mm`, `v_mm_s`), so module prefixes repeat by design.
 module_name_repetitions = { level = "allow", priority = 2 }
 # Constants are literals from the spec's tables, printed as written there.
-unreadable_literal = { level = "allow", priority = 2 }
-excessive_precision = { level = "allow", priority = 2 }
-# Spec constants are documented in the sections, not in rustdoc per item.
-missing_errors_doc = { level = "allow", priority = 2 }
-missing_panics_doc = { level = "allow", priority = 2 }
-must_use_candidate = { level = "allow", priority = 2 }
 # A Bevy system's parameters are owned values the scheduler hands over (`Res<T>`, `Commands`); a
 # system cannot take them by reference, so the lint's suggestion has no spelling in the shell
 # (architecture.md §10 — pool-app is the only crate whose functions are systems).
 needless_pass_by_value = { level = "allow", priority = 2 }
-# Long functions are event solvers and ladder stages whose shape mirrors the spec's prose.
-too_many_lines = { level = "allow", priority = 2 }
-# Index loops are the pinned algorithms (Fisher–Yates, slot order) written as specified.
-needless_range_loop = { level = "allow", priority = 2 }
