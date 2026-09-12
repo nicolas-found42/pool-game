@@ -34,18 +34,30 @@ jobs:
       - run: cargo test --workspace
 
   # R2 (README.md §3): the ONNX artifact contract — load, golden vectors, sha256 — is machine-checked
-  # with the feature ON, and only here. Activates when pool-ai lands (M4); until then the job skips and
-  # the gate below treats `skipped` as acceptable.
+  # with the feature ON, and only here. Activates when pool-ai lands (M4); until then the job finds no
+  # crate, says so, and the gate below accepts its success. (`hashFiles` is not available in a job-level
+  # `if`, so the presence check is a step.)
   ort:
     name: ort
-    if: ${{ hashFiles('crates/pool-ai/Cargo.toml') != '' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+      - name: Is there a pool-ai crate yet?
+        id: gate
+        run: |
+          if [ -f crates/pool-ai/Cargo.toml ]; then
+            echo "present=yes" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=no" >> "$GITHUB_OUTPUT"
+            echo "pool-ai has not landed yet (M4); skipping the artifact contract."
+          fi
       - name: Toolchain (rust-toolchain.toml)
+        if: steps.gate.outputs.present == 'yes'
         run: rustup show
       - uses: Swatinem/rust-cache@v2
-      - run: cargo test -p pool-ai --features ort
+        if: steps.gate.outputs.present == 'yes'
+      - if: steps.gate.outputs.present == 'yes'
+        run: cargo test -p pool-ai --features ort
 
   ci:
     name: ci
@@ -57,8 +69,5 @@ jobs:
         run: |
           test "${{ needs.linux.result }}" = "success" || { echo "linux: ${{ needs.linux.result }}"; exit 1; }
           test "${{ needs.macos.result }}" = "success" || { echo "macos: ${{ needs.macos.result }}"; exit 1; }
-          case "${{ needs.ort.result }}" in
-            success|skipped) echo "ort: ${{ needs.ort.result }}" ;;
-            *) echo "ort: ${{ needs.ort.result }}"; exit 1 ;;
-          esac
+          test "${{ needs.ort.result }}" = "success" || { echo "ort: ${{ needs.ort.result }}"; exit 1; }
           echo "ci: ok"
