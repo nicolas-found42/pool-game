@@ -14,6 +14,10 @@ pub struct Slot {
 
 impl Slot {
     /// A slot from its parts; `row` is 1..=5 and `index < row`.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `row` is outside `1..=5`, or `index` is not below `row`.
     #[must_use]
     pub const fn new(row: u8, index: u8) -> Self {
         assert!(row >= 1 && row <= 5, "row out of range");

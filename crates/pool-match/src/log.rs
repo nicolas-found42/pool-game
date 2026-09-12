@@ -123,6 +123,12 @@ impl InputLog {
     /// The types enforce the schema's shape (`additionalProperties: false` on structs, the tagged
     /// unions, the ball range); this adds the numeric bounds a JSON Schema states but Rust types
     /// cannot. The tests additionally run the document through the published schema itself.
+    ///
+    /// # Errors
+    ///
+    /// [`LogError::Parse`] if the text is not JSON or does not carry the schema's shape (an unknown
+    /// key, a missing one, a mistyped value), and [`LogError::Invalid`] if it parses but violates one
+    /// of the bounds [`Self::validate`] states.
     pub fn parse(text: &str) -> Result<Self, LogError> {
         let log: Self = serde_json::from_str(text).map_err(|e| LogError::Parse(e.to_string()))?;
         log.validate()?;
@@ -130,6 +136,12 @@ impl InputLog {
     }
 
     /// The header's numeric bounds (`docs/spec/input-log.schema.json`).
+    ///
+    /// # Errors
+    ///
+    /// [`LogError::Invalid`], naming the first bound violated: `format_version` or `race_target`
+    /// below 1, an empty `profile` or `difficulty.checkpoint`, a declaration `speed` or `elevation`
+    /// below zero, or a declaration value that is not finite.
     pub fn validate(&self) -> Result<(), LogError> {
         if self.format_version < 1 {
             return Err(LogError::Invalid(
@@ -176,6 +188,12 @@ impl InputLog {
     }
 
     /// Serialize to the schema's JSON. Entries keep their order; no key is ever dropped.
+    ///
+    /// # Errors
+    ///
+    /// [`LogError::Parse`] if `serde_json` refuses the document. The log's types give it nothing to
+    /// refuse — plain structs and enums, and a non-finite float is written as `null` rather than
+    /// rejected — so the `Result` mirrors [`Self::parse`]'s shape rather than a case that arises.
     pub fn to_json(&self) -> Result<String, LogError> {
         serde_json::to_string_pretty(self).map_err(|e| LogError::Parse(e.to_string()))
     }

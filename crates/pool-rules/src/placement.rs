@@ -95,6 +95,12 @@ pub fn overlap(pos: Vec2, balls: &[PreBall]) -> Option<(u8, f64)> {
 ///
 /// 3.10 is enforced here, at the input boundary, so a placement the machine accepted can never be a
 /// 3.10 foul.
+///
+/// # Errors
+///
+/// Returns [`PlacementFault::NotFinite`] for a non-finite coordinate, [`PlacementFault::OutsideDomain`]
+/// when `pos` is outside `domain` (3.11), [`PlacementFault::OutsideSurface`] when it is off the playing
+/// surface, and [`PlacementFault::Overlaps`] when it is within a ball's contact slop.
 pub fn validate(
     domain: PlacementDomain,
     pos: Vec2,

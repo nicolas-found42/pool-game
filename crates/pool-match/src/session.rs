@@ -273,6 +273,16 @@ impl Session {
     }
 
     /// One request, driven through the loop of `architecture.md` §8.
+    ///
+    /// # Errors
+    ///
+    /// [`InputError::NotAwaited`] if the state does not await the request's kind,
+    /// [`InputError::Machine`] if the rules machine refuses the input in its own vocabulary (a
+    /// placement outside the domain's geometry, an option the pending tree does not offer),
+    /// [`InputError::UnknownOption`] if the option id is not one the rules vocabulary defines,
+    /// [`InputError::Strike`] if a declaration leaves `physics.md` §4's miscue envelope, and
+    /// [`InputError::Invariant`] if the simulation refuses an input the rules layer produced — a bug
+    /// in one of the two, never an input problem. A refused request leaves the session as it was.
     pub fn request(&mut self, request: Request) -> Result<Adjudication, InputError> {
         match request {
             Request::Placement { domain, pos } => self.place(domain, pos),
@@ -288,6 +298,13 @@ impl Session {
     ///
     /// A log is a whole match (`architecture.md` §7): the run must end with the race decided, so a
     /// truncated log is refused instead of reported as a partial match.
+    ///
+    /// # Errors
+    ///
+    /// [`InputError::ProfileMismatch`] if the caller loaded a profile other than the one the log's
+    /// header names; whatever [`Session::request`] returns for the first entry the loop refuses; and
+    /// [`InputError::Unfinished`] if the entries end before the race is decided, or
+    /// [`InputError::Invariant`] if the run recorded a log other than the one it consumed.
     pub fn replay(log: &InputLog, profile: Profile) -> Result<Replay, InputError> {
         if log.profile != profile.id {
             return Err(InputError::ProfileMismatch {

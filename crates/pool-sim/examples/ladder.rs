@@ -515,12 +515,28 @@ fn stage1(curves: &Path, profile: &Profile) -> Stage {
     book.e_b = 1.0;
     book.mu_b = MuB::new(0.06, 0.0, 1.0);
 
-    // (a) the pure-spin branch — the gate: at any (μs, μr) the relation is exact.
+    let (spin_met, spin_worst) = stage1_pure_spin(&mut stage, profile, &book);
+    let (ratio_met, book_ratio) = stage1_rolling_direct_hit(&mut stage, profile, &book, &file);
+    let (in_domain, mean, mean_relative) = stage1_survey(&mut stage, profile, &book, &file);
+    let all_met = spin_met && ratio_met;
+    stage.close(
+        all_met,
+        format!(
+            "pure-spin max rel err {:.4} % (spec 0.012 %); B-5 ratio {:.3} at the draw-follow block (spec 7.781, file 7.559); \
+             full-row comparison reported ({in_domain} in-domain rows, mean |err| {mean:.1} mm / {mean_relative:.1} %)",
+            100.0 * spin_worst, book_ratio,
+        ),
+    );
+    stage
+}
+/// Stage 1(a): the pure-spin branch — the gate: at any (μs, μr) the relation is exact. Returns the
+/// gate's verdict and the worst relative error.
+fn stage1_pure_spin(stage: &mut Stage, profile: &Profile, book: &Profile) -> (bool, f64) {
     let cloth = 2.0 * BALL_RADIUS_MM * BALL_RADIUS_MM / (49.0 * GRAVITY_MM_S2)
         * (1.0 / profile.mu_s + 1.0 / profile.mu_r);
     let mut spin_worst = 0.0_f64;
     for spin in [-50.0_f64, -100.0, -150.0, -200.0] {
-        let (produced, t_rest) = pure_spin_travel(&book, spin);
+        let (produced, t_rest) = pure_spin_travel(book, spin);
         let relation = cloth * spin * spin;
         let relative = (produced - relation).abs() / relation;
         spin_worst = spin_worst.max(relative);
@@ -540,15 +556,23 @@ fn stage1(curves: &Path, profile: &Profile) -> Stage {
         (0.012, 100.0 * spin_worst),
         "the relation is exact for the cloth model; the gate is the spec's recorded instance as a ceiling",
     );
-
-    // (b) TP B-5's rolling direct-hit ratio, at the three parameter sets the comparison can be run
-    // at: the draw-follow file's own block (the prototype's stage-1 profile), the B-5 file's own
-    // constants that derive 7.559, and the shipped default.
+    (spin_met, spin_worst)
+}
+/// Stage 1(b): the rolling direct-hit ratio at the three parameter sets the comparison can be run
+/// at: the draw-follow file's own block (the prototype's stage-1 profile), the B-5 file's own
+/// constants that derive 7.559, and the shipped default. Returns the gate's verdict and the mean
+/// over the prototype's speeds at the draw-follow block.
+fn stage1_rolling_direct_hit(
+    stage: &mut Stage,
+    profile: &Profile,
+    book: &Profile,
+    file: &Value,
+) -> (bool, f64) {
     let mut b5_profile = profile.clone();
     b5_profile.e_b = 0.94;
     b5_profile.mu_b = MuB::new(0.06, 0.0, 1.0);
     let variants: [(&str, &Profile); 3] = [
-        ("draw-follow file block (e_b 1.0, mu_b 0.06)", &book),
+        ("draw-follow file block (e_b 1.0, mu_b 0.06)", book),
         ("TP B-5 constants (e_b 0.94, mu_b 0.06)", &b5_profile),
         ("shipped default profile (e_b 0.95, mu_b table)", profile),
     ];
@@ -616,8 +640,16 @@ fn stage1(curves: &Path, profile: &Profile) -> Stage {
          instance ran"
             .to_string(),
     );
-
-    // (c) the full-row comparison — reported, not gated (§6's basis cell).
+    (ratio_met, book_ratio)
+}
+/// Stage 1(c): the full-row comparison — reported, not gated (§6's basis cell). Returns the
+/// in-domain row count and the mean absolute and relative residual (mm, percent).
+fn stage1_survey(
+    stage: &mut Stage,
+    profile: &Profile,
+    book: &Profile,
+    file: &Value,
+) -> (u32, f64, f64) {
     let points = file["draw_distance_points"]
         .as_array()
         .expect("the survey is an array");
@@ -653,8 +685,8 @@ fn stage1(curves: &Path, profile: &Profile) -> Stage {
             }));
             continue;
         }
-        let (produced, t_contact, speed_before, speed_after, spin_before, spin_after) =
-            draw_row(&book, speed, spin, drag);
+        let row = draw_row(book, speed, spin, drag);
+        let (produced, _, speed_before, speed_after, spin_before, spin_after) = row;
         let error = produced - want;
         in_domain += 1;
         spin_damped_sum += 1.0 - spin_after / spin_before;
@@ -665,37 +697,7 @@ fn stage1(curves: &Path, profile: &Profile) -> Stage {
             worst = (error.abs(), 100.0 * (error / want).abs());
         }
         if probe_room.is_none() {
-            let room = format!(
-                "{} / {} ft / b/R {}",
-                point["cue_speed"].as_str().unwrap_or("?"),
-                point["drag_distance"].as_str().unwrap_or("?"),
-                point["b_over_R"]
-            );
-            // The two mechanisms the spec attributes the row error to, measured at both parameter
-            // blocks: the collision's forward residual (§3.2's `(1 − e_b)/2`, which is 0 at the
-            // relation's own `e_b = 1.0` and ≈2.5 % at the shipped 0.95) and its spin damping.
-            let mut probes = vec![json!({
-                "parameters": "draw-follow file block (e_b 1.0, mu_b 0.06)",
-                "cue_speed_before_mm_s": speed_before,
-                "cue_speed_after_mm_s": speed_after,
-                "forward_residual_pct": 100.0 * speed_after / speed_before,
-                "cue_spin_before_rad_s": spin_before,
-                "cue_spin_after_rad_s": spin_after,
-                "spin_damped_pct": 100.0 * (1.0 - spin_after / spin_before),
-                "t_contact_s": t_contact,
-            })];
-            let (_, _, shipped_before, shipped_after, shipped_spin_before, shipped_spin_after) =
-                draw_row(profile, speed, spin, drag);
-            probes.push(json!({
-                "parameters": "shipped default profile (e_b 0.95, mu_b table)",
-                "cue_speed_before_mm_s": shipped_before,
-                "cue_speed_after_mm_s": shipped_after,
-                "forward_residual_pct": 100.0 * shipped_after / shipped_before,
-                "cue_spin_before_rad_s": shipped_spin_before,
-                "cue_spin_after_rad_s": shipped_spin_after,
-                "spin_damped_pct": 100.0 * (1.0 - shipped_spin_after / shipped_spin_before),
-            }));
-            probe_room = Some(json!({"room": room, "probes": probes}));
+            probe_room = Some(stage1_probe_room(profile, point, (speed, spin, drag), row));
         }
         stage.rows.push(json!({
             "case": "survey",
@@ -736,16 +738,54 @@ fn stage1(curves: &Path, profile: &Profile) -> Stage {
         "reported, not gated: the relation is a free-space spin-only upper bound and 85 of the 120 \
          digitized rows sit outside its domain",
     );
-    let all_met = spin_met && ratio_met;
-    stage.close(
-        all_met,
-        format!(
-            "pure-spin max rel err {:.4} % (spec 0.012 %); B-5 ratio {:.3} at the draw-follow block (spec 7.781, file 7.559); \
-             full-row comparison reported ({in_domain} in-domain rows, mean |err| {mean:.1} mm / {mean_relative:.1} %)",
-            100.0 * spin_worst, book_ratio,
-        ),
+    (in_domain, mean, mean_relative)
+}
+/// Stage 1(c)'s mechanism probe for one survey row: the two mechanisms the spec attributes the row
+/// error to, measured at both parameter blocks — the collision's forward residual (§3.2's
+/// `(1 − e_b)/2`, which is 0 at the relation's own `e_b = 1.0` and ≈2.5 % at the shipped 0.95) and
+/// its spin damping.
+///
+/// `input` is the row's `(speed, spin, drag)` and `row` the survey's own `draw_row` output,
+/// `(produced, t_contact, speed_before, speed_after, spin_before, spin_after)`.
+fn stage1_probe_room(
+    profile: &Profile,
+    point: &Value,
+    input: (f64, f64, f64),
+    row: (f64, f64, f64, f64, f64, f64),
+) -> Value {
+    let (speed, spin, drag) = input;
+    let (_, t_contact, speed_before, speed_after, spin_before, spin_after) = row;
+    let room = format!(
+        "{} / {} ft / b/R {}",
+        point["cue_speed"].as_str().unwrap_or("?"),
+        point["drag_distance"].as_str().unwrap_or("?"),
+        point["b_over_R"]
     );
-    stage
+    // The two mechanisms the spec attributes the row error to, measured at both parameter
+    // blocks: the collision's forward residual (§3.2's `(1 − e_b)/2`, which is 0 at the
+    // relation's own `e_b = 1.0` and ≈2.5 % at the shipped 0.95) and its spin damping.
+    let mut probes = vec![json!({
+        "parameters": "draw-follow file block (e_b 1.0, mu_b 0.06)",
+        "cue_speed_before_mm_s": speed_before,
+        "cue_speed_after_mm_s": speed_after,
+        "forward_residual_pct": 100.0 * speed_after / speed_before,
+        "cue_spin_before_rad_s": spin_before,
+        "cue_spin_after_rad_s": spin_after,
+        "spin_damped_pct": 100.0 * (1.0 - spin_after / spin_before),
+        "t_contact_s": t_contact,
+    })];
+    let (_, _, shipped_before, shipped_after, shipped_spin_before, shipped_spin_after) =
+        draw_row(profile, speed, spin, drag);
+    probes.push(json!({
+        "parameters": "shipped default profile (e_b 0.95, mu_b table)",
+        "cue_speed_before_mm_s": shipped_before,
+        "cue_speed_after_mm_s": shipped_after,
+        "forward_residual_pct": 100.0 * shipped_after / shipped_before,
+        "cue_spin_before_rad_s": shipped_spin_before,
+        "cue_spin_after_rad_s": shipped_spin_after,
+        "spin_damped_pct": 100.0 * (1.0 - shipped_spin_after / shipped_spin_before),
+    }));
+    json!({"room": room, "probes": probes})
 }
 
 /// Stage 2: cuts at known angles — TP B-3's six measured points, the shipped μb table's residual,
@@ -866,12 +906,44 @@ fn stage3(curves: &Path, profile: &Profile) -> Stage {
     let file = load(curves, "cushion-bank.json");
     let speeds = [800.0_f64, 1500.0, 3000.0];
 
-    // (a) the square-hit retention. The observable is a rolling ball's: by the cushion it has long
-    // since reached natural roll (the tip offset R/(2.5 ρ_max) states that roll directly), and that
-    // is the state the spec's pinned numbers were taken in. The stun declaration is carried beside it
-    // because a stun ball is still skidding when it reaches the cushion at the fast end — its
-    // slide-to-roll distance grows as v², 262 mm at 1.5 m/s but 1.05 m at 3 m/s — which is what drags
-    // its mean down, not a difference in the contact itself.
+    let (retention_met, produced, fitted_e_n, probe) =
+        stage3_retention(&mut stage, profile, &speeds);
+    let anchor_residual = stage3_travel(&mut stage, profile, &file);
+    stage.notes.push(
+        "the WPA 4–4.5-table-length acceptance test is dropped by the amended gate and is not \
+         implemented: at the measured coefficients it needs ≈9 m/s"
+            .to_string(),
+    );
+    stage.notes.push(format!(
+        "the retention gate runs the {probe} probe: the spec's 0.6714 / 0.6992 / 0.7178 are a rolling \
+         ball's, and a stun ball is still skidding when it reaches the cushion at the fast end (its \
+         slide-to-roll distance grows as v², 262 mm at 1.5 m/s but 1.05 m at 3 m/s), which is what \
+         drags the stun probe's mean down",
+    ));
+    stage.close(
+        retention_met,
+        format!(
+            "retention {produced:.4} at e_n {:.2} with the {probe} probe (measured 0.70 ± {RETENTION_SCATTER}); fitted e_n {fitted_e_n:.4} (spec 0.78); \
+             travel anchors mean |err| {anchor_residual:.3} lengths (spec 0.337, reported not gated)",
+            profile.e_n
+        ),
+    );
+    stage
+}
+/// Stage 3(a): the square-hit retention. The observable is a rolling ball's: by the cushion it has
+/// long since reached natural roll (the tip offset `R/(2.5 ρ_max)` states that roll directly), and that
+/// is the state the spec's pinned numbers were taken in. The stun declaration is carried beside it
+/// because a stun ball is still skidding when it reaches the cushion at the fast end — its
+/// slide-to-roll distance grows as v², 262 mm at 1.5 m/s but 1.05 m at 3 m/s — which is what drags
+/// its mean down, not a difference in the contact itself.
+///
+/// Returns the gate's combined verdict, the produced retention, the bisected `e_n`, and the probe it
+/// ran at.
+fn stage3_retention(
+    stage: &mut Stage,
+    profile: &Profile,
+    speeds: &[f64],
+) -> (bool, f64, f64, &'static str) {
     let probes: [(&str, f64); 2] = [
         ("natural roll", rolling_tip_b()),
         ("stun declaration, still skidding at the fast end", 0.0),
@@ -883,9 +955,9 @@ fn stage3(curves: &Path, profile: &Profile) -> Stage {
             .iter()
             .filter_map(|speed| square_hit_retention(profile, 0.78, *speed, tip_b))
             .collect();
-        let at_075 = retention_at(profile, 0.75, &speeds, tip_b);
-        let at_078 = retention_at(profile, 0.78, &speeds, tip_b);
-        let at_080 = retention_at(profile, 0.80, &speeds, tip_b);
+        let at_075 = retention_at(profile, 0.75, speeds, tip_b);
+        let at_078 = retention_at(profile, 0.78, speeds, tip_b);
+        let at_080 = retention_at(profile, 0.80, speeds, tip_b);
         let error = (at_075 - 0.6714).abs() + (at_078 - 0.6992).abs() + (at_080 - 0.7178).abs();
         if error < probe_error {
             probe_error = error;
@@ -921,7 +993,7 @@ fn stage3(curves: &Path, profile: &Profile) -> Stage {
             "mean": ratios.iter().sum::<f64>() / ratios.len() as f64,
         }));
     }
-    let produced = retention_at(profile, profile.e_n, &speeds, tip_b);
+    let produced = retention_at(profile, profile.e_n, speeds, tip_b);
     let met = stage.gate_check(
         "single square-hit retention",
         &json!({"measured_e_c": 0.70, "scatter": RETENTION_SCATTER, "closed_form_e_n_0.75": 0.6224, "spec_at_0.75": 0.6714, "spec_at_0.78": 0.6992, "spec_at_0.80": 0.7178}),
@@ -930,7 +1002,7 @@ fn stage3(curves: &Path, profile: &Profile) -> Stage {
         "TP B-6's measured e_c = 0.70 ± the source's scatter; the spec's e_n fit is 0.75 → 0.6714, \
          0.80 → 0.7178",
     );
-    let fitted_e_n = fit_e_n(profile, 0.70, &speeds, tip_b);
+    let fitted_e_n = fit_e_n(profile, 0.70, speeds, tip_b);
     let fitted_met = (fitted_e_n - 0.78).abs() <= 0.02;
     stage.report(
         "derived",
@@ -953,8 +1025,12 @@ fn stage3(curves: &Path, profile: &Profile) -> Stage {
         &json!({"at_e_n_0.75": cushion_normal_horizontal().powi(2) * 1.75 - 1.0, "at_default_e_n": cushion_normal_horizontal().powi(2) * (1.0 + profile.e_n) - 1.0, "e_n": profile.e_n, "nose_normal_horizontal": cushion_normal_horizontal()}),
         "the whole retention share above this is the tangential and vertical channels (§3.3)",
     );
-
-    // (b) TP B-6's travel anchors — a reported residual with its structural cause.
+    let retention_met = met && fitted_met;
+    (retention_met, produced, fitted_e_n, probe_choice.0)
+}
+/// Stage 3(b): TP B-6's travel anchors — a reported residual with its structural cause. Returns the
+/// mean absolute error in table lengths.
+fn stage3_travel(stage: &mut Stage, profile: &Profile, file: &Value) -> f64 {
     let mut anchor_sum = 0.0_f64;
     let mut anchors = 0_u32;
     for anchor in file["printed_anchors_TP_B6"]
@@ -995,27 +1071,7 @@ fn stage3(curves: &Path, profile: &Profile) -> Stage {
         "reported, not gated: the shortfall is structural — e_n trades retention for travel and μc is \
          flat under the ruled 3D channel; the spec's instance concentrates it at the three slow anchors",
     );
-    stage.notes.push(
-        "the WPA 4–4.5-table-length acceptance test is dropped by the amended gate and is not \
-         implemented: at the measured coefficients it needs ≈9 m/s"
-            .to_string(),
-    );
-    stage.notes.push(format!(
-        "the retention gate runs the {} probe: the spec's 0.6714 / 0.6992 / 0.7178 are a rolling \
-         ball's, and a stun ball is still skidding when it reaches the cushion at the fast end (its \
-         slide-to-roll distance grows as v², 262 mm at 1.5 m/s but 1.05 m at 3 m/s), which is what \
-         drags the stun probe's mean down",
-        probe_choice.0
-    ));
-    stage.close(
-        met && fitted_met,
-        format!(
-            "retention {produced:.4} at e_n {:.2} with the {} probe (measured 0.70 ± {RETENTION_SCATTER}); fitted e_n {fitted_e_n:.4} (spec 0.78); \
-             travel anchors mean |err| {anchor_residual:.3} lengths (spec 0.337, reported not gated)",
-            profile.e_n, probe_choice.0
-        ),
-    );
-    stage
+    anchor_residual
 }
 
 /// Stage 4: the pivot-length test per cue — Platinum's band at the pinned reference tip offset.
@@ -1029,6 +1085,36 @@ fn stage4(curves: &Path) -> Stage {
          `sin α = a/√(a² + L²)`), evaluated at the pivot bookends",
     );
     let file = load(curves, "squirt.json");
+    let (mean, sd) = stage4_tip_offset(&mut stage, &file);
+
+    let envelope = miscue_envelope_mm();
+    let (low_met, high_met, lower, upper) = stage4_band(&mut stage, mean, envelope);
+    let void_deg = stage4_void(&mut stage, envelope);
+    let table_low = file["shaft_table_summary"]["squirt_angle_deg_min"]
+        .as_f64()
+        .expect("min");
+    let table_high = file["shaft_table_summary"]["squirt_angle_deg_max"]
+        .as_f64()
+        .expect("max");
+    stage.notes.push(format!(
+        "the table's own angle column runs {table_low:.4}–{table_high:.4}°, so the produced band \
+         ({lower:.2}–{upper:.2}) is the pinned offset's algebra, not the source's own column"
+    ));
+    let met = low_met && high_met;
+    stage.close(
+        met,
+        format!(
+            "band {lower:.2}–{upper:.2}° at a = {mean:.2} mm ({:.3} R, sd {sd:.2} mm); spec 1.29–2.39°, \
+             Platinum published 1.3–2.3°, the 0.5 R comparison void at {void_deg:.2}°",
+            mean / BALL_RADIUS_MM
+        ),
+    );
+    stage
+}
+/// Stage 4(a): the reference tip offset implied by `tan α = a/L` over Platinum's 46 shafts — the
+/// only offset at which the table is self-consistent (§3.6). Returns its mean and standard
+/// deviation (mm).
+fn stage4_tip_offset(stage: &mut Stage, file: &Value) -> (f64, f64) {
     let mut offsets = Vec::new();
     for row in file["shaft_table"]
         .as_array()
@@ -1057,7 +1143,11 @@ fn stage4(curves: &Path) -> Stage {
         &json!({"a_mm": mean, "sd_mm": sd, "range_mm": [min, max], "shafts": offsets.len(), "a_over_R": mean / BALL_RADIUS_MM}),
         "the only offset at which Platinum's 46 shafts are self-consistent (§3.6)",
     );
-    let envelope = miscue_envelope_mm();
+    (mean, sd)
+}
+/// Stage 4(b): the squirt band at the reference tip offset, evaluated at the two pivot bookends
+/// through the declaration path. Returns the two gates' verdicts and the band's ends (degrees).
+fn stage4_band(stage: &mut Stage, mean: f64, envelope: f64) -> (bool, bool, f64, f64) {
     let mut band = Vec::new();
     let mut band_angles = Vec::new();
     for pivot_in in [7.6_f64, 14.1] {
@@ -1093,7 +1183,11 @@ fn stage4(curves: &Path) -> Stage {
         high_met,
         "the short-pivot bookend, where the model sits above Platinum's quoted 2.3°",
     );
-    // The void comparison the ladder must not do: the published angle column against 0.5 R offsets.
+    (low_met, high_met, lower, upper)
+}
+/// Stage 4(c): the void 0.5 R comparison the ladder must not do — the published angle column
+/// against 0.5 R offsets. Returns the produced angle (degrees).
+fn stage4_void(stage: &mut Stage, envelope: f64) -> f64 {
     let declaration = StrikeDecl {
         aim: [1.0, 0.0],
         speed_mm_s: 2000.0,
@@ -1116,26 +1210,7 @@ fn stage4(curves: &Path) -> Stage {
         &json!({"deg_at_7.6_in": void_deg}),
         "reported so it is not re-attempted: 0.5 R offsets put the model above every published band",
     );
-    let table_low = file["shaft_table_summary"]["squirt_angle_deg_min"]
-        .as_f64()
-        .expect("min");
-    let table_high = file["shaft_table_summary"]["squirt_angle_deg_max"]
-        .as_f64()
-        .expect("max");
-    stage.notes.push(format!(
-        "the table's own angle column runs {table_low:.4}–{table_high:.4}°, so the produced band \
-         ({lower:.2}–{upper:.2}) is the pinned offset's algebra, not the source's own column"
-    ));
-    let met = low_met && high_met;
-    stage.close(
-        met,
-        format!(
-            "band {lower:.2}–{upper:.2}° at a = {mean:.2} mm ({:.3} R, sd {sd:.2} mm); spec 1.29–2.39°, \
-             Platinum published 1.3–2.3°, the 0.5 R comparison void at {void_deg:.2}°",
-            mean / BALL_RADIUS_MM
-        ),
-    );
-    stage
+    void_deg
 }
 
 // ---------------------------------------------------------------- running
