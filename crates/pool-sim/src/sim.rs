@@ -30,8 +30,13 @@ const STALL_LIMIT: u32 = 1_000;
 pub const DEFAULT_MAX_EVENTS: u64 = 400_000;
 /// The default time cap per shot, in seconds (`Sim::max_time_s`).
 pub const DEFAULT_MAX_TIME_S: f64 = 240.0;
-/// The Newton refinement's iteration count in the root finders.
-const ROOT_ITERATIONS: usize = 4;
+/// The Newton refinement's iteration count in the root finders. The refinement starts from the
+/// constant-velocity quadratic root and converges quadratically, so the count is the accuracy bound:
+/// four iterations leave a fast sliding pair's residual at a few nanometres — larger than the
+/// contact slop, so a *converged* root would read as a miss and the pair would tunnel — while
+/// sixteen takes the committed cases' residual five orders below it. The loop is bounded, not
+/// unbounded, because a pair whose true trajectory never reaches contact has no root to converge to.
+const ROOT_ITERATIONS: usize = 16;
 /// The approach floor (mm/s): a pair whose relative normal speed is below it is touching, not
 /// approaching. Two balls sliding tangentially in contact differ by rounding noise at this scale
 /// (1e-18 mm/s at pool speeds), and an event fired on that noise neither moves the state nor advances
@@ -946,10 +951,53 @@ impl Sim {
 
     // ---------------------------------------------------------------- candidates
 
+    /// A ball's next mode transition: the event that ends its current segment law, and the validity
+    /// bound on every other candidate that law contributes.
+    ///
+    /// One law is one mode (`physics.md` §3.1): the sliding law's acceleration is in force until the
+    /// contact point stops slipping, the rolling law's until the ball stops, a flight's until it
+    /// lands. `None` means the law never ends on its own — a stationary ball's — so its validity is
+    /// unbounded.
+    fn law_transition(&self, ball: &Ball, id: u8, p: V3, v: V3, w: V3) -> Option<(f64, Ev)> {
+        let profile = &self.table.profile;
+        match ball.mode {
+            MotionMode::Stationary => None,
+            MotionMode::Spinning => {
+                let dt = spin_down_time(w, profile.spin_decay_rad_s2, self.sleep_angular_rad_s);
+                (dt.is_finite() && dt > 0.0).then_some((dt, Ev::SpinDown { ball: id }))
+            }
+            MotionMode::Rolling => {
+                let speed = v.len();
+                (speed > 0.0).then(|| {
+                    (
+                        speed / profile.roll_decel_mm_s2(),
+                        Ev::RollToStop { ball: id },
+                    )
+                })
+            }
+            MotionMode::Sliding => {
+                let slip = contact_point_velocity(v, w).len();
+                (slip > 0.0).then(|| {
+                    (
+                        slip / (3.5 * profile.slide_decel_mm_s2()),
+                        Ev::SlideToRoll { ball: id },
+                    )
+                })
+            }
+            MotionMode::Airborne => solve_z_landing(p.z, v.z).map(|dt| (dt, Ev::Land { ball: id })),
+        }
+    }
+
     /// Every candidate event time from the current state.
     fn candidates(&self) -> Vec<(f64, Ev)> {
-        let profile = &self.table.profile;
         let mut out: Vec<(f64, Ev)> = Vec::with_capacity(64);
+        // A segment law is a closed form for one mode only, and it ends at the ball's next mode
+        // transition. That transition is a candidate in its own right; it is also the **validity
+        // bound** on every other candidate the law contributes. A contact root beyond it is an
+        // extrapolation of a law no longer in force — the phantom-contact class this solver must
+        // never propose: the root is dropped here, and the transition (which fires first anyway)
+        // reinstalls the law, so the candidate set is re-solved under the law actually in force.
+        let mut validity = [f64::INFINITY; 16];
         for i in 0..self.balls.len() {
             let ball = &self.balls[i];
             if !ball.active() {
@@ -960,37 +1008,9 @@ impl Sim {
             let v = ball.law.vel(tau);
             let w = ball.law.spin(tau);
             let id = i as u8;
-            match ball.mode {
-                MotionMode::Stationary => {}
-                MotionMode::Spinning => {
-                    let dt = spin_down_time(w, profile.spin_decay_rad_s2, self.sleep_angular_rad_s);
-                    if dt.is_finite() && dt > 0.0 {
-                        out.push((self.t + dt, Ev::SpinDown { ball: id }));
-                    }
-                }
-                MotionMode::Rolling => {
-                    let speed = v.len();
-                    if speed > 0.0 {
-                        out.push((
-                            self.t + speed / profile.roll_decel_mm_s2(),
-                            Ev::RollToStop { ball: id },
-                        ));
-                    }
-                }
-                MotionMode::Sliding => {
-                    let slip = contact_point_velocity(v, w).len();
-                    if slip > 0.0 {
-                        out.push((
-                            self.t + slip / (3.5 * profile.slide_decel_mm_s2()),
-                            Ev::SlideToRoll { ball: id },
-                        ));
-                    }
-                }
-                MotionMode::Airborne => {
-                    if let Some(dt) = solve_z_landing(p.z, v.z) {
-                        out.push((self.t + dt, Ev::Land { ball: id }));
-                    }
-                }
+            if let Some((dt, event)) = self.law_transition(ball, id, p, v, w) {
+                out.push((self.t + dt, event));
+                validity[i] = dt;
             }
 
             // Above the cushions a ball flies over the rails, the jaws and the pockets
@@ -999,7 +1019,8 @@ impl Sim {
                 continue;
             }
             for (index, wall) in self.table.walls.iter().enumerate() {
-                if let Some(dt) = solve_wall(p, v, ball.law.a, wall) {
+                if let Some(dt) = solve_wall(p, v, ball.law.a, wall).filter(|dt| *dt <= validity[i])
+                {
                     out.push((
                         self.t + dt,
                         Ev::Wall {
@@ -1010,7 +1031,9 @@ impl Sim {
                 }
             }
             for (index, tip) in self.table.tips.iter().enumerate() {
-                if let Some(dt) = solve_point(p, v, ball.law.a, *tip) {
+                if let Some(dt) =
+                    solve_point(p, v, ball.law.a, *tip).filter(|dt| *dt <= validity[i])
+                {
                     out.push((
                         self.t + dt,
                         Ev::Tip {
@@ -1021,7 +1044,9 @@ impl Sim {
                 }
             }
             for (index, pocket) in self.table.pockets.iter().enumerate() {
-                if let Some(dt) = solve_drop(p, v, ball.law.a, pocket) {
+                if let Some(dt) =
+                    solve_drop(p, v, ball.law.a, pocket).filter(|dt| *dt <= validity[i])
+                {
                     out.push((
                         self.t + dt,
                         Ev::Drop {
@@ -1039,10 +1064,11 @@ impl Sim {
                     continue;
                 }
                 let (a, b) = (&self.balls[i], &self.balls[j]);
-                let pi = a.law.pos(self.t - a.law_t);
-                let pj = b.law.pos(self.t - b.law_t);
-                let vi = a.law.vel(self.t - a.law_t);
-                let vj = b.law.vel(self.t - b.law_t);
+                let (ta, tb) = (self.t - a.law_t, self.t - b.law_t);
+                let pi = a.law.pos(ta);
+                let pj = b.law.pos(tb);
+                let vi = a.law.vel(ta);
+                let vj = b.law.vel(tb);
                 // Only an approaching pair has an event: a pair touching through the lattice must not
                 // re-trigger at 0, and an already-separating overlap is the separation step's business,
                 // not the impulse's.
@@ -1054,6 +1080,11 @@ impl Sim {
                 // Only an approaching pair — or one overlapping past the slop, which must be resolved
                 // one way or the other — has an event: a pair touching through the rack's
                 // exact-contact lattice must not re-trigger at zero.
+                //
+                // This branch is the **contact-now** case, and it is the only one: a pair within the
+                // slop of contact *is* touching, so an event at the current instant is a contact, not
+                // a fabrication. The clamp the root finders no longer carry read a runaway step as
+                // "contact now" without ever asking whether the pair were anywhere near each other.
                 let dt = if gap2 <= slop_area {
                     if approaching || gap2 < -slop_area {
                         0.0
@@ -1061,9 +1092,25 @@ impl Sim {
                         continue;
                     }
                 } else if approaching {
+                    // A solved root is a candidate only inside **both** balls' segment validity (the
+                    // pair's relative law is a difference of the two, so it holds no longer than the
+                    // shorter one), and only if the pair is really in contact and approaching there.
+                    // The phantom this rejects: a root at ≈ 1.15 s on a pair whose sliding law ends
+                    // at 0.71 s, refined out of its basin onto a metre-apart pair (`solve_pair`).
+                    let valid = validity[i].min(validity[j]);
                     match solve_pair(dp, vi - vj, a.law.a - b.law.a) {
-                        Some(dt) => dt,
-                        None => continue,
+                        Some(dt)
+                            if dt <= valid
+                                && pair_contact_at(
+                                    a.law.pos(ta + dt),
+                                    b.law.pos(tb + dt),
+                                    a.law.vel(ta + dt),
+                                    b.law.vel(tb + dt),
+                                ) =>
+                        {
+                            dt
+                        }
+                        _ => continue,
                     }
                 } else {
                     continue;
@@ -1096,7 +1143,10 @@ impl Sim {
                 let tip = self.table.tips[usize::from(tip)];
                 let p = self.balls[usize::from(ball)].p;
                 let n = (p - tip).norm();
-                if n == V3::ZERO {
+                if n == V3::ZERO || !within_point_slop(p - tip) {
+                    // Coincident or not at the tip: a jaw's impulse has no contact to act at. The
+                    // ticket's class — an impulse applied to a surface that is nowhere near the ball
+                    // — must not be reachable through the event stream.
                     return;
                 }
                 let pocket = self.nearest_pocket(tip);
@@ -1308,6 +1358,16 @@ impl Sim {
     /// A ball–ball impulse (`physics.md` §3.2): frictional inelastic, with the speed-dependent `μb`.
     fn hit_pair(&mut self, i: usize, j: usize) {
         let (pi, pj) = (self.balls[i].p, self.balls[j].p);
+        if !within_contact_slop(pj - pi) {
+            // Not in contact: two balls further apart than the contact slop have no contact to
+            // impulse, and the fact is not emitted. This is the guard of last resort for the
+            // phantom-contact class — a solved root extrapolated past its law, or a group re-check
+            // against a state that has moved on — and it is the same contact test the candidate
+            // filter ran, so the only way a real event can meet it is the group window's own travel
+            // (≤ `SIMULTANEITY_EPS_S`, which the pair's own root is re-solved against at the next
+            // group). A non-contact is never turned into one.
+            return;
+        }
         let (n, v_n) = pair_contact(pi, pj, self.balls[i].v, self.balls[j].v);
         if !is_approaching(v_n) {
             // Touching or already separating: the pair brings no impulse, but an overlap still has to
@@ -1567,7 +1627,7 @@ fn solve_point(p: V3, v: V3, acc: V3, tip: V3) -> Option<f64> {
     if dp.dot(v) >= 0.0 {
         return None; // not approaching the tip
     }
-    if dp.dot(dp) - BALL_RADIUS_MM * BALL_RADIUS_MM <= 2.0 * BALL_RADIUS_MM * CONTACT_SLOP_MM {
+    if within_point_slop(dp) {
         return Some(0.0); // at the tip within rounding, and approaching
     }
     let mut t = smallest_positive_root(
@@ -1584,11 +1644,23 @@ fn solve_point(p: V3, v: V3, acc: V3, tip: V3) -> Option<f64> {
             break;
         }
         t -= f / fp;
-        if t <= 0.0 {
-            t = 1e-9;
+        if !t.is_finite() || t <= 0.0 {
+            // The step crossed the origin: the iterate has left the positive root's basin. A tip
+            // contact at `t = 0` is the caller's within-slop case (`within_point_slop`), not a root,
+            // and a step at or below zero is never to be clamped into one — the clamp this replaces
+            // is exactly what turned a runaway iterate into a contact that was not there.
+            return None;
         }
     }
-    if t > 0.0 { Some(t) } else { None }
+    let pos = dp + v * t + acc * (0.5 * t * t);
+    let vel = v + acc * t;
+    // A root is only a candidate if it is a real contact: at the root the tip's surface is reached
+    // within the contact slop, and the ball is still approaching it (the refinement can otherwise
+    // land on the exit root — the far side of the pass-through).
+    if !within_point_slop(pos) || pos.dot(vel) >= 0.0 {
+        return None;
+    }
+    Some(t)
 }
 
 /// A pair's contact normal (`i` → `j`) and their relative speed along it: positive is approaching.
@@ -1612,11 +1684,44 @@ fn is_approaching(v_n: f64) -> bool {
     v_n > APPROACH_FLOOR_MM_S
 }
 
+/// Whether two balls' surfaces are within the contact slop — the one test behind the candidate
+/// filter's "contact now" case, its verification of a solved root, and the impulse's own guard.
+///
+/// `dp` is the centre-to-centre vector. The test is one-sided (an overlap counts), so a pair pushed
+/// inside the slop by a previous impulse still reads as in contact.
+fn within_contact_slop(dp: V3) -> bool {
+    dp.dot(dp) - BALL_DIAMETER_MM * BALL_DIAMETER_MM <= 2.0 * BALL_DIAMETER_MM * CONTACT_SLOP_MM
+}
+
+/// Whether a ball's surface is within the contact slop of a point collider (a jaw tip), for
+/// `dp = p − tip`. The one test behind [`solve_point`]'s contact-now case, its root verification, and
+/// the tip impulse's own guard.
+fn within_point_slop(dp: V3) -> bool {
+    dp.dot(dp) - BALL_RADIUS_MM * BALL_RADIUS_MM <= 2.0 * BALL_RADIUS_MM * CONTACT_SLOP_MM
+}
+
+/// Whether a pair whose root has been solved is **really** in contact and approaching there. A root
+/// that fails either test is not a contact at the instant it names — it is the leftover of a law
+/// extrapolated past its validity, or of a refinement that never found a root because the pair's
+/// closest approach stays outside the slop — so it is not an event, and a non-contact is never
+/// turned into one.
+fn pair_contact_at(pi: V3, pj: V3, vi: V3, vj: V3) -> bool {
+    if !within_contact_slop(pj - pi) {
+        return false;
+    }
+    let (_, v_n) = pair_contact(pi, pj, vi, vj);
+    is_approaching(v_n)
+}
+
 /// When two **separated** balls' centres reach `2R` of each other. The caller has established that
 /// the pair is approaching and not in contact (the contact-now case never reaches here): letting the
 /// constant-velocity quadratic answer for a pair that is already touching would return its *second*
 /// root — the far side of the pass-through — and the pair would interpenetrate for the interval
 /// between, which is how a rack contact tunnels.
+///
+/// The root is only a candidate **inside both balls' segment validity**, which the caller bounds (a
+/// difference of two laws holds no longer than the shorter of them) and verifies with
+/// [`pair_contact_at`].
 fn solve_pair(dp: V3, dv: V3, da: V3) -> Option<f64> {
     let diameter2 = BALL_DIAMETER_MM * BALL_DIAMETER_MM;
     let mut t = smallest_positive_root(dv.dot(dv), 2.0 * dp.dot(dv), dp.dot(dp) - diameter2)?;
@@ -1629,11 +1734,16 @@ fn solve_pair(dp: V3, dv: V3, da: V3) -> Option<f64> {
             break;
         }
         t -= f / fp;
-        if t <= 0.0 {
-            t = 1e-9;
+        if !t.is_finite() || t <= 0.0 {
+            // The step crossed the origin: the iterate has left the positive root's basin — which
+            // is what a root extrapolated past its segment's validity does. The caller owns the
+            // contact-now case (a pair within the slop and approaching), so there is nothing here
+            // to report: rejected, never clamped. The clamp this replaces is precisely how a pair
+            // 1634 mm apart was turned into a contact at `t ≈ 0`.
+            return None;
         }
     }
-    if t > 0.0 { Some(t) } else { None }
+    Some(t)
 }
 
 /// When an airborne ball reaches the cloth.
@@ -1680,11 +1790,15 @@ fn solve_drop(p: V3, v: V3, acc: V3, pocket: &Pocket) -> Option<f64> {
             return None;
         }
         t -= step;
-        if t <= 0.0 {
-            t = 1e-9;
+        if !t.is_finite() || t <= 0.0 {
+            // The step crossed the origin: the iterate has left the crossing's basin. A drop is a
+            // crossing and the ball is still outside the mouth here, so the crossing's own root is
+            // re-solved from the (unchanged) state on the next pass — rejected, never clamped into
+            // a `t ≈ 0` drop.
+            return None;
         }
     }
-    if t <= 0.0 || t > 1e4 {
+    if t > 1e4 {
         return None;
     }
     let pos = p + v * t + acc * (0.5 * t * t);

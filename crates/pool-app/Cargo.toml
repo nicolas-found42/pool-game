@@ -1,0 +1,19 @@
+[package]
+name = "pool-app"
+description = "The Bevy shell (architecture.md §10): render, input, playback, bridge, AI host, UI, debug"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+
+[[bin]]
+name = "pool"
+path = "src/main.rs"
+
+[dependencies]
+pool-sim.workspace = true
+bevy.workspace = true
+clap.workspace = true
+
+[lints]
+workspace = true
