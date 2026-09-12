@@ -20,3 +20,10 @@ GitHub rather than by convention.
   is chosen, `ci.yml` is a checkout-only placeholder; it must be replaced with
   the real build+test commands when the stack lands.
 - PRs as a triage/request surface: off (`docs/agents/issue-tracker.md`).
+
+## Update (2026-09-12, M0)
+
+The placeholder is replaced by the real workflow: `linux` (fmt, clippy with `-D warnings`, the
+`architecture.md` §2 purity grep, `cargo test --workspace`), `macos` (the same test suite), and `ort`
+(the R2 artifact job, which skips until `pool-ai` lands), with `ci` kept as the aggregate gate so the
+required check context is unchanged.

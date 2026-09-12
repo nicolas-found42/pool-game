@@ -1,0 +1,53 @@
+[workspace]
+resolver = "3"
+members = ["crates/pool-rng", "crates/pool-sim"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.95.0"
+publish = false
+
+[workspace.dependencies]
+pool-rng = { path = "crates/pool-rng" }
+pool-sim = { path = "crates/pool-sim" }
+libm = "=0.2.16"
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["float_roundtrip"] }
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+
+# Lint baseline: architecture.md §2. Every allow below is a reviewable line with its reason.
+[workspace.lints.clippy]
+all = { level = "deny", priority = 1 }
+pedantic = { level = "deny", priority = 1 }
+# The determinism contract compares floats by bits and exact IEEE semantics, never by tolerance
+# heuristics (architecture.md §3); `float_cmp` would fight that discipline.
+float_cmp = { level = "allow", priority = 2 }
+# f64 is the sim's type; the deliberate f32 boundary is the ONNX encoding (architecture.md §3).
+cast_precision_loss = { level = "allow", priority = 2 }
+# The kernel's index arithmetic converts provably-bounded values (a slot index below 5, a table index
+# below the table's length, a draw below a slice length). Each site is reviewed; `try_from` on those
+# paths would add an error branch that cannot fire.
+cast_possible_truncation = { level = "allow", priority = 2 }
+cast_sign_loss = { level = "allow", priority = 2 }
+# `suboptimal_flops` suggests `mul_add`, which the workspace bans: Rust must emit unfused
+# `fmul`/`fadd` for bit-identical results (architecture.md §3).
+suboptimal_flops = { level = "allow", priority = 2 }
+# Domain vocabulary is deliberately terse and repeated (`mu_s`/`mu_r`, `e_n`/`e_b`, `a`/`b`).
+similar_names = { level = "allow", priority = 2 }
+many_single_char_names = { level = "allow", priority = 2 }
+# Names carry their unit and their frame (`x_mm`, `v_mm_s`), so module prefixes repeat by design.
+module_name_repetitions = { level = "allow", priority = 2 }
+# Constants are literals from the spec's tables, printed as written there.
+unreadable_literal = { level = "allow", priority = 2 }
+excessive_precision = { level = "allow", priority = 2 }
+# Spec constants are documented in the sections, not in rustdoc per item.
+missing_errors_doc = { level = "allow", priority = 2 }
+missing_panics_doc = { level = "allow", priority = 2 }
+must_use_candidate = { level = "allow", priority = 2 }
+# Long functions are event solvers and ladder stages whose shape mirrors the spec's prose.
+too_many_lines = { level = "allow", priority = 2 }
+# Index loops are the pinned algorithms (Fisher–Yates, slot order) written as specified.
+needless_range_loop = { level = "allow", priority = 2 }

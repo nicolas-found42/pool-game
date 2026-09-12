@@ -85,7 +85,9 @@ interface.
 
 - **μb ships as a piecewise-linear table**, not as `a + b·e^(−cv)`: the numeric discipline bans
   transcendentals from the core (`architecture.md` §3). The committed table's shape is a 25 mm/s step
-  with a maximum relative error of 1.0e−5.
+  with a maximum **absolute** error of 1.0e−5 — measured at M0 as 9.84e−6 over a 1 mm/s sweep. (The
+  *relative* error reaches 8.4e−5 at the fast end, where μb is smallest — μb(12 m/s) = 0.00995 — so the
+  bound is absolute, and it is far below any throw measurement's resolution either way.)
 - The published **0.03–0.08 band is provisional and marked not portable** until the stick/slip
   parametrisation is pinned: the refit to TP B-3's six measured points wants 0.148 at 1 m/s, five times
   outside the band, because the fit absorbs this formulation's error (§12).
@@ -232,7 +234,7 @@ profile is one such record, and these are defaults, not claims of universality):
 | Cloth rolling μr | 0.010 | 0.005–0.015 | **not identifiable from the curves in hand** (§12) |
 | Spin (turntable) decay | 10 rad/s² | 5–15 | consistent / untested |
 | Ball–ball restitution e_b | 0.95 | 0.92–0.98 | consistent / untested |
-| Ball–ball friction μb(v) | table, 25 mm/s step, max rel. error 1.0e−5 | band 0.03–0.08 **provisional, not portable** | **carried**, not fitted (§12) |
+| Ball–ball friction μb(v) | table, 25 mm/s step, max **abs.** error 9.84e−6 (rel. 8.4e−5 at the fast end) | band 0.03–0.08 **provisional, not portable** | **carried**, not fitted (§12) |
 | Cushion `e_n` | **0.78** | 0.75–0.85 | **fitted**: TP B-6's measured retention `e_c` = 0.70 (0.75 → 0.6714, 0.80 → 0.7178) |
 | Cushion friction μc | 0.20 | — | **weakly identified**: bounded below, never pinned in value; whole retention share +0.0490 over the closed form 0.6224; sticking from ≈0.05 (retention) / ≈0.10 (travel, rejected 2D) / ≈0.15 (ruled 3D) |
 | Vertical recovery `e_slate` | 0.60 | **no measured band** | **carried**, not fitted: pinned by the ball-drop test (§12); every rail result reports the value it ran at |
