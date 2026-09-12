@@ -1,10 +1,73 @@
 name: CI
+
 on:
   pull_request:
+  workflow_dispatch:
+
 permissions:
   contents: read
+
 jobs:
-  ci:
+  # The gate ADR 0001 pins: branch protection requires the check context `ci`, so `ci` aggregates the
+  # real work below and fails if any of it fails (or if a job it needs was skipped unexpectedly).
+  linux:
+    name: linux
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+      - name: Toolchain (rust-toolchain.toml)
+        run: rustup show
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo fmt --all --check
+      - run: cargo clippy --workspace --all-targets -- -D warnings
+      - run: bash ci/purity.sh
+      - run: cargo test --workspace
+
+  macos:
+    name: macos
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Toolchain (rust-toolchain.toml)
+        run: rustup show
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo test --workspace
+
+  # R2 (README.md §3): the ONNX artifact contract — load, golden vectors, sha256 — is machine-checked
+  # with the feature ON, and only here. Activates when pool-ai lands (M4); until then the job finds no
+  # crate, says so, and the gate below accepts its success. (`hashFiles` is not available in a job-level
+  # `if`, so the presence check is a step.)
+  ort:
+    name: ort
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Is there a pool-ai crate yet?
+        id: gate
+        run: |
+          if [ -f crates/pool-ai/Cargo.toml ]; then
+            echo "present=yes" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=no" >> "$GITHUB_OUTPUT"
+            echo "pool-ai has not landed yet (M4); skipping the artifact contract."
+          fi
+      - name: Toolchain (rust-toolchain.toml)
+        if: steps.gate.outputs.present == 'yes'
+        run: rustup show
+      - uses: Swatinem/rust-cache@v2
+        if: steps.gate.outputs.present == 'yes'
+      - if: steps.gate.outputs.present == 'yes'
+        run: cargo test -p pool-ai --features ort
+
+  ci:
+    name: ci
+    needs: [linux, macos, ort]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Gate
+        run: |
+          test "${{ needs.linux.result }}" = "success" || { echo "linux: ${{ needs.linux.result }}"; exit 1; }
+          test "${{ needs.macos.result }}" = "success" || { echo "macos: ${{ needs.macos.result }}"; exit 1; }
+          test "${{ needs.ort.result }}" = "success" || { echo "ort: ${{ needs.ort.result }}"; exit 1; }
+          echo "ci: ok"

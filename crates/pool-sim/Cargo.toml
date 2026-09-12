@@ -1,0 +1,18 @@
+[package]
+name = "pool-sim"
+description = "The deterministic physics core: frame, constants, rack generator, event-driven simulation, facts"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+
+[dependencies]
+pool-rng.workspace = true
+libm.workspace = true
+serde = { workspace = true }
+
+[dev-dependencies]
+serde_json.workspace = true
+
+[lints]
+workspace = true
