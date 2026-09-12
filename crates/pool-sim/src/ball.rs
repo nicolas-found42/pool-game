@@ -71,4 +71,19 @@ impl BallState {
         let [wx, wy, wz] = self.spin_rad_s;
         (wx * wx + wy * wy + wz * wz).sqrt()
     }
+
+    /// Total mechanical energy (J): `½mv² + ½Iω² + mg(z − R)`.
+    ///
+    /// The sim's units are mm and g, so the sum is in `g·mm²/s²` and the `1e9` converts it to joules.
+    #[must_use]
+    pub fn total_energy_j(&self) -> f64 {
+        let [vx, vy, vz] = self.vel_mm_s;
+        let [wx, wy, wz] = self.spin_rad_s;
+        let linear = 0.5 * crate::constants::BALL_MASS_G * (vx * vx + vy * vy + vz * vz);
+        let angular = 0.5 * crate::constants::BALL_INERTIA_G_MM2 * (wx * wx + wy * wy + wz * wz);
+        let height = crate::constants::BALL_MASS_G
+            * crate::constants::GRAVITY_MM_S2
+            * (self.pos_mm[2] - crate::constants::BALL_RADIUS_MM);
+        (linear + angular + height) / 1e9
+    }
 }

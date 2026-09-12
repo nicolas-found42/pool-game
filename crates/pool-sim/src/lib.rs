@@ -6,12 +6,24 @@
 
 pub mod ball;
 pub mod constants;
+pub mod facts;
 pub mod frame;
+pub mod math;
 pub mod profile;
 pub mod rack;
+pub mod sim;
 pub mod state_hash;
+pub mod strike;
+pub mod table;
 
 pub use ball::{BallState, MotionMode};
+pub use facts::{Fact, FactKind, RailSummary};
 pub use frame::{Slot, slot_position_mm};
+pub use math::V3;
 pub use profile::{MuB, Profile};
 pub use rack::Arrangement;
+pub use sim::{
+    PlacementError, RestBlock, Runaway, Segment, Shot, ShotOutcome, Sim, SupportedOverMouth,
+};
+pub use strike::{StrikeDecl, StrikeError, miscue_envelope_mm};
+pub use table::{PocketId, Rail, Table};
