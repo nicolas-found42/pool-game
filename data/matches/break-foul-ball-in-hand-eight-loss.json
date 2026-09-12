@@ -1,0 +1,82 @@
+{
+  "format_version": 1,
+  "profile": "default",
+  "match_seed": 828927508480,
+  "noise_seed": 1,
+  "difficulty": {
+    "level": "pro",
+    "checkpoint": "none (both seats human)"
+  },
+  "race_target": 1,
+  "entries": [
+    {
+      "kind": "placement",
+      "domain": "above_head_string",
+      "pos": {
+        "x": -800.0,
+        "y": 0.0
+      }
+    },
+    {
+      "kind": "declaration",
+      "from_policy": false,
+      "call": {
+        "type": "break"
+      },
+      "aim": {
+        "x": 1.0,
+        "y": 0.0
+      },
+      "speed": 5200.0,
+      "spin": {
+        "a": 0.0,
+        "b": 0.0
+      },
+      "elevation": 0.0
+    },
+    {
+      "kind": "declaration",
+      "from_policy": false,
+      "call": {
+        "type": "safety"
+      },
+      "aim": {
+        "x": 0.7715813160851068,
+        "y": 0.6361307040761155
+      },
+      "speed": 800.0,
+      "spin": {
+        "a": 0.0,
+        "b": 0.0
+      },
+      "elevation": 0.0
+    },
+    {
+      "kind": "placement",
+      "domain": "anywhere",
+      "pos": {
+        "x": 900.0,
+        "y": 0.0
+      }
+    },
+    {
+      "kind": "declaration",
+      "from_policy": false,
+      "call": {
+        "type": "ball",
+        "ball": 8,
+        "pocket": "head_left"
+      },
+      "aim": {
+        "x": -0.4615068429685169,
+        "y": -0.8871366489404171
+      },
+      "speed": 2000.0,
+      "spin": {
+        "a": 0.0,
+        "b": 0.0
+      },
+      "elevation": 0.0
+    }
+  ]
+}

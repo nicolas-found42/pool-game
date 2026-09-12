@@ -10,10 +10,10 @@
 
 use crate::ball::{BallState, MotionMode};
 use crate::constants::{
-    BALL_DIAMETER_MM, BALL_INERTIA_G_MM2, BALL_MASS_G, BALL_RADIUS_MM, CUSHION_CLEARANCE_MM,
-    CUSHION_NORMAL_Z, DROP_BOUNDARY_TOLERANCE_MM, FROZEN_GAP_MM, GRAVITY_MM_S2, HALF_LEN_MM,
-    HALF_WIDTH_MM, SIMULTANEITY_EPS_S, SLEEP_ANGULAR_RAD_S, SLEEP_LINEAR_MM_S,
-    cushion_normal_horizontal,
+    BALL_DIAMETER_MM, BALL_INERTIA_G_MM2, BALL_MASS_G, BALL_RADIUS_MM, CONTACT_SLOP_MM,
+    CUSHION_CLEARANCE_MM, CUSHION_NORMAL_Z, DROP_BOUNDARY_TOLERANCE_MM, FROZEN_GAP_MM,
+    GRAVITY_MM_S2, HALF_LEN_MM, HALF_WIDTH_MM, SIMULTANEITY_EPS_S, SLEEP_ANGULAR_RAD_S,
+    SLEEP_LINEAR_MM_S, cushion_normal_horizontal,
 };
 use crate::facts::{Fact, FactKind, KickCause};
 use crate::math::{V3, v3};
@@ -45,12 +45,6 @@ const ROOT_ITERATIONS: usize = 16;
 const APPROACH_FLOOR_MM_S: f64 = 1e-9;
 /// How many times the position-only separation step sweeps the table before it gives up.
 const DEPENETRATION_PASSES: u32 = 8;
-/// The contact slop (mm): at this scale two surfaces are in contact. One number serves both the
-/// contact tests and the position-only separation step (`physics.md` §1), so the solver and the step
-/// agree on where contact begins and ends. It is a rounding guard, four orders below the model's
-/// thinnest real gap (a frozen ball's 0.5 mm), never a physical gap.
-const CONTACT_SLOP_MM: f64 = 1e-6;
-
 /// One ball's local analytic law, valid from its segment's start:
 ///
 /// ```text
@@ -460,7 +454,11 @@ impl Sim {
                 continue;
             }
             let gap = (p - other.p).len() - BALL_DIAMETER_MM;
-            if gap < 0.0 {
+            // Contact, not overlap: the same rounding guard the solver's own contact tests use. An
+            // exact-contact position re-measures a few ulps short of a diameter on this route — the
+            // spot search of `rules.md` §4 returns one, and 1.5's clause 2 *wants* contact — while a
+            // real overlap is six orders of magnitude larger than this guard.
+            if gap < -CONTACT_SLOP_MM {
                 return Err(PlacementError::Overlaps {
                     ball: other_index as u8,
                     gap_mm: gap,

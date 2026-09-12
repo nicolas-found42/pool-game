@@ -3,11 +3,11 @@
 //!
 //! The predicates are composed from the simulation's published constants and follow `Sim::place_cue`
 //! exactly — finite, the centre on the playing surface, and at least one diameter of clearance to every
-//! other ball, with exact contact accepted (`tests/placement_geometry.rs` asserts the agreement). The
-//! machine never reads ball state directly; it hands the ball array in.
+//! other ball, with contact (inside the shared slop) accepted; `tests/placement_spot.rs` asserts the
+//! agreement. The machine never reads ball state directly; it hands the ball array in.
 
 use pool_sim::constants::{
-    BALL_DIAMETER_MM, BALL_RADIUS_MM, HALF_LEN_MM, HALF_WIDTH_MM, HEAD_STRING_X_MM,
+    BALL_DIAMETER_MM, BALL_RADIUS_MM, CONTACT_SLOP_MM, HALF_LEN_MM, HALF_WIDTH_MM, HEAD_STRING_X_MM,
 };
 
 use crate::facts::PreBall;
@@ -73,6 +73,10 @@ pub fn in_domain(domain: PlacementDomain, pos: Vec2) -> bool {
 
 /// The first ball at `pos` would overlap, with the gap it would leave (negative is an overlap). The
 /// cue ball is never one of them: it is the ball being placed.
+///
+/// Overlap is *beyond* the contact slop, exactly as [`pool_sim::Sim::place_cue`] reads it: an
+/// exact-contact position re-measured by a different route can land a few ulps short of a diameter,
+/// and contact is admissible (`rules.md` §4's spot, `tests/placement_spot.rs`'s agreement).
 #[must_use]
 pub fn overlap(pos: Vec2, balls: &[PreBall]) -> Option<(u8, f64)> {
     balls
@@ -83,7 +87,7 @@ pub fn overlap(pos: Vec2, balls: &[PreBall]) -> Option<(u8, f64)> {
             let dy = pos.y - ball.y_mm;
             ((dx * dx + dy * dy).sqrt() - BALL_DIAMETER_MM, ball.id)
         })
-        .find(|(gap, _)| *gap < 0.0)
+        .find(|(gap, _)| *gap < -CONTACT_SLOP_MM)
         .map(|(gap, id)| (id, gap))
 }
 

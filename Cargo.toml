@@ -5,6 +5,7 @@ members = [
     "crates/pool-sim",
     "crates/pool-rules",
     "crates/pool-match",
+    "crates/pool-headless",
     "crates/pool-app",
 ]
 
@@ -19,6 +20,7 @@ pool-rng = { path = "crates/pool-rng" }
 pool-sim = { path = "crates/pool-sim" }
 pool-rules = { path = "crates/pool-rules" }
 pool-match = { path = "crates/pool-match" }
+pool-headless = { path = "crates/pool-headless" }
 pool-app = { path = "crates/pool-app" }
 # The shell's pins (`architecture.md` §12): Bevy exact, clap on 4.
 bevy = "=0.19.1"

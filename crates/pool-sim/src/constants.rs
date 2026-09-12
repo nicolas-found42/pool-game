@@ -60,6 +60,13 @@ pub const SLEEP_ANGULAR_RAD_S: f64 = 0.01;
 /// Frozen tolerance (mm): one constant for rail and ball frozen status.
 pub const FROZEN_GAP_MM: f64 = 0.5;
 
+/// The contact slop (mm): at this scale two surfaces are in contact. One number serves the solver's
+/// contact tests, the position-only separation step, and the placement boundary, so all three agree on
+/// where contact begins and ends (`physics.md` §1). It is a rounding guard, four orders below the
+/// model's thinnest real gap (a frozen ball's 0.5 mm), never a physical gap: an exact-contact position
+/// re-measured by a different route can land a few ulps inside it, and contact is what it is.
+pub const CONTACT_SLOP_MM: f64 = 1e-6;
+
 /// The drop predicate's boundary tolerance (mm): the crossing root must reach the mouth boundary to
 /// within this much, or it is not a crossing (`physics.md` §3.5.2b).
 pub const DROP_BOUNDARY_TOLERANCE_MM: f64 = 1.0;
