@@ -38,7 +38,8 @@ const FULL_LOG: &str = r#"{
     { "kind": "declaration", "from_policy": true, "call": { "type": "ball", "ball": 3, "pocket": "foot_left" },
       "aim": { "x": 0.5, "y": 0.8660254037844386 }, "speed": 2100.0,
       "spin": { "a": 0.25, "b": -0.5 }, "elevation": 0.17453292519943295 },
-    { "kind": "option", "option_id": "illegal_break.re_rack" },
+    { "kind": "option", "option_id": "re_rack_and_break" },
+    { "kind": "stalemate" },
     { "kind": "declaration", "from_policy": false, "call": { "type": "safety" },
       "aim": { "x": 0.0, "y": 1.0 }, "speed": 900.0, "spin": { "a": 0.0, "b": 0.0 }, "elevation": 0.0 },
     { "kind": "spot_request" }
@@ -48,7 +49,7 @@ const FULL_LOG: &str = r#"{
 #[test]
 fn a_full_log_round_trips_through_the_schema_types() {
     let log = InputLog::parse(FULL_LOG).expect("the reference log parses");
-    assert_eq!(log.entries.len(), 6);
+    assert_eq!(log.entries.len(), 7);
     let json = log.to_json().expect("serializes");
     let again = InputLog::parse(&json).expect("the serialized form parses");
     assert_eq!(log, again, "round trip must be exact");
@@ -74,6 +75,14 @@ fn the_schema_rejects_what_it_says_it_rejects() {
     assert_schema_rejects(
         &FULL_LOG.replace("\"kind\": \"spot_request\"", "\"kind\": \"nudge\""),
         "an unknown entry kind",
+    );
+    // A stalemate carries nothing but its kind: the agreement is the whole input.
+    assert_schema_rejects(
+        &FULL_LOG.replace(
+            "{ \"kind\": \"stalemate\" }",
+            "{ \"kind\": \"stalemate\", \"proposer\": \"p1\" }",
+        ),
+        "a stalemate carrying a field",
     );
     // A ball outside 1..=15.
     assert_schema_rejects(&FULL_LOG.replace("\"ball\": 3", "\"ball\": 16"), "ball 16");
