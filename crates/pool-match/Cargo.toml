@@ -8,6 +8,7 @@ publish.workspace = true
 
 [dependencies]
 pool-sim.workspace = true
+pool-rules.workspace = true
 pool-rng.workspace = true
 serde = { workspace = true }
 serde_json.workspace = true

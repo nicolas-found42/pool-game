@@ -5,7 +5,5 @@
 
 pub mod log;
 
-pub use log::{
-    BallNumber, Call, Declaration, Difficulty, DifficultyLevel, Entry, InputLog, LogError,
-    PlacementDomain, Spin, Vec2,
-};
+pub use log::{Declaration, Difficulty, DifficultyLevel, Entry, InputLog, LogError};
+pub use pool_rules::{BallNumber, Call, PlacementDomain, Spin, Vec2};

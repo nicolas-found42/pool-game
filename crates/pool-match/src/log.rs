@@ -5,9 +5,11 @@
 //!
 //! The types here mirror `docs/spec/input-log.schema.json` exactly — four entry kinds, the header, and
 //! the strike declaration — with the schema's `additionalProperties: false` and its ranges enforced at
-//! the parse boundary. No wall-clock value ever appears in the log.
+//! the parse boundary. The machine's own vocabulary (`Call`, `Spin`, `Vec2`, `PlacementDomain`) lives in
+//! `pool-rules`; the log reuses it and adds only `from_policy`. No wall-clock value appears in the log.
 
-use serde::{Deserialize, Deserializer, Serialize};
+use pool_rules::{Call, PlacementDomain, Spin, Vec2};
+use serde::{Deserialize, Serialize};
 
 /// The log's header plus its entries.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -53,69 +55,9 @@ pub enum DifficultyLevel {
     Pro,
 }
 
-/// A 2-vector in the table frame.
-#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
-pub struct Vec2 {
-    /// x (mm, or a unit direction's x).
-    pub x: f64,
-    /// y (mm, or a unit direction's y).
-    pub y: f64,
-}
-
-/// The declaration's call: a ball plus pocket, a safety, or — on the break only — nothing.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(tag = "type", rename_all = "snake_case", deny_unknown_fields)]
-pub enum Call {
-    /// A called ball and pocket.
-    Ball {
-        /// The called ball, 1..=15.
-        ball: BallNumber,
-        /// Pocket id per the rules section's vocabulary.
-        pocket: String,
-    },
-    /// A safety: passes the turn at the end of the shot.
-    Safety,
-    /// The break: no ball is called.
-    Break,
-}
-
-/// A ball number, 1..=15, validated at the parse boundary.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct BallNumber(pub u8);
-
-impl Serialize for BallNumber {
-    fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-        serializer.serialize_u8(self.0)
-    }
-}
-
-impl<'de> Deserialize<'de> for BallNumber {
-    fn deserialize<D: Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        let value = u8::deserialize(deserializer)?;
-        if (1..=15).contains(&value) {
-            Ok(Self(value))
-        } else {
-            Err(serde::de::Error::custom(format!(
-                "ball {value} is outside 1..=15"
-            )))
-        }
-    }
-}
-
-/// The placement domain the incoming player is placing within.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
-pub enum PlacementDomain {
-    /// Ball in hand above the head string (after a break foul).
-    AboveHeadString,
-    /// Ball in hand anywhere on the playing surface (after a standard foul).
-    Anywhere,
-}
-
 /// One free choice: the four kinds of `architecture.md` §6's table.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-#[serde(tag = "kind", rename_all = "snake_case", deny_unknown_fields)]
+#[serde(tag = "kind", rename_all = "snake_case")]
 pub enum Entry {
     /// A cue-ball placement within its domain.
     Placement {
@@ -135,7 +77,8 @@ pub enum Entry {
     },
 }
 
-/// The atomic shot declaration: the call, the aim, the speed, the spin, the elevation.
+/// The logged declaration: the machine's `ShotDeclaration` plus the one field the log adds —
+/// `from_policy`, the marker execution noise is applied to.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct Declaration {
@@ -153,31 +96,26 @@ pub struct Declaration {
     pub elevation: f64,
 }
 
-/// The cue-tip contact offset in the plane perpendicular to the cue axis, as fractions of the miscue
-/// envelope: `1.0` is the limit, so `|(a, b)| <= 1`; `a > 0` is the shooter's right, `b > 0` above
-/// centre. Enforced at the input boundary with a 1e-3 mm tolerance on the tip offset.
-#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
-pub struct Spin {
-    /// Right/left tip offset, envelope fraction.
-    pub a: f64,
-    /// Above/below-centre tip offset, envelope fraction.
-    pub b: f64,
-}
-
-impl Spin {
-    /// The envelope fraction's magnitude: `|(a, b)|`, compared against 1.0 with the ruled tolerance.
+impl Declaration {
+    /// The machine's view of this declaration (`rules.md` §1's `AwaitingShot` input).
     #[must_use]
-    pub fn magnitude(&self) -> f64 {
-        (self.a * self.a + self.b * self.b).sqrt()
+    pub fn shot_declaration(&self) -> pool_rules::ShotDeclaration {
+        pool_rules::ShotDeclaration {
+            call: self.call.clone(),
+            aim: self.aim,
+            speed: self.speed,
+            spin: self.spin,
+            elevation: self.elevation,
+        }
     }
 }
 
 impl InputLog {
     /// Parse a log from JSON text and validate the header's ranges.
     ///
-    /// The types enforce the schema's shape (`additionalProperties: false`, the tagged unions, the
-    /// ball range); this adds the numeric bounds a JSON Schema states but Rust types cannot.
+    /// The types enforce the schema's shape (`additionalProperties: false` on structs, the tagged
+    /// unions, the ball range); this adds the numeric bounds a JSON Schema states but Rust types
+    /// cannot. The tests additionally run the document through the published schema itself.
     pub fn parse(text: &str) -> Result<Self, LogError> {
         let log: Self = serde_json::from_str(text).map_err(|e| LogError::Parse(e.to_string()))?;
         log.validate()?;
