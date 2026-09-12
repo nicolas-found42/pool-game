@@ -30,6 +30,9 @@ pub const BALL_INERTIA_G_MM2: f64 = 0.4 * BALL_MASS_G * BALL_RADIUS_MM * BALL_RA
 pub const CUSHION_NOSE_HEIGHT_MM: f64 = 0.635 * BALL_DIAMETER_MM;
 /// The centre height at which a ball clears a cushion (mm): `R` + nose height.
 pub const CUSHION_CLEARANCE_MM: f64 = BALL_RADIUS_MM + CUSHION_NOSE_HEIGHT_MM;
+/// The cushion contact normal's downward component, `(nose − R)/R`: every cushion contact carries a
+/// tilted normal, which is what makes the vertical channel entailed (`physics.md` §3.3).
+pub const CUSHION_NORMAL_Z: f64 = (CUSHION_NOSE_HEIGHT_MM - BALL_RADIUS_MM) / BALL_RADIUS_MM;
 
 /// Corner pocket mouth (mm), mid of WPA's 4.5–4.625 in.
 pub const POCKET_MOUTH_CORNER_MM: f64 = 115.9;
@@ -56,6 +59,19 @@ pub const SLEEP_ANGULAR_RAD_S: f64 = 0.01;
 
 /// Frozen tolerance (mm): one constant for rail and ball frozen status.
 pub const FROZEN_GAP_MM: f64 = 0.5;
+
+/// The drop predicate's boundary tolerance (mm): the crossing root must reach the mouth boundary to
+/// within this much, or it is not a crossing (`physics.md` §3.5.2b).
+pub const DROP_BOUNDARY_TOLERANCE_MM: f64 = 1.0;
+
+/// The cushion contact normal's horizontal magnitude, `√(R² − (nose − R)²)/R` (`physics.md` §3.3):
+/// the tilted normal's inward part. A function rather than a `const` because `sqrt` is not
+/// const-callable; the IEEE square root is correctly rounded, so it is bit-identical everywhere.
+#[must_use]
+pub fn cushion_normal_horizontal() -> f64 {
+    let rise = CUSHION_NOSE_HEIGHT_MM - BALL_RADIUS_MM;
+    (BALL_RADIUS_MM * BALL_RADIUS_MM - rise * rise).sqrt() / BALL_RADIUS_MM
+}
 
 /// `√3` as the pinned literal, for the rack lattice's row step (`rules-break.md` §2).
 pub const SQRT_3: f64 = 1.732_050_807_568_877_2;
