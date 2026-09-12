@@ -19,28 +19,28 @@ pub struct Playback {
     shot: Option<Shot>,
     /// Seconds since the strike.
     t_s: f64,
-    /// Whether the clock advances. A held clock (the screenshot walk) presents a still frame.
-    running: bool,
+    /// Whether the clock advances: a held clock (the screenshot walk) presents a still frame.
+    advancing: bool,
 }
 
 impl Playback {
     /// Present `shot` from `t = 0`, clock running.
     pub fn begin(&mut self, shot: Shot) {
         self.t_s = 0.0;
-        self.running = true;
+        self.advancing = true;
         self.shot = Some(shot);
     }
 
-    /// Present `shot` at `t_s`, clock held — the screenshot walk's in-flight frame.
+    /// Present `shot` at `t_s`, clock held: the screenshot walk's still frame.
     pub fn hold(&mut self, shot: Shot, t_s: f64) {
         self.t_s = t_s.clamp(0.0, shot.t_rest_s());
-        self.running = false;
+        self.advancing = false;
         self.shot = Some(shot);
     }
 
     /// Whether the table is at rest: nothing is being presented, so authoring is open.
     #[must_use]
-    pub fn at_rest(&self) -> bool {
+    pub const fn at_rest(&self) -> bool {
         self.shot.is_none()
     }
 
@@ -48,6 +48,16 @@ impl Playback {
     #[must_use]
     pub const fn t_s(&self) -> f64 {
         self.t_s
+    }
+
+    /// End the presentation now: the next frame snaps to the session's rest position. The shell's
+    /// tests use it to skip the clock; nothing in play does.
+    #[cfg(test)]
+    pub fn advance_to_rest(&mut self) {
+        self.advancing = false;
+        if let Some(shot) = &self.shot {
+            self.t_s = shot.t_rest_s();
+        }
     }
 
     /// The presented shot's duration (s), when one is on screen.
@@ -61,28 +71,32 @@ impl Playback {
 ///
 /// A frame past the shot's rest time snaps to the rest block and hands off: the shot is dropped, and
 /// the states come from the session, which holds the same rest positions (the loop wrote them when the
-/// shot was adjudicated). Sampling is exact at every other instant — no interpolation.
+/// shot was adjudicated). Sampling is exact at every other instant — no interpolation — and nothing
+/// else in the shell writes ball positions while a shot is presenting.
 fn advance(
     time: Res<Time>,
     game: Res<Game>,
     mut playback: ResMut<Playback>,
     mut states: ResMut<BallStates>,
 ) {
-    if let Some(shot) = playback.shot.take() {
-        let t_rest = shot.t_rest_s();
+    let Some(t_rest) = playback.shot.as_ref().map(Shot::t_rest_s) else {
+        // At rest: the session's position, which covers a placement and a spot as well as a rest.
+        states.0 = *game.positions();
+        return;
+    };
+    if playback.advancing {
         playback.t_s = (playback.t_s + f64::from(time.delta_secs())).min(t_rest);
-        if playback.t_s < t_rest {
-            states.0 = shot.state_at(playback.t_s);
-            playback.shot = Some(shot);
-        } else {
-            // The snap to rest, and the handoff: from here the session owns the position.
-            playback.running = false;
-            states.0 = *game.positions();
-        }
+    }
+    if playback.t_s >= t_rest {
+        // The snap to rest, and the handoff: from here the session owns the position.
+        playback.advancing = false;
+        playback.shot = None;
+        states.0 = *game.positions();
         return;
     }
-    // At rest: the session's position, which covers a placement and a spot as well as a shot's rest.
-    states.0 = *game.positions();
+    if let Some(shot) = &playback.shot {
+        states.0 = shot.state_at(playback.t_s);
+    }
 }
 
 /// The playback systems (`architecture.md` §10: `Update`, never `FixedUpdate`).

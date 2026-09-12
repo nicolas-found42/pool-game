@@ -437,12 +437,19 @@ fn propose_placement(
     gestures: Gestures,
     mut game: ResMut<Game>,
     mut cue: ResMut<Cue>,
+    playback: Res<Playback>,
     mut states: ResMut<BallStates>,
 ) {
     let Awaiting::Placement { domain, .. } = game.awaiting() else {
         cue.placement = None;
         return;
     };
+    if !playback.at_rest() {
+        // A shot that fouled leaves the state in hand while its presentation is still running: the
+        // presentation owns the ball states until it hands off, so the proposal waits (§10's
+        // one-way sync — `playback.rs` is the only writer while a clock is up).
+        return;
+    }
     let balls = pre_balls(game.positions());
     let proposal = cue.placement.get_or_insert_with(|| Proposal {
         pos: RulesVec2 {
@@ -1681,6 +1688,13 @@ mod shell_tests {
     /// The harness around a prepared session.
     fn shell_around(game: Game) -> App {
         let mut app = App::new();
+        app.add_plugins(bevy::time::TimePlugin);
+        // The frame's order, as `main.rs` configures it: the clock and its states, then the inputs.
+        app.configure_sets(
+            Update,
+            (crate::ShellSet::Playback, crate::ShellSet::Input).chain(),
+        );
+        crate::playback::systems(&mut app);
         app.insert_resource(BallStates(*game.positions()));
         app.insert_resource(game);
         app.init_resource::<Cue>();
@@ -1690,7 +1704,9 @@ mod shell_tests {
         app.add_message::<MouseWheel>();
         app.add_systems(
             Update,
-            (choose_option, propose_stalemate, propose_placement, author).chain(),
+            (choose_option, propose_stalemate, propose_placement, author)
+                .chain()
+                .in_set(crate::ShellSet::Input),
         );
         app.world_mut().spawn(Window {
             resolution: WindowResolution::new(1920, 1080).with_scale_factor_override(1.0),
@@ -1980,6 +1996,69 @@ mod shell_tests {
                 }
             ),
             "the re-rack leaves the original breaker in hand above the head string"
+        );
+    }
+
+    /// The committed fixture (`pool-match`'s own regression log): a break, a placed cue ball, and a
+    /// scratch that leaves the shooter in hand. The shell drives it through the same `Request` path a
+    /// human's clicks use.
+    const FIXTURE: &str = "../../data/matches/break-foul-ball-in-hand-eight-loss.json";
+
+    /// A shell holding the fixture's first three inputs: the rack's placement, the break, and the
+    /// scratch that followed. The state is in hand, and the scratch is still on screen.
+    fn shell_at_the_scratch() -> (App, pool_sim::Shot) {
+        let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join(FIXTURE);
+        let text = std::fs::read_to_string(&path)
+            .unwrap_or_else(|error| panic!("cannot read {}: {error}", path.display()));
+        let log = pool_match::InputLog::parse(&text)
+            .unwrap_or_else(|error| panic!("{}: {error}", path.display()));
+        let mut game = Game::new(MatchConfig::from_log(&log, Profile::default_profile()));
+        for entry in &log.entries[..3] {
+            game.request(Request::from_entry(entry))
+                .unwrap_or_else(|error| panic!("the fixture's entry is legal: {error}"));
+        }
+        assert!(
+            matches!(game.awaiting(), Awaiting::Placement { .. }),
+            "the scratch leaves the incoming player in hand"
+        );
+        let shot = game.last_shot().cloned().expect("the scratch was computed");
+        let mut app = shell_around(game);
+        app.world_mut()
+            .resource_mut::<Playback>()
+            .hold(shot.clone(), shot.t_rest_s() * 0.4);
+        (app, shot)
+    }
+
+    #[test]
+    fn a_running_shot_owns_the_ball_states_while_the_placement_waits() {
+        let (mut app, shot) = shell_at_the_scratch();
+        let t_mid = shot.t_rest_s() * 0.4;
+        // One frame with the proposal live: the cue ball stays where the presentation put it, not
+        // where the ball-in-hand proposal would clamp it.
+        point_at(&mut app, Vec2::new(-1200.0, 600.0));
+        frame(&mut app);
+        let presented = shot.state_at(t_mid)[0].pos_mm;
+        let written = app.world().resource::<BallStates>().0[0].pos_mm;
+        assert_eq!(
+            written, presented,
+            "the presentation's cue ball, not the proposal's"
+        );
+        assert!(
+            app.world().resource::<Cue>().placement.is_none(),
+            "the proposal is held back while the shot presents"
+        );
+
+        // At rest the handoff lands and the proposal takes the cue ball back into hand.
+        app.world_mut().resource_mut::<Playback>().advance_to_rest();
+        frame(&mut app);
+        let placed = app.world().resource::<BallStates>().0[0].pos_mm;
+        assert!(
+            app.world().resource::<Cue>().placement.is_some(),
+            "the proposal is live once the presentation has handed off"
+        );
+        assert_ne!(
+            placed, presented,
+            "the at-rest handoff hands the states back"
         );
     }
 
