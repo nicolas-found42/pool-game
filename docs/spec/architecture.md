@@ -156,7 +156,7 @@ Header: `format_version`, `profile` id, `match_seed`, `noise_seed`, `difficulty`
 - `replay` runs a whole match through `Session` and asserts the final state; `--emit` writes adjudication records or the facts stream as JSONL for inspection.
 - `strike` computes one shot from a seed and a strike declaration — the physics debugging and #8 hook.
 - `pipe` serves the AI environment: JSONL over stdio, a versioned handshake line first, then one request/response per line. **One session per process** — N parallel training envs are N processes, matching the usual vectorized-env process model; no multiplexing.
-- **The pipe carries the `pool-ai`-computed observation, candidate set, and legality mask**, not raw state alone: encoding and candidate generation have exactly one implementation (the Rust one the served policy also uses), and Python hosts only the policy network. The step contract is #9's — rest state + context in, declaration out, sim to rest, adjudication record back — with the payload fields provisional until prototype #16 measures them.
+- **The pipe carries the `pool-ai`-computed observation, candidate set, and legality mask**, not raw state alone: encoding and candidate generation have exactly one implementation (the Rust one the served policy also uses), and Python hosts only the policy network. The step contract is #9's — rest state + context in, declaration out, sim to rest, adjudication record back — and the payload is pinned at #16: the 64-float observation, the 16-float candidate row with a dynamic candidate axis, and opset 17 (`ai.md` §9, `ai-constants.md` §2.4).
 - Corpus validation (`rules-break.json`, `physics-break.json`, #14) stays in `cargo test`; it is test-shaped, not a CLI mode.
 
 ## 8. Session and the drive loop
@@ -206,7 +206,7 @@ The shell consumes the simulation without leaking ECS into it: `bevy` types stop
 - **Turn flow:** `session.rs` sees an awaiting state for a policy seat → `ai_host` is asked for a declaration (observation, candidates, mask; the worker runs encode → generate → score → select → micro) → the declaration goes to `Session::request` marked `from_policy`. Human seats flow through `input.rs` instead. Both paths converge on the same `request` call.
 - **Sync is one-way:** after `request`, `playback` samples the `Shot` into ball transforms; nothing copies ECS state back into the simulation, and no rule outcome is re-derived in the shell — UI reads `Adjudication` records.
 - **No `FixedUpdate`;** systems run in `Update`/`PostUpdate` as plain functions of session state and the presentation clock. Losing focus pauses presentation only; game state is already computed.
-- The exact cue-input machine and the strike-marker look are #10's prototype output; this section fixes only their seam and module.
+- The exact cue-input machine and the strike-marker look are **ruled in `ux-cue.md` §2/§10** (the declaration they emit is `input-log.schema.json`'s `declaration`); this section fixes only their seam and module.
 
 ## 11. Determinism checks and CI
 

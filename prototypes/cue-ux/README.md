@@ -4,7 +4,10 @@
 actually feel* — the drag-back cue, the spin/masse affordances, and the readability of cue
 elevation in a top-down view. There is **no physics**: committing a shot echoes the
 declaration and nothing moves. It owes `docs/spec/architecture.md` nothing and is not part
-of the crate workspace; it will be deleted once `docs/spec/ux-cue.md` is settled.
+of the crate workspace. Its README originally scheduled deletion "once `docs/spec/ux-cue.md` is settled";
+that section settled at #10 and merged at #12, and the assembly **overrode the deletion** — the prototype
+stays as indexed evidence (`prototypes/README.md`), because the issue threads and `ux-cue.md` §9's vision
+record link to the frames here.
 
 Decision inputs it obeys (not re-designed here):
 
