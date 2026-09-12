@@ -1,6 +1,7 @@
 # AI pipeline: measured constants and calibration
 
-Status: **accepted as the AI section's constants appendix at #16** (2026-09-11), feeding the AI
+Status: **accepted as the AI section's constants appendix at #16** (2026-09-11), merged into the
+assembled spec at #12, feeding the AI
 section of the spec (the resolution on #9). The gate accepted the measured cost envelope and pinned
 `B` = 16–24 work units; the rows marked *provisional* below stayed provisional, each with its
 disposition and the measurement that settles it recorded in the resolution on #16. Every number here
@@ -26,19 +27,19 @@ Labels: **measured** = read directly off a run recorded in `results/`; **derived
 measured values with the rule stated; **provisional** = not measured here, carried from #9 or
 needing measurement that is out of the prototype's scope.
 
-## 1. Calibration table (#9 §10, filled)
+## 1. Calibration table (#9 §10, filled; dispositions ruled at #16)
 
-| Constant | Provisional | Pinned by this prototype | Label |
-|---|---|---|---|
-| Work-unit budget `B` (sim evals / decision) | — | **4–8** for quality (executed pot rate saturates: 0.63 → 0.93 (3-ball) and 0.70 → 0.88 (6-ball) at 4 evals, flat to 64); **16–24** recommended for the spec, bounded by the SLO at the real sim's per-shot cost | derived (quality) / provisional (real-sim bound) |
-| `R` / `C` (cushion contacts / intermediate balls) | 3 / 1 | Kept. Measured: rails cost 0.673 ms vs 0.034 ms per 15-ball generation at depth 3 vs 0 — cheap; forced success 0.625 (banks), 0.229 (kicks), 0.875 (combinations); **selection share 0 %** in the prototype's drills (direct pots and safeties always outscore them) | measured (cost, success, share) / provisional (that the caps bind on real racks) |
-| σ magnitudes per level (aim) | — | Measured easy-pot make rate vs aim σ (400 trials per point): 0 → 1.000, 0.5 mrad → 0.973, 1 mrad → 0.932, 2 mrad → 0.830, 4 mrad → 0.660, 8 mrad → 0.458, 16 mrad → 0.295. Level assignment **derived** from that curve: Pro 0.5 mrad (≥ 0.97), Advanced 1–2 mrad (0.83–0.93), Intermediate 4 mrad (0.66), Beginner 8–16 mrad (0.30–0.46) | measured (curve) / derived (assignment) |
-| σ for speed / spin a,b / elevation | — | Speed σ assumed at 2.5 × aim σ; **never measured** — the toy model has no spin or elevation to perturb | provisional |
-| Checkpoint fractions | 10 / 50 / 100 % | **Not pinnable from this prototype.** A 150k-step smoke run evaluated at those fractions degrades (mean return 6.899 / 4.405 / 3.324 on a fixed 100-episode eval); a 32k-step run of the same configuration is monotone (6.770 / 6.972 / 7.104). The fractions depend on where the real schedule plateaus, which nothing here establishes | provisional |
-| League `M` / `N` | order 8–16 | Sizing rule from measured throughput: a league round costs `M·N·shots_per_rack·(decision + shot)`. At the measured 0.16–0.31 ms decision and 8 shots/rack, `M·N = 16` is ~20–40 ms of CPU in the prototype; at the measured Python env throughput (1,209 steps/s) the same round is ~0.1 s. The binding term is the **real** sim's per-shot cost and whatever fraction of the training budget a round may take — `M·N` = 8–16 remains plausible, but it is an envelope argument, not a measurement | derived |
-| Net sizes, PPO hyperparameters | — | Smoke net: cand-branch `16→64→64`, ctx-branch `64→64→64`, combine `128→64→1`, value `64→64→1`; **30,210 params**, ONNX 91,668 B; PPO hyperparameters and throughput from §4 | measured |
-| Reward weights and normalization | — | **Not pinned, and shown to matter:** the drill reward needed one rebalance before PPO learned at all (the first shaping let the policy collapse into a bank-only safe game after ~8k steps; potting 2.0 vs legal-hit 0.05 fixed it). The spec's adjudication-driven reward (§9 §5) is a different object. Measured return range: mean 7.13, sd 0.34, 0.89 per shot | provisional |
-| Eval suite seeds and gate thresholds | provisional in #9 §9 | Seeds and measured anchor rates in §3; the `≥95 %` easy-pot gate is **attainable** — the scripted anchor scores 40/40 = 1.000 at zero noise and 0.973 at the Pro σ | measured (anchor) / derived (thresholds) |
+| Constant | Provisional | Pinned by this prototype | Label | Disposition at #16 |
+|---|---|---|---|---|
+| Work-unit budget `B` (sim evals / decision) | — | **4–8** for quality (executed pot rate saturates: 0.63 → 0.93 (3-ball) and 0.70 → 0.88 (6-ball) at 4 evals, flat to 64); **16–24** recommended for the spec, bounded by the SLO at the real sim's per-shot cost | derived (quality) / provisional (real-sim bound) | **pinned 16–24**; the work-unit cap is the only budget unit. The SLO and `B` hold at ≥ 100× the measured unit cost — the floor (2.48 µs/shot, 9.2 events/shot) is measured, the margin is derived |
+| `R` / `C` (cushion contacts / intermediate balls) | 3 / 1 | Kept. Measured: rails cost 0.673 ms vs 0.034 ms per 15-ball generation at depth 3 vs 0 — cheap; forced success 0.625 (banks), 0.229 (kicks), 0.875 (combinations); **selection share 0 %** in the prototype's drills (direct pots and safeties always outscore them) | measured (cost, success, share) / provisional (that the caps bind on real racks) | **pinned 3 / 1, unexercised**: the first league run reports the rail families' selection share on real rack positions; that report, not this prototype, justifies keeping `R` = 3 |
+| σ magnitudes per level (aim) | — | Measured easy-pot make rate vs aim σ (400 trials per point): 0 → 1.000, 0.5 mrad → 0.973, 1 mrad → 0.932, 2 mrad → 0.830, 4 mrad → 0.660, 8 mrad → 0.458, 16 mrad → 0.295. Level assignment **derived** from that curve: Pro 0.5 mrad (≥ 0.97), Advanced 1–2 mrad (0.83–0.93), Intermediate 4 mrad (0.66), Beginner 8–16 mrad (0.30–0.46) | measured (curve) / derived (assignment) | **accepted** as the difficulty scale; σ for speed / spin / elevation re-measured on the real sim, one axis at a time |
+| σ for speed / spin a,b / elevation | — | Speed σ assumed at 2.5 × aim σ; **never measured** — the toy model has no spin or elevation to perturb | provisional | **provisional, shape kept, magnitudes dropped**: one per-level factor scales all four axes, speed at 2.5 × aim, stated as an assumption |
+| Checkpoint fractions | 10 / 50 / 100 % | **Not pinnable from this prototype.** A 150k-step smoke run evaluated at those fractions degrades (mean return 6.899 / 4.405 / 3.324 on a fixed 100-episode eval); a 32k-step run of the same configuration is monotone (6.770 / 6.972 / 7.104). The fractions depend on where the real schedule plateaus, which nothing here establishes | provisional | **dropped from the spec**; the monotone-skill rule replaces them (`ai.md` §6) |
+| League `M` / `N` | order 8–16 | Sizing rule from measured throughput: a league round costs `M·N·shots_per_rack·(decision + shot)`. At the measured 0.16–0.31 ms decision and 8 shots/rack, `M·N = 16` is ~20–40 ms of CPU in the prototype; at the measured Python env throughput (1,209 steps/s) the same round is ~0.1 s. The binding term is the **real** sim's per-shot cost and whatever fraction of the training budget a round may take — `M·N` = 8–16 remains plausible, but it is an envelope argument, not a measurement | derived | **sizing rule kept, value left open**: `M·N` set from the real sim's per-shot cost and a league round's wall clock, reported by the first league run. (1,439 steps/s is the raw env probe; 1,209 steps/s is the 150k run's SB3 fps and sizes the round.) |
+| Net sizes, PPO hyperparameters | — | Smoke net: cand-branch `16→64→64`, ctx-branch `64→64→64`, combine `128→64→1`, value `128→64→1`; **30,210 trained params incl. the value head / 21,889 in the exported scorer** (the value head is deliberately not exported); ONNX 91,668 B; PPO hyperparameters and throughput from §4 | measured | **accepted**; the value head's width and the param split are corrected here per #16 §6 |
+| Reward weights and normalization | — | **Not pinned, and shown to matter:** the drill reward needed one rebalance before PPO learned at all (the first shaping let the policy collapse into a bank-only safe game after ~8k steps; potting 2.0 vs legal-hit 0.05 fixed it). The spec's adjudication-driven reward (§9 §5) is a different object. Measured return range: mean 7.13, sd 0.34, 0.89 per shot | provisional | **provisional, one constraint pinned**: a terminal, per-ball reward must dominate the per-shot legal-hit term, and the reward stays adjudication-derived (`ai.md` §5) |
+| Eval suite seeds and gate thresholds | provisional in #9 §9 | Seeds and measured anchor rates in §3; the `≥95 %` easy-pot gate is **attainable** — the scripted anchor scores 40/40 = 1.000 at zero noise and 0.973 at the Pro σ | measured (anchor) / derived (thresholds) | **accepted**: seeds and thresholds pinned; the rack win-rate gate is restated as a milestone gate (`ai.md` §10) |
 
 ## 2. Measurements (the ticket's list)
 
@@ -121,12 +122,20 @@ position, the full generated count, the top 24 candidates by analytic seed score
 shortlist rows with per-candidate scores, the chosen candidate and the refined strike, and one real
 encoded sample (`obs` 64 floats, first candidate row 16 floats, K = 32). Intended for eyeballing
 here and for the later human playtest (#9 §8's debug view).
+- **Reading the dump (corrected at #16 §6.3):** in all three committed positions the **top-ranked
+  candidate pots** (0.731 / 0.738 / 0.614, `verified_pot` true); the inversion sits *below* the top — in
+  the 6-ball position rank 1 (0.594) misses where rank 2 (0.569) pots, and in the easy-pot position ranks
+  1–5 (makeability 0.725–0.726) **all miss** while rank 0 (0.614) and rank 7 (0.254) pot. Rank is the
+  index into the sim-verified shortlist, ordered by the pre-sim `seed_score`; `makeability` is the
+  analytic heuristic printed beside it. The qualitative finding stands — the analytic seed score is not
+  makeability, which is what earns the verification pass its work units — and the earlier
+  "top-ranked misses where the third pots" reading belongs to the wrong ranks.
 
 ### 2.4 ONNX → `ort`
 
 | Quantity | Value |
 |---|---|
-| Model | `policy-smoke.onnx` (the trained smoke policy, exported from the run's `final.zip`), 91,668 B, sha256 `1553dac9…b250f`, opset 17, 30,210 params; the untrained checkpoint `policy-scratch.onnx` (sha256 `5220b8f2…ebf2e5`, byte-identical architecture) is kept beside it |
+| Model | `policy-smoke.onnx` (the trained smoke policy, exported from the run's `final.zip`), 91,668 B, sha256 `1553dac9…b250f`, opset 17, **21,889 exported scoring params** (the trained net carries 30,210 incl. the value head, which is deliberately not exported); the untrained checkpoint `policy-scratch.onnx` (sha256 `5220b8f2…ebf2e5`, byte-identical architecture) is kept beside it |
 | ORT (Rust, in-process) vs Python golden vectors | max abs error **4.77e-7** at k = 5 — the same error the Python side's own ORT run reports (4.77e-7), i.e. the Rust path reproduces the export bit-for-bit at f32 granularity |
 | ORT (Python) golden checks | 4.77e-7 at K = 5, 1.91e-6 at K = 9 (dynamic candidate axis verified) |
 | Session load | 29.2 ms, once at startup |
@@ -189,7 +198,7 @@ Commands: `prototypes/ai-spine/python/README.md`. Raw record:
 | Quantity | Value |
 |---|---|
 | Env | shot-granularity Gymnasium, 3 object balls + cue, `max_shots = 8`, obs 64, cand 16, K_max 32, `Discrete(32)` + mask |
-| Env throughput | **1,439 env steps/s** single process (~183 episodes/s, mean episode 7.9 shots) with uniformly random legal actions (block rates 1,409 / 1,439 / 1,438 across the measurement's blocks); the prototype env is pure Python. The shipped env is #11's pipe to the headless binary, where one decision costs 0.10–0.14 ms of Rust — so this number measures the prototype's inner loop, not the design |
+| Env throughput | **1,439 env steps/s** single process (~183 episodes/s, mean episode 7.9 shots) with uniformly random legal actions (block rates 1,409 / 1,439 / 1,438 across the measurement's blocks) — **this is the raw env-probe throughput**. The shipped env is #11's pipe to the headless binary, where one decision costs 0.10–0.14 ms of Rust — so this number measures the prototype's inner loop, not the design. The 150k run's SB3 fps (**1,209 steps/s**, §1's `M`/`N` row) is the training loop's rate and is what sizes a league round; the two are different measurements of different loops, not a contradiction |
 | Policy | `MaskablePPO` (sb3-contrib 2.9.0) with a custom per-candidate shared-scoring policy head; 8 envs, `n_steps 64`, `batch 256`, `n_epochs 10`, `lr 1e-4`, `ent_coef 0.005`, `target_kl 0.03`, `seed 42`, CPU |
 | Steps/s | **1,501** on a quiet box (32,256 steps in 21.5 s); **989** when the same bit-exact re-run shared the box (32.6 s) — same checkpoints and same ONNX sha256 in both, so this is load, not variance |
 | Drills | 3-ball open table; episode = one rack, reward `+2.0` per ball potted, `+1.0` clear, `+0.05` legal hit, `+0.10 × progress`, `−1.0` scratch, `−0.10` illegal |
@@ -199,7 +208,7 @@ Commands: `prototypes/ai-spine/python/README.md`. Raw record:
 | Value head | final value loss 0.084, explained variance **0.970** |
 | Return distribution (final policy, 100 episodes) | mean 7.126, sd 0.337, min 6.206, max 7.408 → **0.891 reward per shot** |
 | AI decisions/s (policy forward pass) | 56,324/s (Python ORT, batch 1, K = 32) and 62,500/s implied by the Rust measurement above — the net is not the constraint; the env/sim is |
-| ONNX export of the trained policy | `results/onnx/policy-smoke.onnx`, 91,668 B, sha256 `1553dac9…b250f`, opset 17, 30,210 scoring params |
+| ONNX export of the trained policy | `results/onnx/policy-smoke.onnx`, 91,668 B, sha256 `1553dac9…b250f`, opset 17, **21,889 exported scoring params** (30,210 trained incl. the value head; see §2.4) |
 | Scripted planner decisions/s (Rust, incl. sim-in-the-loop micro) | **~8,800/s** (3-ball clearance drill, 0.113 ms/decision mean) |
 
 Note the asymmetry: the learned policy's *decisions* are ~4× cheaper than the scripted planner's,

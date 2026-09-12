@@ -1,6 +1,6 @@
 # Rack construction and break legality
 
-Status: draft spec section for wayfinder ticket #14; ticket #12 merges it into the assembled spec. The corpus files beside it cite its clauses by anchor.
+Status: spec section, decided at #14 (2026-09-11), merged into the assembled spec by #12 (`rules.md` is the machine it plugs into; `README.md` indexes both). The corpus files beside it cite its clauses by anchor.
 
 ## Scope and sources
 
@@ -13,6 +13,14 @@ This section specifies the two items that #6's resolution §11 graduated: **rack
 | APA *Team Manual* | — | not needed by this section |
 
 Every departure from the WPA text has a line in §4 or in #6 §9; none is silent.
+
+**Numbering.** The headings below are unnumbered so the corpus files' `rules-break.md#<anchor>` cites stay
+stable; the `§N` cites in this file and in `rules.md` read as follows. **§1** Scope and sources. **§2** Rack
+construction — §2.1 The rack function, §2.2 Constraints (WPA 4.2), §2.3 Uniformity obligation, §2.4 Slots
+and geometry, §2.5 Clear-table invariant, §2.6 Generator (pinned), §2.7 Seed and state, §2.8 Uniformity
+(proof obligation), §2.9 Fixture seeds and audit, §2.10 Rack invariants. **§3** Break legality — §3.1 Driven
+to a rail, §3.2 Classification precedence, §3.3 Illegal break, §3.4 Break foul, §3.5 Accepting the table in
+position, §3.6 Eight on the break, §3.7 Re-rack transition. **§4** Deviations. **§5** Corpus contract.
 
 ## Rack construction
 

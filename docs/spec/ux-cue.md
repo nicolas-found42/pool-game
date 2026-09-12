@@ -1,13 +1,13 @@
 # Cue input and shot-authoring UX
 
-Status: **gate resolved at #10** (2026-09-11). The nine open questions are answered in §10 and the
-`spin` unit + sign convention are pinned in `docs/spec/input-log.schema.json`. §1–§9 stand as the
-decided UX/controls section, and each place a ruling changes this text says so inline: the card's
-shape (§3), the gauge's tick scale and the guide set (§4, §5), the envelope's
-elevation-dependence and limit test (§6), the `(a, b)` unit (§7), the read-out's offsets and the
-dev/player split (§8). Ticket #12 merges the section into the assembled
-spec; ticket #11 owns the `input.rs` seam it plugs into. Evidence: the throwaway prototype in
-`prototypes/` and the resolution on #10.
+Status: **spec section, merged at #12** (gate resolved at #10, 2026-09-11). The nine open questions are
+answered in §10 and the `spin` unit + sign convention are pinned in `docs/spec/input-log.schema.json`.
+§1–§9 stand as the decided UX/controls section, and each place a ruling changes this text says so
+inline: the power gesture's commit path and the convex pull → speed map (§2), the card's shape (§3), the
+gauge's tick scale and the guide set (§4, §5), the envelope's elevation-dependence and limit test (§6),
+the `(a, b)` unit (§7), the read-out's offsets and the dev/player split (§8). The section is indexed by
+`docs/spec/README.md`; `architecture.md` owns the `input.rs` seam it plugs into. Evidence: the throwaway
+prototype in `prototypes/` (indexed in `prototypes/README.md`) and the resolution on #10.
 
 ## 1. The authored object
 
@@ -40,7 +40,14 @@ Spin is a separate, non-modal gesture on a separate surface (the strike card). I
 competes with aiming for the same pixels, and the keyboard equivalent (`A/D`, `W/S`) exists
 so the declaration is reachable without the mouse.
 
-`Enter` commits the same declaration the release would, so the flow is keyboard-completable.
+`Enter` commits the same declaration the release would, `Escape` abandons a drag mid-gesture, so the
+flow is keyboard-completable and abandonable (§10.7).
+
+**The pull → speed map is convex, and that requirement is spec** (§10.7): the 0–1500 mm/s band must
+occupy at least 40 % of the pull range (≥ 140 mm of 350 mm), because at ≈1.6 mm/px a linear map costs
+4–10 % of a soft shot per pixel of drag error. A candidate that meets it:
+`v = 7000 × (pull / 350)²`. The exponent is a playtest constant; the 40 % requirement is spec, and it
+is one of the §10 items a human hand settles.
 
 ## 3. Spin, masse, and the 3D cue ball
 
@@ -64,6 +71,12 @@ draw, follow, and a centre hit draw the same top-down dot. Nor can the cloth sho
   separate control; it is `elevation` + off-centre `(a, b)`. Under the gate's face-on card
   (§10.2) that insight is carried by the labelled gauge and the read-out rather than by the
   card's tilt.
+
+- **Axis glyphs on the face edges**: `R`/`L` and `T`/`D` (§10.3). The frame is
+  `(a, b)` in the plane perpendicular to the *cue axis*, with `b` the world-up direction projected into
+  that plane and `a` completing it. Elevation is capped at **75°** for authoring: the frame is
+  undefined for a vertical cue (`b` needs the world-up projection), so the cap is required — it bounds
+  *authoring*, not the model, and jump and masse stay in the physics section's scope.
 
 Sign convention (pinned in `docs/spec/input-log.schema.json` and §10.3):
 `a > 0` is the shooter's **right**, `b > 0` is **above centre** (follow side at zero
@@ -100,15 +113,17 @@ avoid the gauge's pixels, but the gauge is the only signal that read correctly.
 Drawn from the aim ray: the **aim line**, the **ghost ball** at first contact, the
 **object-ball path**, and the **tangent line** the cue ball leaves on for a stun hit. With no
 ball on the line, the first **cushion** and its reflection are shown instead. The read-out
-states the cut angle and the guide's first contact. Once squirt is modelled (`#7` §3), the aim
-line and the ghost ball follow the **squirt-corrected cue-ball path** while the stick stays on
-the input aim line (§10.8); **swerve is never previewed** — a curved path is a sim result, and
-the preview stays a preview.
+states the cut angle and the guide's first contact.
 
-The vision pass consistently reported the guide cluster as needing the legend and rarely
-resolved it without one; every frame that drew the cluster drew the same complaint. Draft
-consequences: keep a colour-keyed legend, and the tangent line goes default-off (§10.8) — it is
-the line most often confused with the ghost ball.
+**The default set is aim line + ghost ball + object path; the tangent line is default-off** behind a
+toggle (§10.8) — it is the line most often confused with the ghost ball. Arrowheads are drawn on the
+departure lines only (object path and tangent), and the colour-keyed legend stays on whenever guides are
+drawn: the vision pass consistently reported the cluster as needing the legend and rarely resolved it
+without one.
+
+Once squirt is modelled (`#7` §3), the aim line and the ghost ball follow the **squirt-corrected
+cue-ball path** while the stick stays on the input aim line (§10.8); **swerve is never previewed** — a
+curved path is a sim result, and the preview stays a preview.
 
 ## 6. Miscue envelope at the input boundary
 
@@ -124,16 +139,19 @@ The prototype implements **visible rejection**:
   miscue envelope ... the declaration cannot be committed"*;
 - **commit is refused** — release and `Enter` do nothing while the declaration is illegal.
 
-Exactness matters: a declaration authored *exactly* at the limit must be **legal**. The
-prototype's first cut compared with `margin <= 0` and read the 0.514 R edge as rejected —
-caught by the vision pass as a contradiction between the read-out and the status line, then
-fixed with a tolerance (`1e-3 mm`). The spec should state the comparison, not inherit it.
+**The limit test is normative:** the comparison is on the tip offset in millimetres,
+`|offset_mm| ≤ ρ_max + 1e-3` — a declaration authored *exactly* at the limit is **legal** (the tolerance
+is ≈ 6.8e-5 in the envelope-fraction unit of §7). Rejection is **authoring-time only**: it never reaches
+the rules layer (`#7` §4 calls it an input error, so no adjudication is produced for it), and with no
+shot clock it cannot cost a turn. The prototype's first cut compared with `margin <= 0` and read the
+0.514 R edge as rejected — caught by the vision pass as a contradiction between the read-out and the
+status line, then fixed with this tolerance.
 
 The envelope used is the pure friction cone, `rho = R * mu / sqrt(1 + mu^2)`, independent of
 elevation. Whether elevation *should* modulate it (tip weight helps a downward offset, hurts an
 upward one; extreme elevation adds a shaft-clearance constraint) is not settled by #7 and **is
 settled at the gate (§10.5): the fixed cone stays**, with the physical direction recorded as a
-named deviation and the measurement that would settle it.
+named simplification and the measurement that would settle it (a simplification, not a WPA departure — `CONTEXT.md` reserves *Deviation* for departures from rule text).
 
 ## 7. The unit of `(a, b)` — resolved: fraction of the miscue envelope
 
@@ -153,8 +171,10 @@ The prototype's panel is a **development** read-out (every intermediate quantity
 pull, both offsets in mm and as a fraction of the envelope, offset vs envelope, intent, guide,
 declaration JSON, status). It is right for the prototype and wrong for the shipping HUD, which needs a
 3-line player form — turn/group (from #6), the declaration currently being authored, and the
-one-line validity state. The dev panel survives behind `--debug-candidates`-style flags
-(#11 §10).
+one-line validity state. **The player HUD shows speed in m/s (or a qualitative label) and never the
+`tr`/`mm` unit explanations the vision pass flagged**; the offsets in mm and envelope fractions, the
+envelope arithmetic, the guide geometry and the declaration JSON are dev-panel material only. The dev
+panel survives behind `--debug-candidates`-style flags (#11 §10).
 
 ## 9. Vision feedback (the 15 committed frames)
 
@@ -231,7 +251,7 @@ measurement that would settle each open item — on #10. They are cited elsewher
    shot clock it cannot cost a turn.
 5. **Envelope vs elevation: the pure friction cone, one radius at every elevation.** The sim never simulates a
    miscue, so there is no sim-side model to contradict; the known physical direction (a downward offset gains, an
-   upward one loses, plus a shaft-clearance limit) is recorded as a deviation with the evidence that would settle it.
+   upward one loses, plus a shaft-clearance limit) is recorded as a simplification (not a WPA departure) with the evidence that would settle it.
 6. **Unit: fraction of the miscue envelope** (dimensionless, `1.0` = the limit) — §7, pinned in the schema.
 7. **Power: release-to-commit stays** (`Enter` commits the same declaration, `Escape` abandons a drag), and the linear
    pull → speed map is **replaced by a convex one**: the 0–1500 mm/s band must occupy at least 40 % of the pull range
@@ -260,8 +280,8 @@ frame tilts against the world, and the flow itself has never been felt by a huma
   equivalent "declaration refused before submission" path.
 - **#9 (AI)**: the same `(a, b, elevation)` envelope bounds the action space, so §6's
   tolerance and §7's unit decision apply to the policy's output validation too.
-- **#12 (spec assembly)**: merge as the cue-input/UX section; §3's sign convention and §7's
-  unit must also land in the `spin` description of `docs/spec/input-log.schema.json`.
-- **Prototype lifecycle**: `prototypes/cue-ux/` is throwaway. The judgement landed at #10: the
-  validated decisions are folded in as §10, and the prototype comes off the branch when #12 merges
-  the section (the frames are the primary source).
+- **#12 (spec assembly)**: done — this section is merged; §3's sign convention and §7's unit land in the
+  `spin` description of `docs/spec/input-log.schema.json`.
+- **Prototype lifecycle**: `prototypes/cue-ux/` is throwaway and **stays in the repo as evidence** (the
+  user's call at #12; the frames are the primary source for §9's vision record, and the issue threads
+  link to them). Its status and what it fed are recorded in `prototypes/README.md`.
