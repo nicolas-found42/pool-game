@@ -15,6 +15,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+      # The shell (`pool-app`) links the platform windowing/audio/device crates through `bevy`; the
+      # workspace build needs their pkg-config entries present even when nothing runs.
+      - name: Linux system libraries for the shell
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            pkg-config libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev \
+            libx11-dev libxcursor-dev libxi-dev libxrandr-dev libxinerama-dev
       - name: Toolchain (rust-toolchain.toml)
         run: rustup show
       - uses: Swatinem/rust-cache@v2
