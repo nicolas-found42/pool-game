@@ -4,7 +4,7 @@
   "generator": {
     "prng": "none - this tier generates no parameters and no arrangements",
     "shuffle": "none - arrangements are inline literals; the seeded rack generator and its fixture list belong to the rack layer and are pinned by rack-fixtures.json",
-    "derivation": "source of parameters: pinned by #8 (physics prototype) and recorded row by row in docs/spec/physics.md §8; null parameters are requirements, not gaps. Re-pinned at M1 on the repaired solver (PR #38): physics.md §8 allows a re-aim — the pattern is the requirement, the parameters are the pin — and the prototype's parameters no longer reproduce their rows. pb-01 pb-02 pb-05 pb-08 pb-13 pb-14 carry the re-aimed shot.aim_deg / shot.cue_speed_mm_s committed here, each verified to produce its target_facts.expected; the parameters §8 records stay as the prototype's instance. The six rows #8 left unproduced keep null parameters and their recorded disposition."
+    "derivation": "source of parameters: pinned by #8 (physics prototype) and recorded row by row in docs/spec/physics.md \u00a78; null parameters are requirements, not gaps. Re-pinned at M1 on the repaired solver (PR #38): physics.md \u00a78 allows a re-aim \u2014 the pattern is the requirement, the parameters are the pin \u2014 and the prototype's parameters no longer reproduce their rows. pb-01 pb-02 pb-05 pb-08 pb-13 pb-14 carry the re-aimed shot.aim_deg / shot.cue_speed_mm_s committed here, each verified to produce its target_facts.expected; physics.md \u00a78 records the prototype's instance and M1's re-aims side by side; the re-aims are the committed pin. The six rows #8 left unproduced keep null parameters and their recorded disposition."
   },
   "rack_fixture_list": "rack-fixtures.json",
   "entries": [

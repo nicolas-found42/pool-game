@@ -379,11 +379,11 @@ fn dev_text(game: &Game, cue: &Cue, playback: &Playback) -> String {
         |rest| format!("t {:.2} / {rest:.2} s", playback.t_s()),
     );
     format!(
-        "DEV — --debug-candidates\n\
+        "DEV - --debug-candidates\n\
          decl      {json}\n\
          a, b      {:+.3}, {:+.3} envelope fractions (1.0 = the limit; a > 0 right, b > 0 above centre)\n\
          offset    {:.2} mm = {:.3} of rho {:.2} mm ({:.3} R, mu {:.1}) = {:.2} tip radii\n\
-         limit     |offset_mm| <= rho + 1e-3 ; margin {:+.3} mm\n\
+         limit     |offset_mm| <= rho + 1e-3 ; {:+.3} mm inside the limit (negative = past it)\n\
          guide     {guide}\n\
          power     pull {:.1} / {:.0} mm -> {:.0} mm/s (v = 7000 (pull/350)^2); the {:.0} mm/s soft band ends at {:.0} mm of pull\n\
          state     {} | {} | {presentation}\n\
@@ -397,7 +397,7 @@ fn dev_text(game: &Game, cue: &Cue, playback: &Playback) -> String {
         envelope / pool_sim::constants::BALL_RADIUS_MM,
         pool_sim::constants::TIP_FRICTION_MU,
         cue.offset_mm() / 6.35,
-        cue.offset_mm() - envelope,
+        envelope + 1e-3 - cue.offset_mm(),
         cue.pull_mm,
         input::MAX_PULL_MM,
         input::speed_from_pull(cue.pull_mm),
