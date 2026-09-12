@@ -1,0 +1,17 @@
+[package]
+name = "pool-rules"
+description = "The 8-ball rules machine: the rack-scoped (state, input) -> (record, state') function and its vocabulary"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+
+[dependencies]
+pool-sim.workspace = true
+serde = { workspace = true }
+
+[dev-dependencies]
+serde_json.workspace = true
+
+[lints]
+workspace = true

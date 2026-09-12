@@ -639,6 +639,7 @@ version = "0.1.0"
 dependencies = [
  "jsonschema",
  "pool-rng",
+ "pool-rules",
  "pool-sim",
  "serde",
  "serde_json",
@@ -649,6 +650,15 @@ name = "pool-rng"
 version = "0.1.0"
 dependencies = [
  "libm",
+]
+
+[[package]]
+name = "pool-rules"
+version = "0.1.0"
+dependencies = [
+ "pool-sim",
+ "serde",
+ "serde_json",
 ]
 
 [[package]]
