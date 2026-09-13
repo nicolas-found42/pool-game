@@ -193,6 +193,11 @@ impl Table {
 
     /// The 9 ft WPA table of `physics.md` §5: four cushion rails split by the side and corner mouths,
     /// twelve jaw faces at the pinned cut angles, and six mouths at the pinned widths.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the mouth list does not hold exactly six pockets — a build bug, never caller input:
+    /// the layout below pushes four corner mouths and two side mouths unconditionally.
     #[must_use]
     pub fn with_profile(profile: Profile) -> Self {
         let d_corner = POCKET_MOUTH_CORNER_MM / 2.0_f64.sqrt(); // the jaw tip's offset along each rail
@@ -243,41 +248,7 @@ impl Table {
 
         // The corner mouths. The chords and jaw tips are built in the order of `PocketId::ALL`.
         let mut pockets: Vec<Pocket> = Vec::with_capacity(6);
-        for (sx, sy) in [(1.0_f64, 1.0_f64), (1.0, -1.0), (-1.0, 1.0), (-1.0, -1.0)] {
-            let a = v3(sx * (HALF_LEN_MM - d_corner), sy * HALF_WIDTH_MM, 0.0);
-            let b = v3(sx * HALF_LEN_MM, sy * (HALF_WIDTH_MM - d_corner), 0.0);
-            let corner = v3(sx * HALF_LEN_MM, sy * HALF_WIDTH_MM, 0.0);
-            let mid = (a + b) / 2.0;
-            let outward = (corner - mid).norm();
-            let id = PocketId::ALL[pockets.len()];
-            pockets.push(Pocket {
-                id,
-                shape: DropShape::Chord {
-                    mid,
-                    outward,
-                    half_width: half_corner,
-                },
-                mouth_center: mid,
-            });
-            // Jaw A leaves the long rail; jaw B leaves the short rail, at the same cut angle. The
-            // playable side of a jaw face is the side holding the mouth centre.
-            add_jaw(
-                a,
-                v3(sx * CORNER_JAW_COS, sy * CORNER_JAW_SIN, 0.0),
-                mid,
-                id,
-                &mut walls,
-            );
-            add_jaw(
-                b,
-                v3(sx * CORNER_JAW_SIN, sy * CORNER_JAW_COS, 0.0),
-                mid,
-                id,
-                &mut walls,
-            );
-            tips.push(a);
-            tips.push(b);
-        }
+        add_corner_mouths(d_corner, half_corner, &mut walls, &mut pockets, &mut tips);
         // The side mouths, centred on the long rails.
         for sy in [-1.0_f64, 1.0] {
             let centre = v3(0.0, sy * HALF_WIDTH_MM, 0.0);
@@ -312,6 +283,53 @@ impl Table {
             tips,
             profile,
         }
+    }
+}
+
+/// The four corner mouths, in the order of `PocketId::ALL`: each drops along the chord between its
+/// jaw tips (`physics.md` §3.5.3), and its two jaws leave the long and the short rail at the pinned
+/// cut angle.
+fn add_corner_mouths(
+    d_corner: f64,
+    half_corner: f64,
+    walls: &mut Vec<Wall>,
+    pockets: &mut Vec<Pocket>,
+    tips: &mut Vec<V3>,
+) {
+    for (sx, sy) in [(1.0_f64, 1.0_f64), (1.0, -1.0), (-1.0, 1.0), (-1.0, -1.0)] {
+        let a = v3(sx * (HALF_LEN_MM - d_corner), sy * HALF_WIDTH_MM, 0.0);
+        let b = v3(sx * HALF_LEN_MM, sy * (HALF_WIDTH_MM - d_corner), 0.0);
+        let corner = v3(sx * HALF_LEN_MM, sy * HALF_WIDTH_MM, 0.0);
+        let mid = (a + b) / 2.0;
+        let outward = (corner - mid).norm();
+        let id = PocketId::ALL[pockets.len()];
+        pockets.push(Pocket {
+            id,
+            shape: DropShape::Chord {
+                mid,
+                outward,
+                half_width: half_corner,
+            },
+            mouth_center: mid,
+        });
+        // Jaw A leaves the long rail; jaw B leaves the short rail, at the same cut angle. The
+        // playable side of a jaw face is the side holding the mouth centre.
+        add_jaw(
+            a,
+            v3(sx * CORNER_JAW_COS, sy * CORNER_JAW_SIN, 0.0),
+            mid,
+            id,
+            walls,
+        );
+        add_jaw(
+            b,
+            v3(sx * CORNER_JAW_SIN, sy * CORNER_JAW_COS, 0.0),
+            mid,
+            id,
+            walls,
+        );
+        tips.push(a);
+        tips.push(b);
     }
 }
 

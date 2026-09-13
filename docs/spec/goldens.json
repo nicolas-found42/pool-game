@@ -1,6 +1,6 @@
 {
   "format_version": 1,
-  "note": "The determinism-golden corpus (architecture.md §11): in-repo, verified by cargo test and CI. Rack entries defer to docs/spec/rack-fixtures.json (#14's fixtures); shot entries carry a pre-state (rack seed or arrangement, cue placement, optional object-ball placements), a strike declaration, the fact pattern's essentials, and the rest state_hash; replay entries pin a recorded input log's final state hash and adjudication record. The shot set's first entries are the ones physics.md §9.1 names: the four pocket-drop cases (a jaw-tip-chord pot, a side-mouth disc pot, a near-parallel approach that must not drop, a ball at rest in the rack that must not drop), the frozen-ball rail-contact case of physics-break.json pb-13, and the break hook's rest state. Every number here was produced by the M1 implementation (physics.md §9.1: the prototype's numbers are a first measured instance, not this spec's values). A shot's `strike.aim_deg` is the absolute aim angle in the table frame — the direction (cos, sin) — which is the reading physics.md §8's pin column uses; elevation is in degrees and spin offsets are fractions of the miscue envelope (physics.md §4). No auto-update tooling ships: a mismatch fails and dumps the actual state beside the golden.",
+  "note": "The determinism-golden corpus (architecture.md \u00a711): in-repo, verified by cargo test and CI. Rack entries defer to docs/spec/rack-fixtures.json (#14's fixtures); shot entries pin a strike's rest state_hash; replay entries pin a recorded input log's final state hash and adjudication record. No auto-update tooling ships: a mismatch fails and dumps the actual state beside the golden.",
   "entries": [
     {
       "name": "rack-fixtures-0-15",
@@ -31,9 +31,129 @@
       }
     },
     {
+      "name": "replay-break-foul-ball-in-hand-eight-loss",
+      "kind": "replay",
+      "note": "A whole match at a race of one rack, both seats human: the standard break (legal-clean, 4.3(d), so the turn passes), the incoming player's scratch (a 3.1 foul, so the cue ball goes in hand anywhere), the placement that earns it, and the 8 potted on an open table \u2014 a loss under 4.8(a), which takes the rack and the match for P2. The log is data/matches/break-foul-ball-in-hand-eight-loss.json, a path resolved from the repository root; the final position and every adjudication record are recomputed from it by `Session::replay` in pool-match's harness. The log is the whole free-choice sequence: rack seeds, the breaker, and the adjudications are derived, never read back.",
+      "input": {
+        "log": "data/matches/break-foul-ball-in-hand-eight-loss.json"
+      },
+      "expected": {
+        "final_state_hash": "1c3eaf8fb173809c",
+        "race": [
+          0,
+          1
+        ],
+        "records": [
+          {
+            "verdict": "no_shot",
+            "legality": "cue_ball_placed (1.6)",
+            "fouls": [],
+            "offers": [],
+            "apply": {
+              "action": "place_cue",
+              "breaker": "p1",
+              "rack_seed_unchanged": true,
+              "shot_count_reset": false,
+              "spotted": [],
+              "state": {
+                "kind": "awaiting_shot",
+                "shooter": "p1",
+                "target": "open"
+              }
+            }
+          },
+          {
+            "verdict": "legal",
+            "legality": "legal_break_clean (4.3(d))",
+            "fouls": [],
+            "offers": [],
+            "apply": {
+              "action": "pass_turn",
+              "breaker": "p1",
+              "rack_seed_unchanged": true,
+              "shot_count_reset": false,
+              "spotted": [],
+              "state": {
+                "kind": "awaiting_shot",
+                "shooter": "p2",
+                "target": "open"
+              }
+            }
+          },
+          {
+            "verdict": "foul",
+            "legality": "standard_foul (3.1)",
+            "fouls": [
+              {
+                "rule": "3.1",
+                "reason": "cue_ball_pocketed"
+              },
+              {
+                "rule": "3.2",
+                "reason": "wrong_ball_first"
+              }
+            ],
+            "offers": [],
+            "apply": {
+              "action": "cue_ball_in_hand_anywhere",
+              "breaker": "p1",
+              "rack_seed_unchanged": true,
+              "shot_count_reset": false,
+              "spotted": [],
+              "state": {
+                "kind": "awaiting_placement",
+                "shooter": "p1",
+                "domain": "anywhere"
+              }
+            }
+          },
+          {
+            "verdict": "no_shot",
+            "legality": "cue_ball_placed (1.6)",
+            "fouls": [],
+            "offers": [],
+            "apply": {
+              "action": "place_cue",
+              "breaker": "p1",
+              "rack_seed_unchanged": true,
+              "shot_count_reset": false,
+              "spotted": [],
+              "state": {
+                "kind": "awaiting_shot",
+                "shooter": "p1",
+                "target": "open"
+              }
+            }
+          },
+          {
+            "verdict": "loss",
+            "legality": "eight_pocketed_loss (4.8(a))",
+            "fouls": [
+              {
+                "rule": "3.2",
+                "reason": "wrong_ball_first"
+              }
+            ],
+            "offers": [],
+            "apply": {
+              "action": "rack_over",
+              "breaker": "p1",
+              "rack_seed_unchanged": true,
+              "shot_count_reset": false,
+              "spotted": [],
+              "state": {
+                "kind": "rack_over",
+                "winner": "p2"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
       "name": "shot-pocket-drop-chord",
       "kind": "shot",
-      "note": "The jaw-tip-chord pot of physics.md §9.1: the cue ball is struck down the diagonal x − y = 635 mm, straight at the FootPlusY corner mouth's chord midpoint (1229.0231, 594.0231), crosses the chord between the two jaw tips and drops. Nothing else moves, and no rail is touched on the way: the drop comes from the chord region alone (physics.md §3.5.1).",
+      "note": "The jaw-tip-chord pot of physics.md \u00a79.1: the cue ball is struck down the diagonal x \u2212 y = 635 mm, straight at the FootPlusY corner mouth's chord midpoint (1229.0231, 594.0231), crosses the chord between the two jaw tips and drops. Nothing else moves, and no rail is touched on the way: the drop comes from the chord region alone (physics.md \u00a73.5.1).",
       "input": {
         "rack_seed": 1,
         "cue_mm": [
@@ -74,7 +194,7 @@
     {
       "name": "shot-pocket-drop-disc",
       "kind": "shot",
-      "note": "The disc-entry pot of physics.md §9.1: the cue ball is struck straight up the long string at the SidePlusY mouth, whose drop region is the mouth disc on the cushion line (centre (0, 635) mm, radius 64.3 mm); the centre crosses the disc's boundary at y = 570.7 mm and drops. No rail is touched: the long-rail faces are split at the side mouth.",
+      "note": "The disc-entry pot of physics.md \u00a79.1: the cue ball is struck straight up the long string at the SidePlusY mouth, whose drop region is the mouth disc on the cushion line (centre (0, 635) mm, radius 64.3 mm); the centre crosses the disc's boundary at y = 570.7 mm and drops. No rail is touched: the long-rail faces are split at the side mouth.",
       "input": {
         "rack_seed": 1,
         "cue_mm": [
@@ -115,7 +235,7 @@
     {
       "name": "shot-pocket-drop-near-parallel-miss",
       "kind": "shot",
-      "note": "The near-parallel miss of physics.md §9.1 — one of the prototype's two silent-pocket failures. The cue ball rolls parallel to the right long rail at y = 570 mm, so its path stays exactly 65.0 mm from the SidePlusY mouth's centre: 0.7 mm outside the 64.3 mm disc, and tangent to that boundary at the closest approach. The drop predicate must not fire on a trajectory that never crosses it, and the 700 mm/s strike stops the ball at x ≈ +1036 mm, short of the foot corner, so the shot has no pocket at all.",
+      "note": "The near-parallel miss of physics.md \u00a79.1 \u2014 one of the prototype's two silent-pocket failures. The cue ball rolls parallel to the right long rail at y = 570 mm, so its path stays exactly 65.0 mm from the SidePlusY mouth's centre: 0.7 mm outside the 64.3 mm disc, and tangent to that boundary at the closest approach. The drop predicate must not fire on a trajectory that never crosses it, and the 700 mm/s strike stops the ball at x \u2248 +1036 mm, short of the foot corner, so the shot has no pocket at all.",
       "input": {
         "rack_seed": 1,
         "cue_mm": [
@@ -151,7 +271,7 @@
     {
       "name": "shot-pocket-drop-rack-at-rest",
       "kind": "shot",
-      "note": "The ball-at-rest case of physics.md §9.1 — the prototype's other silent-pocket failure: a ball at rest in the rack was pocketed. The cue ball is struck 8° off the long string at 500 mm/s, away from the rack, and stops inside the table without touching anything: every one of the 15 rack balls is bit-identically where it started at rest, and the fact stream carries no pocket. The closest approach of the trajectory to any rack ball is far outside a diameter, so this pins the at-rest guard rather than a near miss.",
+      "note": "The ball-at-rest case of physics.md \u00a79.1 \u2014 the prototype's other silent-pocket failure: a ball at rest in the rack was pocketed. The cue ball is struck 8\u00b0 off the long string at 500 mm/s, away from the rack, and stops inside the table without touching anything: every one of the 15 rack balls is bit-identically where it started at rest, and the fact stream carries no pocket. The closest approach of the trajectory to any rack ball is far outside a diameter, so this pins the at-rest guard rather than a near miss.",
       "input": {
         "rack_seed": 1,
         "cue_mm": [
@@ -187,7 +307,7 @@
     {
       "name": "shot-frozen-rail-contact-pb-13",
       "kind": "shot",
-      "note": "The frozen-ball rail-contact case of physics.md §9.1: physics-break.json row pb-13's pre-state (its arrangement D), with the ball of rack slot 5.0 — ball 4 — placed off the lattice at (700, 606.425) mm, frozen to the right long cushion (surface gap 0; the spec renders the pin as 606.4, the prototype's one-decimal note of HALF_WIDTH − R), then struck at the row's pinned aim and speed. The frozen ball is nudged but never leaves the rail: it is still frozen to RightLong at rest, so under rules.md §10.2 it cannot count as driven to a rail. The counts here are this implementation's; physics.md §8's recorded pattern is 3 distinct / 3 contacts with the frozen contact suppressed, which physics_corpus.rs reports separately.",
+      "note": "The frozen-ball rail-contact case of physics.md \u00a79.1: physics-break.json row pb-13's pre-state (its arrangement D), with the ball of rack slot 5.0 \u2014 ball 4 \u2014 placed off the lattice at (700, 606.425) mm, frozen to the right long cushion (surface gap 0; the spec renders the pin as 606.4, the prototype's one-decimal note of HALF_WIDTH \u2212 R), then struck at the row's pinned aim and speed. The frozen ball is nudged but never leaves the rail: it is still frozen to RightLong at rest, so under rules.md \u00a710.2 it cannot count as driven to a rail. The counts here are this implementation's; physics.md \u00a78's recorded pattern is 3 distinct / 3 contacts with the frozen contact suppressed, which physics_corpus.rs reports separately.",
       "input": {
         "arrangement": {
           "1": "3.2",
@@ -278,7 +398,7 @@
     {
       "name": "shot-break-hook-rest-state",
       "kind": "shot",
-      "note": "The break hook of physics.md §6/§9.1: the standard rack (fixture seed 1), the cue ball at (−800, 0) mm on the long string, a level 6200 mm/s strike straight down it. The hook's acceptance predicates live in tests/break_hook.rs; this entry pins the produced fact pattern and the rest state as the determinism half. A level-cue break does not off-table a ball at the default e_slate (physics.md §3.4), and the run reports the e_slate it ran at (ShotOutcome::e_slate).",
+      "note": "The break hook of physics.md \u00a76/\u00a79.1: the standard rack (fixture seed 1), the cue ball at (\u2212800, 0) mm on the long string, a level 6200 mm/s strike straight down it. The hook's acceptance predicates live in tests/break_hook.rs; this entry pins the produced fact pattern and the rest state as the determinism half. A level-cue break does not off-table a ball at the default e_slate (physics.md \u00a73.4), and the run reports the e_slate it ran at (ShotOutcome::e_slate).",
       "input": {
         "rack_seed": 1,
         "cue_mm": [

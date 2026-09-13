@@ -34,6 +34,11 @@ impl Arrangement {
     }
 
     /// The slot holding a ball number.
+    ///
+    /// # Panics
+    ///
+    /// Panics if no slot holds `ball` — an arrangement always holds balls 1..=15, so a miss means the
+    /// caller asked about a ball outside the rack.
     #[must_use]
     pub fn slot_of(&self, ball: u8) -> Slot {
         let index = self
@@ -112,6 +117,12 @@ pub fn generate(seed: u64) -> Arrangement {
 }
 
 /// The rack invariants of `rules-break.md` §2.10, checked on an arrangement. A violation is a bug.
+///
+/// # Errors
+///
+/// Returns the violated invariant's description: the apex slot empty, ball 8 outside (3,1), the corner
+/// slots not holding one ball per group, a slot empty or holding a ball number outside 1..=15, a ball
+/// appearing twice, or a neighbour pair not exactly `2R` apart.
 pub fn check_invariants(arrangement: &Arrangement) -> Result<(), String> {
     let slots = &arrangement.slots;
 

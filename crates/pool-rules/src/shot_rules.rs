@@ -160,49 +160,7 @@ pub fn classify(context: &ShotContext, call: &Call, observation: &Observation) -
     let legal = legal_balls(target, shooter_group);
     let contact = first_contact(&observation.facts, &legal);
 
-    let mut fouls = Vec::new();
-    if out.contains_pocketed(0) {
-        fouls.push(Foul {
-            rule: FoulRule::CueBallOffTheTable,
-            reason: FoulReason::CueBallPocketed,
-        });
-    } else if out.contains_off_table(0) {
-        fouls.push(Foul {
-            rule: FoulRule::CueBallOffTheTable,
-            reason: FoulReason::CueBallOffTable,
-        });
-    }
-    if !matches!(
-        contact,
-        FirstContact::Ball { legal: true, .. } | FirstContact::Undecidable
-    ) {
-        fouls.push(Foul {
-            rule: FoulRule::WrongBallFirst,
-            reason: FoulReason::WrongBallFirst,
-        });
-    }
-    if !out.any_pocketed() && rail::rail_after_first_contact(&observation.facts) == Some(false) {
-        fouls.push(Foul {
-            rule: FoulRule::NoRailAfterContact,
-            reason: FoulReason::NoRailAfterContact,
-        });
-    }
-    for ball in out.off_table_objects() {
-        fouls.push(Foul {
-            rule: FoulRule::BallOffTheTable,
-            reason: if ball == 8 {
-                FoulReason::EightDrivenOffTable
-            } else {
-                FoulReason::ObjectBallOffTable
-            },
-        });
-    }
-    if played_from_above_the_head_string(context.pre_state, contact) {
-        fouls.push(Foul {
-            rule: FoulRule::FromAboveTheHeadString,
-            reason: FoulReason::FromAboveTheHeadString,
-        });
-    }
+    let fouls = fouls_of(context, &observation.facts, contact, &out);
 
     let eight_pocketed = out.contains_pocketed(8);
     let eight_target = claim || shooter_group.is_some_and(|group| cleared(group, &on_table));
@@ -240,7 +198,83 @@ pub fn classify(context: &ShotContext, call: &Call, observation: &Observation) -
         None
     };
 
-    let (classification, verdict, outcome, assignment) = if let Some(clause) = loss {
+    let (classification, verdict, outcome, assignment) =
+        ruled(context, call, &out, &fouls, loss, eight_pocketed);
+
+    ShotRuling {
+        classification,
+        verdict,
+        fouls,
+        assignment,
+        outcome,
+    }
+}
+
+/// The shot's fouls (`rules.md` §3): the cue ball off the table, a wrong or absent first contact, no
+/// rail after contact, an object ball off the table, and a shot played from above the head string.
+fn fouls_of(
+    context: &ShotContext,
+    facts: &FactView,
+    contact: FirstContact,
+    out: &OutOfPlay,
+) -> Vec<Foul> {
+    let mut fouls = Vec::new();
+    if out.contains_pocketed(0) {
+        fouls.push(Foul {
+            rule: FoulRule::CueBallOffTheTable,
+            reason: FoulReason::CueBallPocketed,
+        });
+    } else if out.contains_off_table(0) {
+        fouls.push(Foul {
+            rule: FoulRule::CueBallOffTheTable,
+            reason: FoulReason::CueBallOffTable,
+        });
+    }
+    if !matches!(
+        contact,
+        FirstContact::Ball { legal: true, .. } | FirstContact::Undecidable
+    ) {
+        fouls.push(Foul {
+            rule: FoulRule::WrongBallFirst,
+            reason: FoulReason::WrongBallFirst,
+        });
+    }
+    if !out.any_pocketed() && rail::rail_after_first_contact(facts) == Some(false) {
+        fouls.push(Foul {
+            rule: FoulRule::NoRailAfterContact,
+            reason: FoulReason::NoRailAfterContact,
+        });
+    }
+    for ball in out.off_table_objects() {
+        fouls.push(Foul {
+            rule: FoulRule::BallOffTheTable,
+            reason: if ball == 8 {
+                FoulReason::EightDrivenOffTable
+            } else {
+                FoulReason::ObjectBallOffTable
+            },
+        });
+    }
+    if played_from_above_the_head_string(context.pre_state, contact) {
+        fouls.push(Foul {
+            rule: FoulRule::FromAboveTheHeadString,
+            reason: FoulReason::FromAboveTheHeadString,
+        });
+    }
+    fouls
+}
+
+/// The shot's outcome ladder (`rules.md` §4.8/§5): an explicit loss, the 8 pocketed legally, a
+/// standard foul, or a legal shot with its 4.4 assignment and what follows it.
+fn ruled(
+    context: &ShotContext,
+    call: &Call,
+    out: &OutOfPlay,
+    fouls: &[Foul],
+    loss: Option<&'static str>,
+    eight_pocketed: bool,
+) -> (Classification, Verdict, Outcome, Option<[Group; 2]>) {
+    if let Some(clause) = loss {
         (
             Classification::Loss { clause },
             Verdict::Loss,
@@ -267,7 +301,7 @@ pub fn classify(context: &ShotContext, call: &Call, observation: &Observation) -
             None,
         )
     } else {
-        let assignment = assignment_made(context, call, &out);
+        let assignment = assignment_made(context, call, out);
         let continues = match call {
             Call::Ball { ball, .. } => out.contains_pocketed(ball.0),
             Call::Safety | Call::Break => false,
@@ -282,14 +316,6 @@ pub fn classify(context: &ShotContext, call: &Call, observation: &Observation) -
             },
             assignment,
         )
-    };
-
-    ShotRuling {
-        classification,
-        verdict,
-        fouls,
-        assignment,
-        outcome,
     }
 }
 

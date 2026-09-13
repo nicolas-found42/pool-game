@@ -60,6 +60,9 @@ fn every_golden_entry_verifies() {
         match kind {
             "rack" => verify_rack(name, entry),
             "shot" => failures.extend(verify_shot(name, entry)),
+            // Replay entries are verified by `pool-match`'s harness: a recorded input log's final
+            // state hash needs the `Session` and the rules machine, which this crate cannot see.
+            "replay" => {}
             other => panic!(
                 "goldens.json entry `{name}` has kind `{other}`, which this harness does not verify"
             ),

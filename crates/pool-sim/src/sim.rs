@@ -10,10 +10,10 @@
 
 use crate::ball::{BallState, MotionMode};
 use crate::constants::{
-    BALL_DIAMETER_MM, BALL_INERTIA_G_MM2, BALL_MASS_G, BALL_RADIUS_MM, CUSHION_CLEARANCE_MM,
-    CUSHION_NORMAL_Z, DROP_BOUNDARY_TOLERANCE_MM, FROZEN_GAP_MM, GRAVITY_MM_S2, HALF_LEN_MM,
-    HALF_WIDTH_MM, SIMULTANEITY_EPS_S, SLEEP_ANGULAR_RAD_S, SLEEP_LINEAR_MM_S,
-    cushion_normal_horizontal,
+    BALL_DIAMETER_MM, BALL_INERTIA_G_MM2, BALL_MASS_G, BALL_RADIUS_MM, CONTACT_SLOP_MM,
+    CUSHION_CLEARANCE_MM, CUSHION_NORMAL_Z, DROP_BOUNDARY_TOLERANCE_MM, FROZEN_GAP_MM,
+    GRAVITY_MM_S2, HALF_LEN_MM, HALF_WIDTH_MM, SIMULTANEITY_EPS_S, SLEEP_ANGULAR_RAD_S,
+    SLEEP_LINEAR_MM_S, cushion_normal_horizontal,
 };
 use crate::facts::{Fact, FactKind, KickCause};
 use crate::math::{V3, v3};
@@ -45,12 +45,6 @@ const ROOT_ITERATIONS: usize = 16;
 const APPROACH_FLOOR_MM_S: f64 = 1e-9;
 /// How many times the position-only separation step sweeps the table before it gives up.
 const DEPENETRATION_PASSES: u32 = 8;
-/// The contact slop (mm): at this scale two surfaces are in contact. One number serves both the
-/// contact tests and the position-only separation step (`physics.md` §1), so the solver and the step
-/// agree on where contact begins and ends. It is a rounding guard, four orders below the model's
-/// thinnest real gap (a frozen ball's 0.5 mm), never a physical gap.
-const CONTACT_SLOP_MM: f64 = 1e-6;
-
 /// One ball's local analytic law, valid from its segment's start:
 ///
 /// ```text
@@ -433,6 +427,11 @@ impl Sim {
 
     /// Place the cue ball (ball-in-hand, `architecture.md` §9): its centre must sit on the playing
     /// surface, clear of every other ball by at least one diameter.
+    ///
+    /// # Errors
+    ///
+    /// Returns the [`PlacementError`] of [`Sim::place_ball`]: a non-finite position, a centre off the
+    /// playing surface, or a placement overlapping a ball in play.
     pub fn place_cue(&mut self, pos_mm: [f64; 2]) -> Result<(), PlacementError> {
         self.place_ball(0, pos_mm)
     }
@@ -441,6 +440,16 @@ impl Sim {
     /// [`Sim::place_cue`] — centre on the surface, one diameter clear of every other ball in play —
     /// and the ball joins the shot (the counterpart of [`Sim::cleared`] for the ladder's pre-states,
     /// `physics.md` §6/§8).
+    ///
+    /// # Errors
+    ///
+    /// Returns [`PlacementError::NotFinite`] for a non-finite position,
+    /// [`PlacementError::OutsideSurface`] when the centre would leave the playing surface, and
+    /// [`PlacementError::Overlaps`] when the ball would sit inside a ball in play.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `ball` is not a ball id (`0..=15`).
     pub fn place_ball(&mut self, ball: u8, pos_mm: [f64; 2]) -> Result<(), PlacementError> {
         assert!(
             usize::from(ball) < self.balls.len(),
@@ -460,7 +469,11 @@ impl Sim {
                 continue;
             }
             let gap = (p - other.p).len() - BALL_DIAMETER_MM;
-            if gap < 0.0 {
+            // Contact, not overlap: the same rounding guard the solver's own contact tests use. An
+            // exact-contact position re-measures a few ulps short of a diameter on this route — the
+            // spot search of `rules.md` §4 returns one, and 1.5's clause 2 *wants* contact — while a
+            // real overlap is six orders of magnitude larger than this guard.
+            if gap < -CONTACT_SLOP_MM {
                 return Err(PlacementError::Overlaps {
                     ball: other_index as u8,
                     gap_mm: gap,
@@ -475,6 +488,10 @@ impl Sim {
     /// ball's `(v, ω)` rather than a stick's — `physics.md` §6's pure-spin branch is a ball with spin
     /// and no translation, which no declaration can express. [`Sim::strike`] is the declaration path
     /// and calls this for the cue ball.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `ball` is not a ball id (`0..=15`), or the launch state is not finite.
     pub fn launch(&mut self, ball: u8, v_mm_s: V3, w_rad_s: V3) -> Shot {
         assert!(
             usize::from(ball) < self.balls.len(),
@@ -517,6 +534,10 @@ impl Sim {
     ///
     /// The sim keeps the final state, so a caller may place the cue again and strike the next shot;
     /// the facts and the timeline move into the returned `Shot`.
+    ///
+    /// # Errors
+    ///
+    /// Returns the [`StrikeError`] of [`StrikeDecl::resolve`] when the declaration is out of domain.
     pub fn strike(&mut self, decl: StrikeDecl) -> Result<Shot, StrikeError> {
         let resolved = decl.resolve(self.table.profile.pivot_mm)?;
         Ok(self.launch(0, resolved.v_mm_s, resolved.w_rad_s))
@@ -712,15 +733,15 @@ impl Sim {
     /// Push one pair apart along `n`, to a gap of exactly `2R`, and report it (`physics.md` §1). A
     /// pair already within [`CONTACT_SLOP_MM`], or one still approaching, is left alone.
     fn separate_pair(&mut self, i: usize, j: usize, n: V3) {
-        let (a, b) = (&self.balls[i], &self.balls[j]);
-        if !a.active() || !b.active() {
+        let (ball_i, ball_j) = (&self.balls[i], &self.balls[j]);
+        if !ball_i.active() || !ball_j.active() {
             return;
         }
-        let distance = (b.p - a.p).len();
+        let distance = (ball_j.p - ball_i.p).len();
         if BALL_DIAMETER_MM - distance <= CONTACT_SLOP_MM {
             return;
         }
-        if (a.v - b.v).dot(n) > 0.0 {
+        if (ball_i.v - ball_j.v).dot(n) > 0.0 {
             return; // still approaching: the impulse owns it
         }
         let push = (BALL_DIAMETER_MM - distance) * 0.5;
@@ -998,8 +1019,7 @@ impl Sim {
         // never propose: the root is dropped here, and the transition (which fires first anyway)
         // reinstalls the law, so the candidate set is re-solved under the law actually in force.
         let mut validity = [f64::INFINITY; 16];
-        for i in 0..self.balls.len() {
-            let ball = &self.balls[i];
+        for (i, ball) in self.balls.iter().enumerate() {
             if !ball.active() {
                 continue;
             }
@@ -1058,6 +1078,14 @@ impl Sim {
             }
         }
 
+        self.pair_candidates(&validity, &mut out);
+        out
+    }
+
+    /// The pair-contact candidates: every pair that is approaching, or overlapping past the contact
+    /// slop, with a solved root inside both balls' segment validity — the pair's relative law is a
+    /// difference of the two, so it holds no longer than the shorter one.
+    fn pair_candidates(&self, validity: &[f64; 16], out: &mut Vec<(f64, Ev)>) {
         for i in 0..self.balls.len() {
             for j in (i + 1)..self.balls.len() {
                 if !self.balls[i].active() || !self.balls[j].active() {
@@ -1124,7 +1152,6 @@ impl Sim {
                 ));
             }
         }
-        out
     }
 
     // ---------------------------------------------------------------- event application
@@ -1375,8 +1402,8 @@ impl Sim {
             self.separate_pair(i, j, n);
             return;
         }
-        let e = self.table.profile.e_b;
-        let jn = (1.0 + e) * v_n * BALL_MASS_G / 2.0;
+        let e_b = self.table.profile.e_b;
+        let jn = (1.0 + e_b) * v_n * BALL_MASS_G / 2.0;
         let ri = n * BALL_RADIUS_MM;
         let rj = n * (-BALL_RADIUS_MM);
         let ui = self.balls[i].v + self.balls[i].w.cross(ri);
@@ -1524,25 +1551,25 @@ fn law_for(profile: &crate::profile::Profile, p: V3, v: V3, w: V3, mode: MotionM
             mode,
         },
         MotionMode::Rolling => {
-            let a = v.norm() * (-profile.roll_decel_mm_s2());
+            let acc = v.norm() * (-profile.roll_decel_mm_s2());
             Law {
                 p0: p,
                 v0: v,
-                a,
+                a: acc,
                 w0: v3(-v.y / BALL_RADIUS_MM, v.x / BALL_RADIUS_MM, w.z),
-                wa: v3(-a.y / BALL_RADIUS_MM, a.x / BALL_RADIUS_MM, 0.0),
+                wa: v3(-acc.y / BALL_RADIUS_MM, acc.x / BALL_RADIUS_MM, 0.0),
                 wz_decay: profile.spin_decay_rad_s2,
                 mode,
             }
         }
         MotionMode::Sliding => {
-            let u = contact_point_velocity(v, w);
-            let a = u.norm() * (-profile.slide_decel_mm_s2());
-            let wa = v3(a.y, -a.x, 0.0) * (5.0 / (2.0 * BALL_RADIUS_MM));
+            let slip = contact_point_velocity(v, w);
+            let acc = slip.norm() * (-profile.slide_decel_mm_s2());
+            let wa = v3(acc.y, -acc.x, 0.0) * (5.0 / (2.0 * BALL_RADIUS_MM));
             Law {
                 p0: p,
                 v0: v,
-                a,
+                a: acc,
                 w0: w,
                 wa,
                 wz_decay: profile.spin_decay_rad_s2,

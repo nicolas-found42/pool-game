@@ -4601,7 +4601,22 @@ version = "0.1.0"
 dependencies = [
  "bevy",
  "clap",
+ "pool-match",
+ "pool-rules",
  "pool-sim",
+ "serde_json",
+]
+
+[[package]]
+name = "pool-headless"
+version = "0.1.0"
+dependencies = [
+ "clap",
+ "pool-match",
+ "pool-rules",
+ "pool-sim",
+ "serde",
+ "serde_json",
 ]
 
 [[package]]
@@ -4609,6 +4624,7 @@ name = "pool-match"
 version = "0.1.0"
 dependencies = [
  "jsonschema",
+ "libm",
  "pool-rng",
  "pool-rules",
  "pool-sim",
